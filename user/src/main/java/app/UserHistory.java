@@ -30,7 +30,7 @@ public class UserHistory {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
  
-        System.out.print(year + "-" + (month + 1) + "-" + day);
+        System.out.print(day + "-" + (month + 1) + "-" + year);
     }
 
     public void print() {

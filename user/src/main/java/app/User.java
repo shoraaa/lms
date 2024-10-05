@@ -6,6 +6,7 @@ import java.util.Calendar;
 public class User {
     protected String UserName;
     protected String RealName;
+    protected Calendar AccCreDate;
     protected ArrayList<UserHistory> History = new ArrayList<>();
 
     public User() {}
@@ -13,6 +14,7 @@ public class User {
     public User(String UN, String RN) {
         this.UserName = UN;
         this.RealName = RN;
+        this.AccCreDate = Calendar.getInstance();
     }
 
     public static User creUser(String UN, String RN) {
@@ -45,6 +47,10 @@ public class User {
     public void getDetail() {
         System.out.println("UserName: " + UserName);
         System.out.println("RealName: " + RealName);
+        System.out.print("Account creation date: ");
+        UserHistory.showCalendar(AccCreDate);
+        System.out.println();
+
         System.out.println("History:");
 
         for(UserHistory x: History) {

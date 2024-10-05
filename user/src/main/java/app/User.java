@@ -8,9 +8,16 @@ public class User {
     protected String RealName;
     protected ArrayList<UserHistory> History = new ArrayList<>();
 
+    public User() {}
+
     public User(String UN, String RN) {
         this.UserName = UN;
         this.RealName = RN;
+    }
+
+    public static User creUser(String UN, String RN) {
+        User result = new User(UN, RN);
+        return result;
     }
 
     public void UpdateBorrowHistory(String DN, int num) {
@@ -43,13 +50,6 @@ public class User {
         for(UserHistory x: History) {
             x.print();
         }
-    }
-
-    public static void main(String[] args) {
-        User admin = new User("socnhi", "Ngoc Nhi");
-        admin.UpdateBorrowHistory("oop", 4);
-
-        admin.getDetail();
     }
 
     public ArrayList<UserHistory> getHistory() {

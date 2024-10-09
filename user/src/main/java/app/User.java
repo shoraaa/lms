@@ -4,65 +4,65 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class User {
-    protected String UserName;
-    protected String RealName;
-    protected Calendar AccCreDate;
-    protected ArrayList<UserHistory> History = new ArrayList<>();
+    protected String userName;
+    protected String realName;
+    protected Calendar accCreDate;
+    protected ArrayList<UserHistory> histories = new ArrayList<>();
 
     public User() {}
 
-    public User(String UN, String RN) {
-        this.UserName = UN;
-        this.RealName = RN;
-        this.AccCreDate = Calendar.getInstance();
+    public User(String userName, String realName) {
+        this.userName = userName;
+        this.realName = realName;
+        this.accCreDate = Calendar.getInstance();
     }
 
-    public static User creUser(String UN, String RN) {
-        User result = new User(UN, RN);
+    public static User creUser(String userName, String realName) {
+        User result = new User(userName, realName);
         return result;
     }
 
-    public void UpdateBorrowHistory(String DN, int num) {
-        UserHistory nH = new UserHistory(DN, num);
-        History.add(nH);
+    public void UpdateBorrowHistory(String docName, int num) {
+        UserHistory newHistories = new UserHistory(docName, num);
+        histories.add(newHistories);
     }
 
-    public void UpdateReturnHistory(String DN) {
-        for (UserHistory x : History) {
-            if ((x.ReturnDay == null) && (x.DocName.equals(DN))) {
-                x.ReturnDay = Calendar.getInstance();
+    public void UpdateReturnHistory(String docName) {
+        for (UserHistory x : histories) {
+            if ((x.returnDay == null) && (x.docName.equals(docName))) {
+                x.returnDay = Calendar.getInstance();
                 return;
             }
         }
     }
 
     public String getUserName() {
-        return this.UserName;
+        return this.userName;
     }
 
     public String getRealName() {
-        return this.RealName;
+        return this.realName;
     }
 
     public void getDetail() {
-        System.out.println("UserName: " + UserName);
-        System.out.println("RealName: " + RealName);
-        System.out.print("Account creation date: ");
-        UserHistory.showCalendar(AccCreDate);
+        System.out.println("userName: " + userName);
+        System.out.println("realName: " + realName);
+        System.out.print("AccouserNamet creation date: ");
+        UserHistory.showCalendar(accCreDate);
         System.out.println();
 
-        System.out.println("History:");
+        System.out.println("histories:");
 
-        for(UserHistory x: History) {
+        for(UserHistory x: histories) {
             x.print();
         }
     }
 
-    public ArrayList<UserHistory> getHistory() {
-        return History;
+    public ArrayList<UserHistory> getHistories() {
+        return histories;
     }
 
-    public void setHistory(ArrayList<UserHistory> History) {
-        this.History = History;
+    public void setHistories(ArrayList<UserHistory> histories) {
+        this.histories = histories;
     }
 }

@@ -2,23 +2,23 @@ package app;
 import java.util.Calendar;
 
 public class UserHistory {
-    protected String DocName;
+    protected String docName;
     protected int quantity;
-    protected Calendar BorrowedDay;
-    protected Calendar ReturnDay;
-    protected Calendar Deadline;
+    protected Calendar borrowedDay;
+    protected Calendar returnDay;
+    protected Calendar deadline;
 
     public UserHistory() {
-        this.DocName = "";
+        this.docName = "";
         this.quantity = 0;
     }
 
-    public UserHistory(String DN, int num) {
-        this.DocName = DN;
+    public UserHistory(String docName, int num) {
+        this.docName = docName;
         this.quantity = num;
-        this.BorrowedDay = Calendar.getInstance();
-        this.Deadline = this.BorrowedDay;
-        this.Deadline.add(Calendar.DAY_OF_MONTH, 30);
+        this.borrowedDay = Calendar.getInstance();
+        this.deadline = this.borrowedDay;
+        this.deadline.add(Calendar.DAY_OF_MONTH, 30);
     }
 
     public static void showCalendar(Calendar c) {
@@ -34,12 +34,12 @@ public class UserHistory {
     }
 
     public void print() {
-        System.out.print(this.DocName + " " + this.quantity + " ");
-        showCalendar(BorrowedDay);
+        System.out.print(this.docName + " " + this.quantity + " ");
+        showCalendar(borrowedDay);
         System.out.print(" ");
-        showCalendar(Deadline);
+        showCalendar(deadline);
         System.out.print(" ");
-        showCalendar(ReturnDay);
+        showCalendar(returnDay);
         System.out.println(".");
     }
 }

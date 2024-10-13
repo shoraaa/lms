@@ -21,25 +21,28 @@ public class UserHistory {
         this.deadline.add(Calendar.DAY_OF_MONTH, 30);
     }
 
-    public static void showCalendar(Calendar c) {
+    public static String showCalendar(Calendar c) {
         if (c == null) {
-            System.out.print("Books have not been returned!");
-            return;
+            return "Books have not been returned!";
         }
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
  
-        System.out.print(day + "-" + (month + 1) + "-" + year);
+        return (" " + day + "-" + (month + 1) + "-" + year);
     }
 
-    public void print() {
-        System.out.print(this.docName + " " + this.quantity + " ");
-        showCalendar(borrowedDay);
-        System.out.print(" ");
-        showCalendar(deadline);
-        System.out.print(" ");
-        showCalendar(returnDay);
-        System.out.println(".");
+    public String toString() {
+        String ans = (this.docName + " " + this.quantity);
+
+        ans += showCalendar(borrowedDay);
+        
+        ans += showCalendar(deadline);
+        
+        ans += showCalendar(returnDay);
+        
+        ans += '\n';
+
+        return ans;
     }
 }

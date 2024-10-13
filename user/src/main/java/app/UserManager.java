@@ -23,43 +23,36 @@ public class UserManager {
         return userList.get( getIndex(userName) );
     }
 
-    public String getUserName() {
+    public User getUser() {
         Scanner input = new Scanner(System.in);
-        String ans = new String();
+        String userName = new String();
 
         while(true) { 
             System.out.print("Enter userName: ");
-            ans = input.nextLine();
-            ans = ans.trim();
-            if (contains(ans)) {
-                System.out.println("This userName already exists!Please redo!");
+            userName = input.nextLine();
+            userName = userName.trim();
+            if (contains(userName)) {
+                throw new ArithmeticException("This userName already exists!Please redo!");
             } else break;
         }
-        input.close();
-
-        return ans;
-    }
-
-    public String getRealName() {
-        Scanner input = new Scanner(System.in);
 
         System.out.print("Enter realName: ");
-        String ans = input.nextLine();
-        ans = ans.trim();
+        String realName = input.nextLine();
+        realName = realName.trim();
         input.close();
-
-        return ans;
+        
+        return User.creUser(userName, realName);
     }
 
     public void addNewUser() {
-        userList.add(User.creUser(getUserName(), getRealName()));
+        userList.add(getUser());
     }
 
-    public void getUserDetail(String userName) {
+    public String getUserDetail(String userName) {
         if (contains(userName)) {
-            User ans = getUser(userName);
-            ans.getDetail();
+            User realName = getUser(userName);
+            return realName.getDetail();
 
-        } else System.out.println("This userName does not exists!");
+        } else throw new ArithmeticException("This userName does not exists!");
     }
 }

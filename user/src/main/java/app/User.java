@@ -1,13 +1,12 @@
 package app;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class User {
     protected String userName;
     protected String realName;
     protected Calendar accCreDate;
-    protected ArrayList<UserHistory> histories = new ArrayList<>();
+    protected Histories histories = new Histories();
 
     public User() {}
 
@@ -22,18 +21,13 @@ public class User {
         return result;
     }
 
-    public void UpdateBorrowHistory(String docName, int num) {
+    public void updateBorrowHistory(String docName, int num) {
         UserHistory newHistories = new UserHistory(docName, num);
         histories.add(newHistories);
     }
 
-    public void UpdateReturnHistory(String docName) {
-        for (UserHistory x : histories) {
-            if ((x.returnDay == null) && (x.docName.equals(docName))) {
-                x.returnDay = Calendar.getInstance();
-                return;
-            }
-        }
+    public void updateReturnHistory(String docName) {
+        histories.updateReturnDay(docName);
     }
 
     public String getUserName() {
@@ -44,25 +38,21 @@ public class User {
         return this.realName;
     }
 
-    public void getDetail() {
-        System.out.println("userName: " + userName);
-        System.out.println("realName: " + realName);
-        System.out.print("AccouserNamet creation date: ");
-        UserHistory.showCalendar(accCreDate);
-        System.out.println();
+    public String getDetail() {
+        String ans = ("userName: " + userName + '\n');
+        ans += ("realName: " + realName + '\n');
+        ans += "AccouserNamet creation date: " + UserHistory.showCalendar(accCreDate);
+        ans += '\n';
 
-        System.out.println("histories:");
-
-        for(UserHistory x: histories) {
-            x.print();
-        }
+        ans += "histories:\n"  + histories.toString();
+        return ans;
     }
 
-    public ArrayList<UserHistory> getHistories() {
+    public Histories getHistories() {
         return histories;
     }
 
-    public void setHistories(ArrayList<UserHistory> histories) {
+    public void setHistories(Histories histories) {
         this.histories = histories;
     }
 }

@@ -1,58 +1,102 @@
 package app;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class UserManager {
-    protected ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<User> users;
+    private int totalUsersCount;
 
-    public int getIndex(String userName) {
-        for (int i = 0; i < userList.size(); i++) {
-            if (userList.get(i).getUserName().equals(userName)) {
-                return i;
+    /*
+     * List of users whether this element exists.
+     */
+    private boolean contains(int usersId) {
+        if (usersId > this.totalUsersCount) {
+            return false;
+        }
+
+        return (users.get(usersId) != null);
+    }
+
+    /*
+     * Import users from JSON file of users data.
+     * Create that file if not exist. 
+     */
+    //public void loadData(String jsonFilePath) {}
+
+    /*
+     * Save users data to the desired file path.
+     */
+    //public void saveData(String jsonFilePath) {}
+
+    /*
+     * Create a new user and save it to JSON data.
+     * The user's ID will be the total number of users ever created.
+     * Return that user's ID.
+     */
+    public int createUser(UserInfo userInfo) {
+        users.add(new User(userInfo, ++this.totalUsersCount));
+        return totalUsersCount;
+    }
+
+    /*
+     * Delete a user based on it ID.
+     * Return false if that user not exist.
+     */
+    public boolean deleteUser(int usersId) {
+        if (this.contains(usersId)) {
+            users.set(usersId, null);
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
+     * Get an array of user's ID which phone number match (even if partialy).
+     */
+    public ArrayList<Integer> getUserIdsByPhoneNumber(int phoneNumber) {
+        ArrayList<Integer> listUsersId = new ArrayList<>();
+        for (User aUser : users) {
+            if ((aUser != null) && (aUser.matchPhonenumber(phoneNumber))) {
+                listUsersId.add(aUser.getUserId());
             }
         }
-
-        return -1;
+        return listUsersId;
     }
 
-    public boolean contains(String userName) {
-        return (getIndex(userName) != -1);
-    }
-
-    public User getUser(String userName) {
-        return userList.get( getIndex(userName) );
-    }
-
-    public User getUser() {
-        Scanner input = new Scanner(System.in);
-        String userName = new String();
-
-        while(true) { 
-            System.out.print("Enter userName: ");
-            userName = input.nextLine();
-            userName = userName.trim();
-            if (contains(userName)) {
-                throw new ArithmeticException("This userName already exists!Please redo!");
-            } else break;
+    /*
+     * Get an array of user's ID which name match (even if partialy).
+     */
+    public ArrayList<Integer> getUserIdsByName(String name) {
+        ArrayList<Integer> listUsersId = new ArrayList<>();
+        for (User aUser : users) {
+            if ((aUser != null) && (aUser.matchUserName(name))) {
+                listUsersId.add(aUser.getUserId());
+            }
         }
-
-        System.out.print("Enter realName: ");
-        String realName = input.nextLine();
-        realName = realName.trim();
-        input.close();
-        
-        return User.creUser(userName, realName);
+        return listUsersId;
     }
 
-    public void addNewUser() {
-        userList.add(getUser());
+    /*
+     * Get an array of all user's ID.
+     */
+    public ArrayList<Integer> getAllUserIds() {
+        ArrayList<Integer> listUsersId = new ArrayList<>();
+        for (User aUser : users) {
+            if (aUser != null) {
+                listUsersId.add(aUser.getUserId());
+            }
+        }
+        return listUsersId;
     }
 
-    public String getUserDetail(String userName) {
-        if (contains(userName)) {
-            User realName = getUser(userName);
-            return realName.getDetail();
+    /*
+     * Get user's info from its id.
+     */
+    public UserInfo getUserInfoFromId(int userId) {}
 
-        } else throw new ArithmeticException("This userName does not exists!");
-    }
+    /*
+     * Get user's registered times from its id.
+     */
+    public LocalDateTime getUserRegisteredTimeFromId(int userId) {}
 }

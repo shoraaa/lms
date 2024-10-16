@@ -1,58 +1,49 @@
 package app;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 public class User {
-    protected String userName;
-    protected String realName;
-    protected Calendar accCreDate;
-    protected Histories histories = new Histories();
+    private UserInfo info;
+    private LocalDateTime registeredTime;
+    private int userId;
 
-    public User() {}
-
-    public User(String userName, String realName) {
-        this.userName = userName;
-        this.realName = realName;
-        this.accCreDate = Calendar.getInstance();
+    public User(UserInfo info, int userId) {
+        this.info = info;
+        this.userId = userId;
+        this.registeredTime = LocalDateTime.now();
     }
 
-    public static User creUser(String userName, String realName) {
-        User result = new User(userName, realName);
-        return result;
+    /** 
+     */
+    public boolean matchPhonenumber(int phoneNumber) {
+        return phoneNumber == info.getPhoneNumber();
     }
 
-    public void updateBorrowHistory(String docName, int num) {
-        UserHistory newHistories = new UserHistory(docName, num);
-        histories.add(newHistories);
+    /**
+     */
+    public boolean matchUserName(String name) {
+        return name.equals(info.getName());
     }
 
-    public void updateReturnHistory(String docName) {
-        histories.updateReturnDay(docName);
+
+    /*
+     * Get the user's info.
+     */
+    public UserInfo getInfo() {
+        return info;
     }
 
-    public String getUserName() {
-        return this.userName;
+    /*
+     * Get the user's registered time.
+     */
+    public LocalDateTime getRegisteredTime() {
+        return registeredTime;
     }
 
-    public String getRealName() {
-        return this.realName;
-    }
-
-    public String getDetail() {
-        String ans = ("userName: " + userName + '\n');
-        ans += ("realName: " + realName + '\n');
-        ans += "AccouserNamet creation date: " + UserHistory.showCalendar(accCreDate);
-        ans += '\n';
-
-        ans += "histories:\n"  + histories.toString();
-        return ans;
-    }
-
-    public Histories getHistories() {
-        return histories;
-    }
-
-    public void setHistories(Histories histories) {
-        this.histories = histories;
+    /*
+     * Get the user's ID.
+     */
+    public int getUserId() {
+        return userId;
     }
 }

@@ -16,8 +16,6 @@ public class Username {
     public String getLastName() {
         return lastName;
     }
-
-
     
     public String getName() {
         return (firstName + " " + lastName).toLowerCase();

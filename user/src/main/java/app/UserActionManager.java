@@ -34,7 +34,16 @@ public class UserActionManager {
     /*
      * Get an array of user's actions based on the user's ID.
      */
-    public ArrayList<UserAction> getUserActionsFromId(int userId) {}
+    public ArrayList<UserAction> getUserActionsFromId(int userId) {
+        ArrayList<UserAction> aUserActions = new ArrayList<>();
+        for (UserAction action : this.actionsLog) {
+            if (action.userId == userId) {
+                aUserActions.add(action);
+            }
+        }
+
+        return aUserActions;
+    }
 
     /*
      * Get an array of every user's actions.

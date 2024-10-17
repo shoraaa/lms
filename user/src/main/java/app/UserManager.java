@@ -93,10 +93,22 @@ public class UserManager {
     /*
      * Get user's info from its id.
      */
-    public UserInfo getUserInfoFromId(int userId) {}
+    public UserInfo getUserInfoFromId(int userId) {
+        if (contains(userId)) {
+            return users.get(userId).getInfo();
+        }
+
+        return null;
+    }
 
     /*
      * Get user's registered times from its id.
      */
-    public LocalDateTime getUserRegisteredTimeFromId(int userId) {}
+    public LocalDateTime getUserRegisteredTimeFromId(int userId) {
+        if (contains(userId)) {
+            return users.get(userId).getRegisteredTime();
+        }
+
+        return null;
+    }
 }

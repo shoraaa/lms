@@ -15,3 +15,11 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency
 
 This project is developed using Java 22 and JavaFX SDK 23.
+
+## Building Instruction
+
+This project is managed and developed using VS Code by default.
+
+- Clone this repo to your local machine.
+- Install "Extension Pack for Java" extension for your VS Code environment.
+- Run "Launch App".

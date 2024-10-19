@@ -1,6 +1,7 @@
-## Getting Started
+## Library Management System
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Library Management System Project for INT 2204 7 N1. 
+Contributor include: Tran Thanh Dat, Le Minh Dat, Hoang Ngoc Nhi and Nguyen Tue Minh
 
 ## Folder Structure
 
@@ -11,8 +12,6 @@ The workspace contains two folders by default, where:
 
 Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Dependency
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+This project is developed using Java 22 and JavaFX SDK 23.

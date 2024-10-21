@@ -1,5 +1,3 @@
-package app;
-
 public class Username {
     private String firstName;
     private String lastName;

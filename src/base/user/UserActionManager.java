@@ -19,14 +19,16 @@ public class UserActionManager {
      * @param documentId
      */
     public void userBorrowDocument(int userId, int documentId) {
-        this.push(new UserBorrowAction(userId, documentId));
+        UserAction action = new UserBorrowAction(userId, documentId);
+        this.push(action);
     }
 
     /*
      * Do an action of user returning a document.
      */
     public void userReturnDocument(int userId, int documentId) {
-        this.push(new UserReturnAction(userId, documentId));
+        UserAction action = new UserReturnAction(userId, documentId);
+        this.push(action);
     }
 
     /*

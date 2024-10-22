@@ -1,11 +1,11 @@
-package UserDesign;
-
+```java
 class Username {
     private String lastName;
     private String middleName;
     private String firstName;
 }
-
+```
+```java
 /*
  * UserInfo is a class that contain info of user that are from input (instead of for e.g it's creation date).
  */
@@ -13,7 +13,8 @@ class UserInfo {
     private Username name;
     private int phoneNumber; // key
 }
-
+```
+```java
 class User {
     private UserInfo info;
     private LocalDateTime registeredTime;
@@ -32,7 +33,8 @@ class User {
      */
     LocalDateTime getRegisteredTime() {};
 }
-
+```
+```java
 class UserManager {
     private ArrayList<User> users;
     private int totalUsersCount;
@@ -87,8 +89,8 @@ class UserManager {
     public LocalDateTime getUserRegisteredTimeFromId(int userId) {}
 
 }
-
-
+```
+```java
 class UserAction {
     int userId;
     int documentId;
@@ -97,7 +99,8 @@ class UserAction {
 
     UserAction(int userId, int documentId) {}
 }
-
+```
+```java
 class UserBorrowAction extends UserAction {
 
     UserBorrowAction(int userId, int documentId) {
@@ -105,7 +108,8 @@ class UserBorrowAction extends UserAction {
         name = "borrow";
     }
 }
-
+```
+```java
 class UserReturnAction extends UserAction {
     
     UserReturnAction(int userId, int documentId) {
@@ -113,7 +117,8 @@ class UserReturnAction extends UserAction {
         name = "return";
     }
 }
-
+```
+```java
 class UserActionManager {
     private ArrayList<UserAction> actionsLog;
 
@@ -143,3 +148,4 @@ class UserActionManager {
     public ArrayList<UserAction> getAllUserActions() {}
 
 }
+```

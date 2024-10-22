@@ -19,8 +19,31 @@ public class User {
 
     /**
      */
+    public boolean kmp(String str1, String str2) {
+        int[] pi = new int[str2.length()];
+        int j = 0;
+
+        for (int i = 0; i < str2.length(); i++) {
+            while (j > 0 && (str2.charAt(i) != str1.charAt(j))) {
+                j = pi[j - 1];
+            }
+                
+            if (str2.charAt(i) == str1.charAt(j)) {
+                j++;
+            }
+
+            if (j == str1.length()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     */
     public boolean matchUserName(String name) {
-        return name.equals(info.getName());
+        return kmp(name, info.getName());
     }
 
 

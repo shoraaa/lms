@@ -33,7 +33,8 @@ public class UserManager {
      * Return that user's ID.
      */
     public int createUser(UserInfo userInfo) {
-        users.add(new User(userInfo, ++this.totalUsersCount));
+        User newUser = new User(userInfo, ++this.totalUsersCount);
+        users.add(newUser);
         return totalUsersCount;
     }
 

@@ -1,3 +1,5 @@
+package base.user;
+
 public class Username {
     private String firstName;
     private String lastName;

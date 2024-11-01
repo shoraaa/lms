@@ -1,3 +1,5 @@
+package base.user;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -8,7 +10,7 @@ public class UserManager {
     /*
      * List of users whether this element exists.
      */
-    private boolean contains(int usersId) {
+    public boolean contains(int usersId) {
         if (usersId > this.totalUsersCount) {
             return false;
         }

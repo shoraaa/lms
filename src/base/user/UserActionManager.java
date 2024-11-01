@@ -1,3 +1,5 @@
+package base.user;
+
 import java.util.ArrayList;
 
 public class UserActionManager {

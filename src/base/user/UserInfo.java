@@ -1,3 +1,5 @@
+package base.user;
+
 /*
  * UserInfo is a class that contain info of user that are from input (instead of for e.g it's creation date).
  */

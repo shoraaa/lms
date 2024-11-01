@@ -1,3 +1,5 @@
+package base.user;
+
 import java.time.LocalDateTime;
 
 public class User {

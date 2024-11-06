@@ -1,10 +1,10 @@
-module lms {
+module com.library {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
 
-    opens lms to javafx.fxml;
-    exports lms;
+    opens com.library to javafx.fxml;
+    exports com.library;
 }
 
 

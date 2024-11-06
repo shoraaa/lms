@@ -18,6 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("dashboard"), 1920, 1080);
+        stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();
     }

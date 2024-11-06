@@ -24,6 +24,7 @@ public class DocumentManager {
      * Create that file if not exist.
      */
     public void loadData(String jsonFilePath) {
+        
     }
 
     /*

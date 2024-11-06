@@ -7,6 +7,13 @@ import javafx.scene.control.TableView;
 // import javafx.scene.control.TableColumn;
 // import javafx.scene.control.Label;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
+
 import lms.document.Book;
 import lms.user.User;
 
@@ -25,10 +32,28 @@ public class DashboardController {
         transactionsButton.setOnAction(event -> loadTransactionsView());
     }
 
+    private void loadAddNewBookView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddBookWindow.fxml"));
+            Parent root = loader.load();
+            Scene addBookScene = new Scene(root);
+            Stage addBookStage = new Stage();
+            addBookStage.setScene(addBookScene);
+            addBookStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Method to load Books view
     private void loadBooksView() {
         // Clear the main content
         mainContent.getChildren().clear();
+
+        Button addNewBookButton = new Button("Add New Book");
+        mainContent.getChildren().add(addNewBookButton);
+
+        addNewBookButton.setOnAction(event -> loadAddNewBookView());
         
         // Create and display the books content (e.g., a TableView for books)
         TableView<Book> booksTable = new TableView<>();
@@ -37,6 +62,7 @@ public class DashboardController {
         
         mainContent.getChildren().add(booksTable);
     }
+
 
     // Method to load Users view
     private void loadUsersView() {

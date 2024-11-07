@@ -8,19 +8,30 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import com.library.model.document.DocumentManager;
+
 /**
  * JavaFX App
  */
 public class App extends Application {
 
     private static Scene scene;
+    private static DocumentManager documentManager;
 
     @Override
     public void start(Stage stage) throws IOException {
+
         scene = new Scene(loadFXML("Dashboard"), 1920, 1080);
         stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();
+    }
+
+    static DocumentManager getDocumentManager() {
+        if (documentManager == null) {
+            documentManager = new DocumentManager();
+        }
+        return documentManager;
     }
 
     static void setRoot(String fxml) throws IOException {

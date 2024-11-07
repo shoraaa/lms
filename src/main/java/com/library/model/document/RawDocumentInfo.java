@@ -3,13 +3,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class RawDocumentInfo {
-    private String name;
-    private ArrayList<Integer> authorIds;
-    private ArrayList<Integer> tagIds;
-    private String isbn_13;
-    private String isbn_10;
-    private String publisher;
-    private LocalDate publishedDate;
+    public String name;
+    public ArrayList<Integer> authorIds;
+    public ArrayList<Integer> tagIds;
+    public String isbn_13;
+    public String isbn_10;
+    public String publisher;
+    public LocalDate publishedDate;
 
     /**
      * Get name of document.

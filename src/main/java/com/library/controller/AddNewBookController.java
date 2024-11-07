@@ -74,9 +74,12 @@ public class AddNewBookController {
 
         // Add a listener to update suggestions as the user types
         authorComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.trim().isEmpty()) {
+            if (newValue.length() > 0) {
                 List<Author> authors = authorDAO.searchAuthorsByName(newValue);
                 authorComboBox.getItems().setAll(authors);
+                authorComboBox.show();
+            } else {
+                authorComboBox.hide();
             }
         });
     }

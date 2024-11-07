@@ -45,7 +45,7 @@ public class PublisherDAO {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Publisher(resultSet.getInt("id"), resultSet.getString("name"));
+                    return new Publisher(resultSet.getInt("publisher_id"), resultSet.getString("name"));
                 }
             }
         } catch (SQLException e) {
@@ -56,13 +56,13 @@ public class PublisherDAO {
 
     // Method to get a publisher by ID
     public Publisher getPublisherById(int id) {
-        String sql = "SELECT * FROM publishers WHERE id = ?";
+        String sql = "SELECT * FROM publishers WHERE publisher_id = ?";
         try (Connection connection = LibraryDatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Publisher(resultSet.getInt("id"), resultSet.getString("name"));
+                    return new Publisher(resultSet.getInt("publisher_id"), resultSet.getString("name"));
                 }
             }
         } catch (SQLException e) {

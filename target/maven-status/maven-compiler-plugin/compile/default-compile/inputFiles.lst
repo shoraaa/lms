@@ -8,9 +8,12 @@ C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Or
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\dao\TagDAO.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\user\UserManager.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\document\DocumentQuantity.java
+C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\Publisher.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\dao\PublisherDAO.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\document\DocumentInfo.java
+C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\util\LibraryDatabaseUtil.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\user\UserBorrowAction.java
+C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\Tag.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\document\RawDocumentInfo.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\document\Author.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\controller\AddNewBookController.java
@@ -23,6 +26,7 @@ C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Or
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\user\UserActionManager.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\dao\DatabaseInitializer.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\Document.java
+C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\util\UserDatabaseUtil.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\user\UserReturnAction.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\document\Thesis.java
 C:\Users\Shora\Google Drive Streaming\My Drive\Study\2025 - Semester I\Object Oriented Programming\Project\lms\src\main\java\com\library\model\DatabaseConnection.java

@@ -42,6 +42,8 @@ public class Document {
         this.authorIds = authorIds;
         this.tagIds = tagIds;
         this.publisherId = publisherId;
+        this.isbn10 = isbn10;
+        this.isbn13 = isbn13;
         this.datePublished = datePublished;
         this.dateAdded = dateAdded;
         this.quantityCurrent = quantityCurrent;

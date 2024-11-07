@@ -6,12 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.library.model.Tag;
 import com.library.util.LibraryDatabaseUtil;
 
 public class TagDAO {
+
 
     // Method to add a tag if it doesn't already exist
     public int addTag(Tag tag) {
@@ -48,7 +50,7 @@ public class TagDAO {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Tag(resultSet.getInt("id"), resultSet.getString("name"));
+                    return new Tag(resultSet.getInt("tag_id"), resultSet.getString("name"));
                 }
             }
         } catch (SQLException e) {
@@ -65,13 +67,36 @@ public class TagDAO {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Tag(resultSet.getInt("id"), resultSet.getString("name"));
+                    return new Tag(resultSet.getInt("tag_id"), resultSet.getString("name"));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null; // Return null if no tag found
+    }
+
+    // Fetch tags by their IDs
+    public List<Tag> getTagsByIds(List<Integer> tagIds) {
+        List<Tag> tags = new ArrayList<>();
+        String query = "SELECT * FROM tags WHERE tag_id IN (" + String.join(",", Collections.nCopies(tagIds.size(), "?")) + ")";
+        
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(query)) {
+            for (int i = 0; i < tagIds.size(); i++) {
+                stmt.setInt(i + 1, tagIds.get(i));
+            }
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    tags.add(new Tag(rs.getInt("tag_id"), rs.getString("name")));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return tags;
     }
 
     // Method to get all tags (if needed)
@@ -82,7 +107,7 @@ public class TagDAO {
              PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                tags.add(new Tag(resultSet.getInt("id"), resultSet.getString("name")));
+                tags.add(new Tag(resultSet.getInt("tag_id"), resultSet.getString("name")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

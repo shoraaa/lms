@@ -1,15 +1,23 @@
 package com.library.dao;
 
-import com.library.model.Document;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.library.model.Document;
+import com.library.util.LibraryDatabaseUtil;
+
 public class DocumentDAO {
 
-    private static final String INSERT_DOCUMENT_QUERY =
-            "INSERT INTO documents (name, author_ids, tag_ids, publisher_id, date_published, date_added, quantity_current, quantity_total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_DOCUMENT_QUERY = 
+    "INSERT INTO documents (name, author_ids, tag_ids, publisher_id, isbn10, isbn13, date_published, date_added, quantity_current, quantity_total) " +
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_DOCUMENT_BY_ID =
             "SELECT * FROM documents WHERE document_id = ?";
     private static final String SELECT_ALL_DOCUMENTS =
@@ -17,17 +25,19 @@ public class DocumentDAO {
 
     // Method to add a new document
     public int addDocument(Document document) {
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:library.db");
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(INSERT_DOCUMENT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, document.getName());
-            stmt.setString(2, listToString(document.getAuthorIds()));    // Convert List<Integer> to comma-separated String
-            stmt.setString(3, listToString(document.getTagIds()));       // Convert List<Integer> to comma-separated String
-            stmt.setInt(4, document.getPublisherId()); 
-            stmt.setDate(5, Date.valueOf(document.getDatePublished()));
-            stmt.setDate(6, Date.valueOf(document.getDateAdded()));
-            stmt.setInt(7, document.getQuantityCurrent());
-            stmt.setInt(8, document.getQuantityTotal());
+                stmt.setString(1, document.getName());
+                stmt.setString(2, listToString(document.getAuthorIds()));  // Convert List<Integer> to comma-separated String
+                stmt.setString(3, listToString(document.getTagIds()));     // Convert List<Integer> to comma-separated String
+                stmt.setObject(4, document.getPublisherId() != 0 ? document.getPublisherId() : null, Types.INTEGER); // Handle publisher_id null
+                stmt.setString(5, document.getIsbn10());
+                stmt.setString(6, document.getIsbn13());
+                stmt.setDate(7, document.getDatePublished() != null ? Date.valueOf(document.getDatePublished()) : null);
+                stmt.setDate(8, document.getDateAdded() != null ? Date.valueOf(document.getDateAdded()) : null);
+                stmt.setInt(9, document.getQuantityCurrent());
+                stmt.setInt(10, document.getQuantityTotal());
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -44,7 +54,7 @@ public class DocumentDAO {
 
     // Method to retrieve a document by ID
     public Document getDocumentById(int documentId) {
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:library.db");
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(SELECT_DOCUMENT_BY_ID)) {
 
             stmt.setInt(1, documentId);
@@ -61,7 +71,7 @@ public class DocumentDAO {
     // Method to retrieve all documents
     public List<Document> getAllDocuments() {
         List<Document> documents = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:library.db");
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
              Statement stmt = connection.createStatement()) {
 
             ResultSet resultSet = stmt.executeQuery(SELECT_ALL_DOCUMENTS);
@@ -73,6 +83,25 @@ public class DocumentDAO {
         }
         return documents;
     }
+
+    public int countAllDocument() {
+        String query = "SELECT COUNT(*) FROM documents";  // Assuming you want the count directly from the DB
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            
+            ResultSet resultSet = stmt.executeQuery();
+            
+            if (resultSet.next()) {
+                return resultSet.getInt(1);  // Getting the count directly from the result set
+            }
+        } catch (SQLException e) {
+            // Log the error instead of just printing the stack trace
+            System.err.println("Error counting documents: " + e.getMessage());
+            e.printStackTrace(); // Optionally, log this using a logging framework
+        }
+        return 0;
+    }
+    
 
     private Document buildDocumentFromResultSet(ResultSet resultSet) throws SQLException {
         return new Document(

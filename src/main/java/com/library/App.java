@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.library.dao.DatabaseInitializer;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         initializeDatabase();
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
         scene = new Scene(loadFXML("Dashboard"), 1280, 720);
         stage.setTitle("Library Management System");

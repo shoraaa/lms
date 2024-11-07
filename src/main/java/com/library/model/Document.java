@@ -3,6 +3,8 @@ package com.library.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class Document {
 
     private int documentId;  // The ID for the document
@@ -16,6 +18,8 @@ public class Document {
     private int quantityTotal;
     private String isbn10;  // Optional
     private String isbn13;  // Preferred
+
+    private final SimpleBooleanProperty selected; // For checkbox
 
     // Constructor to initialize the Document object
     public Document(int documentId, String name, List<Integer> authorIds, List<Integer> tagIds, 
@@ -32,6 +36,8 @@ public class Document {
         this.dateAdded = dateAdded;
         this.quantityCurrent = quantityCurrent;
         this.quantityTotal = quantityTotal;
+
+        this.selected = new SimpleBooleanProperty(false);
     }
 
     // Constructor for creating a new Document (without ID initially)
@@ -48,6 +54,8 @@ public class Document {
         this.dateAdded = dateAdded;
         this.quantityCurrent = quantityCurrent;
         this.quantityTotal = quantityTotal;
+
+        this.selected = new SimpleBooleanProperty(false);
     }
 
     // Getters and setters
@@ -143,5 +151,17 @@ public class Document {
 
     public void setQuantityTotal(int quantityTotal) {
         this.quantityTotal = quantityTotal;
+    }
+
+    public SimpleBooleanProperty selectedProperty() {
+        return selected;
+    }
+
+    public boolean isSelected() {
+        return selected.get();
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
     }
 }

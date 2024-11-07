@@ -2,6 +2,7 @@ package com.library.controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,18 +38,25 @@ public class BooksViewController {
     @FXML private AnchorPane contentPane;
 
     private Label totalBooksLabel;
-    TableView<Document> booksTable;
+    TableView<Document> documentTable;
+
+    List<Document> documents;
 
     private TableView<Document> getDocumentTableView() {
         // Get book data and populate TableView
         DocumentDAO documentDAO = new DocumentDAO();
-        List<Document> documents = documentDAO.getAllDocuments();
-        ObservableList<Document> bookData = FXCollections.observableList(documents);
+        documents = documentDAO.getAllDocuments();
+        ObservableList<Document> documentData = FXCollections.observableList(documents);
 
-        TableView<Document> booksTable = new TableView<>(bookData);
+        TableView<Document> documentTable = new TableView<>(documentData);
+        documentTable.setEditable(true);
+
+        TableColumn<Document, Boolean> selectColumn = new TableColumn<>("Select");
+        selectColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
+        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
 
         // Document Name Column
-        TableColumn<Document, String> nameColumn = new TableColumn<>("Document Name");
+        TableColumn<Document, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
         // Authors Column
@@ -105,21 +114,21 @@ public class BooksViewController {
         });
 
         // Add all columns to the TableView
-        booksTable.getColumns().addAll(nameColumn, authorsColumn, tagsColumn, publisherColumn, isbnColumn, isbn10Column, publishedDateColumn, quantityColumn);
+        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, tagsColumn, publisherColumn, isbnColumn, isbn10Column, publishedDateColumn, quantityColumn);
 
-        booksTable.setPrefWidth(1000);
+        documentTable.setPrefWidth(1000);
 
 
-        return booksTable;
+        return documentTable;
         // Add the TableView to the main content
-        // contentPane.getChildren().add(booksTable);
+        // contentPane.getChildren().add(documentTable);
     }
 
     public void initialize() {
         contentPane.getChildren().clear();
 
         // Label for displaying total number of books
-        booksTable = getDocumentTableView();
+        documentTable = getDocumentTableView();
         
         totalBooksLabel = new Label("Total Books: 0");
         updateTotalBooks();
@@ -127,19 +136,21 @@ public class BooksViewController {
          // Buttons for Add New Book and Search Book
         Button addButton = new Button("Add New Book");
         Button searchButton = new Button("Search Book");
+        Button deleteButton = new Button("Delete Selected");
  
         // Set button actions
         addButton.setOnAction(event -> handleAddNewBook());
         //  searchButton.setOnAction(event -> handleSearchBook());
+        deleteButton.setOnAction(event -> handleDeleteSelected());
         
 
         // Layout for the buttons and label
-        HBox buttonBox = new HBox(10, addButton, searchButton);
+        HBox buttonBox = new HBox(10, addButton, searchButton, deleteButton);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new javafx.geometry.Insets(10));
 
         // Layout for the main content area
-        VBox mainLayout = new VBox(10, booksTable, totalBooksLabel, buttonBox);
+        VBox mainLayout = new VBox(10, documentTable, totalBooksLabel, buttonBox);
         mainLayout.setAlignment(Pos.CENTER);
         mainLayout.setPadding(new javafx.geometry.Insets(20));
 
@@ -162,6 +173,24 @@ public class BooksViewController {
     private void updateTotalBooks() {
         DocumentDAO documentDAO = new DocumentDAO();
         totalBooksLabel.setText("Total Books: " + documentDAO.countAllDocument());
+    }
+
+    private void handleDeleteSelected() {
+        // Collect selected document IDs
+        List<Integer> selectedDocumentIds = new ArrayList<>(); // Clear previously selected IDs
+        for (Document document : documents) {
+            if (document.isSelected()) {
+                selectedDocumentIds.add(document.getId());  // Add ID to the list of selected documents
+            }
+        }
+
+        // Delete selected documents from the database
+        DocumentDAO documentDAO = new DocumentDAO();
+        if (!selectedDocumentIds.isEmpty()) {
+            documentDAO.deleteDocument(selectedDocumentIds);
+        }
+
+        initialize();
     }
 
 

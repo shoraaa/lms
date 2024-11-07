@@ -52,6 +52,34 @@ public class DocumentDAO {
         return -1;  // Return -1 if insertion failed
     }
 
+    public boolean deleteDocument(int documentId) {
+        String query = "DELETE FROM documents WHERE document_id = ?";
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+    
+            // Set the document ID in the query
+            stmt.setInt(1, documentId);
+            int rowsAffected = stmt.executeUpdate();
+    
+            // If rowsAffected is greater than 0, the document was deleted
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // If something goes wrong, return false
+        }
+    }
+
+    public boolean deleteDocument(List<Integer> documentIds) {
+        boolean success = true;
+        for (int documentId : documentIds) {
+            if (!deleteDocument(documentId)) {
+                success = false;
+            }
+        }
+        return success;
+    }   
+    
+
     // Method to retrieve a document by ID
     public Document getDocumentById(int documentId) {
         try (Connection connection = LibraryDatabaseUtil.getConnection();

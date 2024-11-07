@@ -1,14 +1,14 @@
 package com.library;
 
+import java.io.IOException;
+
+import com.library.dao.DatabaseInitializer;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-
-import com.library.model.document.DocumentManager;
 
 /**
  * JavaFX App
@@ -16,22 +16,20 @@ import com.library.model.document.DocumentManager;
 public class App extends Application {
 
     private static Scene scene;
-    private static DocumentManager documentManager;
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        scene = new Scene(loadFXML("Dashboard"), 1920, 1080);
+        initializeDatabase();
+
+        scene = new Scene(loadFXML("Dashboard"), 1280, 720);
         stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();
     }
 
-    static DocumentManager getDocumentManager() {
-        if (documentManager == null) {
-            documentManager = new DocumentManager();
-        }
-        return documentManager;
+    private void initializeDatabase() {
+        DatabaseInitializer.initializeDatabase();
     }
 
     static void setRoot(String fxml) throws IOException {

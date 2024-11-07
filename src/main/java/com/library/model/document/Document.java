@@ -17,6 +17,10 @@ public class Document {
         this.documentId = documentId;
     }
 
+    public void setDocumentId(int documentId) {
+        this.documentId = documentId;
+    }
+
     /**
      * Get document info.
      * @return document info

@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class LibraryDatabaseUtil {
 
-    private static final String URL = "jdbc:sqlite:library.db";
+    private static final String URL = "jdbc:sqlite:src/main/resources/com/library/database/library.db";
     private static Connection connection;
 
     // This method initializes the connection (if not already initialized)

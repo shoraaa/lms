@@ -196,7 +196,7 @@ public class BooksViewController {
 
     private void handleAddNewBook() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/library/AddBookWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/library/views/AddBookWindow.fxml"));
             Parent root = loader.load();
             Scene addBookScene = new Scene(root);
             Stage addBookStage = new Stage();

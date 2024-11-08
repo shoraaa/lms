@@ -18,7 +18,7 @@ public class MainController {
     @FXML
     public void initialize() {
 
-        booksButton.setOnAction(event -> loadContent("/com/library/BooksView.fxml"));
+        booksButton.setOnAction(event -> loadContent("/com/library/views/BooksView.fxml"));
 
     }
 

@@ -1,3 +1,5 @@
+# This workflow will build a Java project with Maven
+
 name: Java CI with Maven
 
 on:
@@ -19,10 +21,5 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Set MAVEN_OPTS for Memory
-      run: echo "MAVEN_OPTS='-Xmx1024m -XX:MaxPermSize=256m'" >> $GITHUB_ENV
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v1

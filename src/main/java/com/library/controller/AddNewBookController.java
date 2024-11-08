@@ -4,14 +4,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.library.dao.AuthorDAO;
-import com.library.dao.DocumentDAO;
-import com.library.dao.PublisherDAO;
-import com.library.dao.TagDAO;
 import com.library.model.Document;
 import com.library.model.Publisher;
 import com.library.model.Tag;
 import com.library.model.document.Author;
+import com.library.services.AuthorDAO;
+import com.library.services.DocumentDAO;
+import com.library.services.PublisherDAO;
+import com.library.services.TagDAO;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

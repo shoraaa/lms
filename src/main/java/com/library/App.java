@@ -2,7 +2,7 @@ package com.library;
 
 import java.io.IOException;
 
-import com.library.dao.DatabaseInitializer;
+import com.library.services.DatabaseInitializer;
 
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;

@@ -16,8 +16,8 @@ import com.library.util.LibraryDatabaseUtil;
 public class DocumentDAO {
 
     private static final String INSERT_DOCUMENT_QUERY = 
-    "INSERT INTO documents (name, author_ids, tag_ids, publisher_id, isbn10, isbn13, date_published, date_added, quantity_current, quantity_total) " +
-    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO documents (name, author_ids, tag_ids, publisher_id, isbn, date_published, date_added, quantity_current, quantity_total) " +
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_DOCUMENT_BY_ID =
             "SELECT * FROM documents WHERE document_id = ?";
     private static final String SELECT_ALL_DOCUMENTS =
@@ -32,12 +32,11 @@ public class DocumentDAO {
                 stmt.setString(2, listToString(document.getAuthorIds()));  // Convert List<Integer> to comma-separated String
                 stmt.setString(3, listToString(document.getTagIds()));     // Convert List<Integer> to comma-separated String
                 stmt.setObject(4, document.getPublisherId() != 0 ? document.getPublisherId() : null, Types.INTEGER); // Handle publisher_id null
-                stmt.setString(5, document.getIsbn10());
-                stmt.setString(6, document.getIsbn13());
-                stmt.setDate(7, document.getDatePublished() != null ? Date.valueOf(document.getDatePublished()) : null);
-                stmt.setDate(8, document.getDateAdded() != null ? Date.valueOf(document.getDateAdded()) : null);
-                stmt.setInt(9, document.getQuantityCurrent());
-                stmt.setInt(10, document.getQuantityTotal());
+                stmt.setString(5, document.getIsbn());
+                stmt.setDate(6, document.getDatePublished() != null ? Date.valueOf(document.getDatePublished()) : null);
+                stmt.setDate(7, document.getDateAdded() != null ? Date.valueOf(document.getDateAdded()) : null);
+                stmt.setInt(8, document.getQuantityCurrent());
+                stmt.setInt(9, document.getQuantityTotal());
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -78,6 +77,18 @@ public class DocumentDAO {
         }
         return success;
     }   
+
+    public void updateDocumentQuantity(int documentId, int quantity) {
+        String query = "UPDATE documents SET quantity_current = ? WHERE document_id = ?";
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, documentId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
 
     // Method to retrieve a document by ID
@@ -138,8 +149,7 @@ public class DocumentDAO {
                 stringToList(resultSet.getString("author_ids")),
                 stringToList(resultSet.getString("tag_ids")),
                 resultSet.getInt("publisher_id"),
-                resultSet.getString("isbn10"),
-                resultSet.getString("isbn13"),
+                resultSet.getString("isbn"),
                 resultSet.getDate("date_published").toLocalDate(),
                 resultSet.getDate("date_added").toLocalDate(),
                 resultSet.getInt("quantity_current"),

@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-import com.library.model.document.Author;
+import com.library.model.Author;
 import com.library.util.LibraryDatabaseUtil;
 
 public class AuthorDAO {
@@ -103,6 +102,21 @@ public class AuthorDAO {
         }
         
         return authors;
+    }
+
+    public Author getAuthorByName(String name) {
+        String query = "SELECT * FROM authors WHERE name = ?";
+        try (Connection connection = LibraryDatabaseUtil.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return mapToAuthor(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Get all authors from the database

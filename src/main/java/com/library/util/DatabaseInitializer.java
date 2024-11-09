@@ -1,4 +1,4 @@
-package com.library.services;
+package com.library.util;
 
 import java.sql.*;
 
@@ -30,17 +30,35 @@ public class DatabaseInitializer {
         "author_ids TEXT, " + // Store a comma-separated list of author IDs
         "tag_ids TEXT, " + // Store a comma-separated list of tag IDs
         "publisher_id INTEGER, " + // Store a comma-separated list of publisher IDs
-        "isbn10 TEXT, " +
-        "isbn13 TEXT, " +
+        "isbn TEXT, " +
         "date_published DATE, " +
         "date_added DATE, " +
         "quantity_current INTEGER NOT NULL, " +
         "quantity_total INTEGER NOT NULL" +
         ");";
 
-    // Method to create all the tables
+    private static String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS users (" +
+        "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "name TEXT NOT NULL, " +
+        "email TEXT NOT NULL UNIQUE, " +
+        "phone_number TEXT NOT NULL, " +
+        "time_registered TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+        ");";
+    
+    private static String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS transactions (" +
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "user_id INTEGER NOT NULL, " +
+        "document_id INTEGER NOT NULL, " +
+        "borrow_date DATE NOT NULL, " +
+        "return_date DATE, " +
+        "is_returned BOOLEAN DEFAULT 0, " +
+        "FOREIGN KEY(user_id) REFERENCES user(user_id), " +
+        "FOREIGN KEY(document_id) REFERENCES document(document_id)" +
+        ");";
+    
+
     public static void initializeDatabase() {
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:library.db")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/com/library/database/library.db")) {
             Statement stmt = connection.createStatement();
 
             // Execute the table creation queries
@@ -49,7 +67,10 @@ public class DatabaseInitializer {
             stmt.execute(CREATE_PUBLISHERS_TABLE);
             stmt.execute(CREATE_DOCUMENTS_TABLE);
 
-            System.out.println("Database tables created or already exist.");
+            stmt.execute(CREATE_USER_TABLE);
+            stmt.execute(CREATE_TRANSACTION_TABLE);
+
+            System.out.println(" Database tables created or already exist.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

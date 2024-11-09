@@ -1,4 +1,4 @@
-package com.library.model.document;
+package com.library.model;
 public class Author {
     private int id;
     private String name;
@@ -32,5 +32,9 @@ public class Author {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String toString() {
+        return name;
     }
 }

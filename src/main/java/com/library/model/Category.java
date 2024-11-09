@@ -1,67 +1,70 @@
 package com.library.model;
 /**
- * Tag model class
+ * Category model class
  * 
  * @author Dat
  */
-public class Tag {
+public class Category {
 
     /**
-     * Tag ID
+     * Category ID
      */
     private int id;
 
     /**
-     * Tag name
+     * Category name
      */
     private String name;
 
     /**
      * Constructor
      * 
-     * @param id   Tag ID
-     * @param name Tag name
+     * @param id   Category ID
+     * @param name Category name
      */
-    public Tag(int id, String name) {
+    public Category(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
     /**
-     * Get tag ID
+     * Get category ID
      * 
-     * @return Tag ID
+     * @return Category ID
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Set tag ID
+     * Set category ID
      * 
-     * @param id Tag ID
+     * @param id Category ID
      */
     public void setId(int id) {
         this.id = id;
     }
 
     /**
-     * Get tag name
+     * Get category name
      * 
-     * @return Tag name
+     * @return Category name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Set tag name
+     * Set category name
      * 
-     * @param name Tag name
+     * @param name Category name
      */
     public void setName(String name) {
         this.name = name;
     }
 
+    public String toString() {
+        return name;
+    }
 }
 

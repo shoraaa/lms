@@ -5,14 +5,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
+import com.library.model.Category;
 import com.library.model.Document;
 import com.library.model.Publisher;
 import com.library.services.AuthorDAO;
+import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
 import com.library.services.PublisherDAO;
 
@@ -35,34 +36,50 @@ public class AddDocumentController {
     @FXML private TextField isbnTextField;
     @FXML private TextField publisherTextField;
     @FXML private DatePicker publishedDatePicker;
+
     @FXML private ComboBox<Author> authorComboBox;
-    @FXML private ComboBox<Author> tagComboBox;
     @FXML private ListView<Author> authorListView;
-    @FXML private ListView<Author> tagListView;
+
+    @FXML private ComboBox<Category> categoryComboBox;
+    @FXML private ListView<Category> categoryListView;
+
     @FXML private Button saveButton;
-    @FXML private Button fetchBookButton;
+    @FXML private Button fetchButton;
+    @FXML private Button clearButton;
+
     @FXML private Label statusLabel;
     
     private AuthorDAO authorDAO;
+    private CategoryDAO categoryDAO;
+    
     private ObservableList<Author> authorList;
+    private ObservableList<Category> categoryList;
 
     public AddDocumentController() {
         authorDAO = new AuthorDAO();
         authorList = FXCollections.observableArrayList();
+
+        categoryDAO = new CategoryDAO();
+        categoryList = FXCollections.observableArrayList();
     }
 
     // This method will be called after the FXML is loaded
     @FXML
     public void initialize() {
         authorListView.setItems(authorList);
+        categoryListView.setItems(categoryList);
 
         // Initialize ComboBox for author search (auto-complete)
         initializeAuthorComboBox();
 
+        initializeCategoryComboBox();
+
         // Initialize the save button action
         saveButton.setOnAction(event -> saveNewDocument());
 
-        fetchBookButton.setOnAction(event -> fetchBookButtonAction());
+        fetchButton.setOnAction(event -> fetchButtonAction());
+
+        clearButton.setOnAction(event -> clearForm());
     }
 
     // Initialize ComboBox with a listener for the text input to perform auto-completion
@@ -97,24 +114,63 @@ public class AddDocumentController {
 
         // Listen for when the user presses Enter in the ComboBox
         authorComboBox.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.TAB) {
-                String enteredAuthorName = authorComboBox.getEditor().getText().trim();
-                if (enteredAuthorName.isEmpty()) return;
-                List<Author> authors = authorDAO.searchAuthorsByName(enteredAuthorName);
-                if (authors.isEmpty()) return;
-                Author author = authors.get(0);
-                authorComboBox.getEditor().setText(author.getName());
-            } else if (event.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER) {
                 String enteredAuthorName = authorComboBox.getEditor().getText().trim();
                 if (enteredAuthorName.isEmpty()) return;
 
-                Integer authorId = authorDAO.addAuthor(new Author(-1, enteredAuthorName, ""));
-                Author author = authorDAO.getAuthorById(authorId);
+                Author author = new Author(-1, enteredAuthorName, "");
                 if (authorList.contains(author)) return;
 
                 // Add the author to the ListView and clear the ComboBox
                 authorList.add(author);
                 authorComboBox.getEditor().clear();
+                authorComboBox.hide();
+
+            }
+        });
+    }
+
+    private void initializeCategoryComboBox() {
+        // Set the string converter for the ComboBox to show the category's name
+        categoryComboBox.setConverter(new StringConverter<Category>() {
+            @Override
+            public String toString(Category category) {
+                return category == null ? "" : category.getName();
+            }
+
+            @Override
+            public Category fromString(String string) {
+                // Create a new category if necessary, or return null to rely on database suggestions
+                return new Category(-1, string);
+            }
+        });
+
+        // Add a listener to update suggestions as the user types
+        categoryComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 0) {
+                List<Category> categories = categoryDAO.getCategoriesByName(newValue);
+                if (categories.isEmpty()) return;
+                
+                categoryComboBox.getItems().setAll(categories);
+                categoryComboBox.show();
+            } else {
+                categoryComboBox.hide();
+            }
+        });
+
+
+        // Listen for when the user presses Enter in the ComboBox
+        categoryComboBox.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String enteredCategoryName = categoryComboBox.getEditor().getText().trim();
+                if (enteredCategoryName.isEmpty()) return;
+
+                Category category = new Category(-1, enteredCategoryName);
+                if (categoryList.contains(category)) return;
+
+                // Add the category to the ListView and clear the ComboBox
+                categoryList.add(category);
+                categoryComboBox.getEditor().clear();
 
             }
         });
@@ -136,6 +192,7 @@ public class AddDocumentController {
         publisherTextField.clear();
         publishedDatePicker.setValue(null);
         authorList.clear();
+        categoryList.clear();
     }
 
     // Method to save the new book to the database
@@ -161,14 +218,30 @@ public class AddDocumentController {
             publisher.setId(publisherId);
         }
 
-        // TODO: tag
 
+        List<Integer> authorIds = new ArrayList<>();
+        for (Author author : authorList) {
+            int authorId = authorDAO.addAuthor(author);
+            authorIds.add(authorId);
+        }
 
-        List<Integer> authorIds = authorList.stream().map(Author::getId).collect(Collectors.toList());
+        List<Integer> categoryIds = new ArrayList<>();
+        for (Category category : categoryList) {
+            int categoryId = categoryDAO.addCategory(category);
+            categoryIds.add(categoryId);
+        }
 
-        List<Integer> tagIds = new ArrayList<>();  // TODO: tag
+        Document document = new Document.Builder(title)  // Only title is required
+                .authorIds(authorIds)                        // Optional
+                .categoryIds(categoryIds)                    // Optional
+                .publisherId(publisher.getId())              // Optional
+                .isbn(isbn)                                  // Optional
+                .publicationDate(publishedDate)              // Optional
+                .dateAddedToLibrary(LocalDate.now())         // Optional
+                .currentQuantity(1)                          // Optional
+                .totalQuantity(1)                            // Optional
+                .build();                                    // Final build step
 
-        Document document = new Document(title, authorIds, tagIds, publisher.getId(), isbn, publishedDate, LocalDate.now(), 0, 1);
 
         // Save document (you need to implement saving logic)
         DocumentDAO documentDAO = new DocumentDAO();
@@ -182,80 +255,67 @@ public class AddDocumentController {
         }
     }
 
-    private void fetchBookButtonAction() {
+    private void fetchButtonAction() {
         String isbn = isbnTextField.getText(); // Get ISBN from the input field
-        if (isbn.isEmpty()) {
-            return; // If no ISBN is entered, do nothing
+        if (!isbn.isEmpty()) {
+            fillBookDetails(GoogleBooksAPI.fetchBookDetails(isbn, "isbn"));
+            return; 
         }
 
-        // Call the method to fetch book details
-        BookDetails bookDetails = GoogleBooksAPI.fetchBookByIsbn(isbn);
+        String title = titleTextField.getText();
+        if (!title.isEmpty()) {
+            fillBookDetails(GoogleBooksAPI.fetchBookDetails(title, "title"));
+            return;
+        }
+    }
 
-        // Check if the API returned valid book details
-        if (bookDetails != null) {
-            // Check if title is not null before setting it
-            if (bookDetails.getTitle() != null) {
-                titleTextField.setText(bookDetails.getTitle());
-            }
-
-            // Check if authors are not null before setting it
-            if (bookDetails.getAuthors() != null && bookDetails.getAuthors().length > 0) {
-                // authorsTextField.setText(String.join(", ", bookDetails.getAuthors()));
-                authorList.clear();
-                for (String authorName : bookDetails.getAuthors()) {
-                    List<Author> authors = authorDAO.searchAuthorsByName(authorName);
-                    Author author;
-                    if (authors.isEmpty()) {
-                        Integer authorId = authorDAO.addAuthor(new Author(-1, authorName, ""));
-                        author = authorDAO.getAuthorById(authorId);
-                    } else {
-                        author = authors.get(0);
-                    }
-
-                    // Add the author to the ListView and clear the ComboBox
-                    authorList.add(author);    
-                }
-                
-            }
-
-            // Check if publisher is not null before setting it
-            if (bookDetails.getPublisher() != null) {
-                publisherTextField.setText(bookDetails.getPublisher());
-            } else {
-                publisherTextField.setText("No publisher available");
-            }
-
-            // Check if categories are not null before setting it
-            // if (bookDetails.getCategories() != null && bookDetails.getCategories().length > 0) {
-            //     categoriesTextField.setText(String.join(", ", bookDetails.getCategories()));
-            // } else {
-            //     categoriesTextField.setText("No categories available");
-            // }
-
-            // Check if date published is not null before setting it
-            String publishedDate = bookDetails.getDatePublished();
-            if (publishedDate != null) {
-                try {
-                    // Attempt to parse the date (you may need to adjust the format based on API response)
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    LocalDate date = LocalDate.parse(publishedDate, formatter);
-                    publishedDatePicker.setValue(date); // Set the parsed date into the DatePicker
-                } catch (DateTimeParseException e) {
-                    // If parsing fails, log the error and set a default or empty value
-                    publishedDatePicker.setValue(null); // Clear the DatePicker
-                    System.out.println("Invalid date format: " + publishedDate);
-                }
-            } else {
-                // If no published date is available, clear the DatePicker
-                publishedDatePicker.setValue(null);
-            }
-        } else {
-            // If no book details are found, display a message or handle accordingly
+    private void fillBookDetails(BookDetails bookDetails) {
+        if (bookDetails == null) {
             titleTextField.setText("No details found");
             authorList.clear();
             publisherTextField.setText("");
-            // categoriesTextField.setText("");
-            publishedDatePicker.setValue(null); // Clear the DatePicker
+            publishedDatePicker.setValue(null);
+            return;
+        }
+
+        titleTextField.setText(bookDetails.getTitle() != null ? bookDetails.getTitle() : "");
+
+        authorList.clear();
+        if (bookDetails.getAuthors() != null) {
+            for (String authorName : bookDetails.getAuthors()) {
+                List<Author> authors = authorDAO.searchAuthorsByName(authorName);
+                Author author = authors.isEmpty() ? authorDAO.getAuthorById(authorDAO.addAuthor(new Author(-1, authorName, ""))) : authors.get(0);
+                authorList.add(author);
+            }
+        }
+
+        publisherTextField.setText(bookDetails.getPublisher() != null ? bookDetails.getPublisher() : "No publisher available");
+
+        categoryList.clear();
+        if (bookDetails.getCategories() != null) {
+            for (String categoryName : bookDetails.getCategories()) {
+                Category category = categoryDAO.getCategoryByName(categoryName);
+                if (category == null) {
+                    category = categoryDAO.getCategoryById(categoryDAO.addCategory(new Category(-1, categoryName)));
+                }
+                categoryList.add(category);
+            }
+        }
+
+        isbnTextField.setText(bookDetails.getIsbn() != null ? bookDetails.getIsbn() : "");
+
+        String publishedDate = bookDetails.getDatePublished();
+        if (publishedDate != null) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate date = LocalDate.parse(publishedDate, formatter);
+                publishedDatePicker.setValue(date);
+            } catch (DateTimeParseException e) {
+                publishedDatePicker.setValue(null);
+                System.out.println("Invalid date format: " + publishedDate);
+            }
+        } else {
+            publishedDatePicker.setValue(null);
         }
     }
 

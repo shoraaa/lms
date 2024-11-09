@@ -23,8 +23,8 @@
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
                   <Button fx:id="saveButton" mnemonicParsing="false" styleClass="sidebar-button" text="Save" />
-                  <Button mnemonicParsing="false" styleClass="sidebar-button" text="Get ISBN" />
-                  <Button fx:id="fetchBookButton" mnemonicParsing="false" styleClass="sidebar-button" text="Fetch from ISBN" />
+                  <Button fx:id="clearButton" mnemonicParsing="false" styleClass="sidebar-button" text="Clear" />
+                  <Button fx:id="fetchButton" mnemonicParsing="false" styleClass="sidebar-button" text="Fetch" />
                   <Button alignment="CENTER" mnemonicParsing="false" onAction="#closeWindow" styleClass="sidebar-button" text="Cancel" />
               </buttons>
             </ButtonBar>
@@ -34,8 +34,8 @@
          <children>
             <ComboBox fx:id="authorComboBox" editable="true" prefWidth="150.0" promptText="Author(s)" styleClass="sidebar-button" />
             <ListView fx:id="authorListView" prefHeight="200.0" prefWidth="200.0" />
-            <ComboBox fx:id="tagComboBox" editable="true" prefWidth="150.0" promptText="Tag(s)" styleClass="sidebar-button" />
-            <ListView fx:id="tagListView" prefHeight="200.0" prefWidth="200.0" />
+            <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="150.0" promptText="Categorie(s)" styleClass="sidebar-button" />
+            <ListView fx:id="categoryListView" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </VBox>
    </children>

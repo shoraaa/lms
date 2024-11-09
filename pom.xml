@@ -11,6 +11,13 @@
         <java.version>22</java.version> 
     </properties>
     <dependencies>
+        <!-- for database handling -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.3.19</version>
+        </dependency>
+
         <!-- export to xls -->
         <dependency>
             <groupId>org.apache.poi</groupId>

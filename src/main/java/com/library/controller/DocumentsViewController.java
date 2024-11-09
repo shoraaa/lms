@@ -1,6 +1,5 @@
 package com.library.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,11 +11,7 @@ import com.library.view.DocumentsView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 public class DocumentsViewController {
 
@@ -42,7 +37,7 @@ public class DocumentsViewController {
     }
 
     private void updateTotalDocuments() {
-        int totalDocuments = documentDAO.countAllDocument();
+        int totalDocuments = documentDAO.countAllDocuments();
         documentsView.getTotalDocumentsLabel().setText("Total Documents: " + totalDocuments);
     }
 
@@ -53,11 +48,11 @@ public class DocumentsViewController {
     private void handleDeleteSelected() {
         List<Integer> selectedDocumentIds = documentsView.getDocumentTable().getItems().stream()
             .filter(Document::isSelected)
-            .map(Document::getId)
+            .map(Document::getDocumentId)
             .collect(Collectors.toList());
 
         if (!selectedDocumentIds.isEmpty()) {
-            documentDAO.deleteDocument(selectedDocumentIds);
+            documentDAO.deleteDocuments(selectedDocumentIds);
             documents.setAll(documentDAO.getAllDocuments());
             updateTotalDocuments();
         }

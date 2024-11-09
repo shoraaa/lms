@@ -11,9 +11,9 @@ public class DatabaseInitializer {
         "email TEXT NOT NULL" +
         ");";
 
-    private static final String CREATE_TAGS_TABLE = 
-        "CREATE TABLE IF NOT EXISTS tags (" +
-        "tag_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    private static final String CREATE_CATEGORIES_TABLE = 
+        "CREATE TABLE IF NOT EXISTS categories (" +
+        "category_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "name TEXT NOT NULL" +
         ");";
 
@@ -28,13 +28,13 @@ public class DatabaseInitializer {
         "document_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "name TEXT NOT NULL, " +
         "author_ids TEXT, " + // Store a comma-separated list of author IDs
-        "tag_ids TEXT, " + // Store a comma-separated list of tag IDs
+        "category_ids TEXT, " + // Store a comma-separated list of category IDs
         "publisher_id INTEGER, " + // Store a comma-separated list of publisher IDs
         "isbn TEXT, " +
-        "date_published DATE, " +
+        "publication_date DATE, " +
         "date_added DATE, " +
-        "quantity_current INTEGER NOT NULL, " +
-        "quantity_total INTEGER NOT NULL" +
+        "current_quantity INTEGER NOT NULL, " +
+        "total_quantity INTEGER NOT NULL" +
         ");";
 
     private static String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS users (" +
@@ -63,7 +63,7 @@ public class DatabaseInitializer {
 
             // Execute the table creation queries
             stmt.execute(CREATE_AUTHORS_TABLE);
-            stmt.execute(CREATE_TAGS_TABLE);
+            stmt.execute(CREATE_CATEGORIES_TABLE);
             stmt.execute(CREATE_PUBLISHERS_TABLE);
             stmt.execute(CREATE_DOCUMENTS_TABLE);
 

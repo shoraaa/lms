@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 import com.library.model.User;
 import com.library.model.Author;
 import com.library.model.Publisher;
-import com.library.model.Tag;
 import com.library.services.AuthorDAO;
 import com.library.services.PublisherDAO;
-import com.library.services.TagDAO;
 
 public class UsersView {
     private final TableView<User> userTable;

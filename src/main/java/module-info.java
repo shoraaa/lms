@@ -4,6 +4,7 @@ module com.library {
     requires java.sql;
     requires com.google.gson;
     requires atlantafx.base;
+    requires spring.jdbc;
 
     opens com.library to javafx.fxml;
     opens com.library.controller to javafx.fxml;

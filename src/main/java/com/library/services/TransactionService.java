@@ -16,10 +16,10 @@ public class TransactionService {
 
     public boolean borrowDocument(int userId, int documentId) {
         Document document = documentDAO.getDocumentById(documentId);
-        if (document.getQuantityCurrent() > 0) {
+        if (document.getCurrentQuantity() > 0) {
             Transaction transaction = new Transaction(userId, documentId, LocalDate.now());
             transactionDAO.createTransaction(transaction);
-            documentDAO.updateDocumentQuantity(documentId, document.getQuantityCurrent() - 1);
+            documentDAO.updateDocumentQuantity(documentId, document.getCurrentQuantity() - 1);
             return true;
         } else {
             System.out.println("Document not available.");
@@ -29,6 +29,6 @@ public class TransactionService {
 
     public void returnDocument(int transactionId, int documentId) {
         transactionDAO.markAsReturned(transactionId);
-        documentDAO.updateDocumentQuantity(documentId, documentDAO.getDocumentById(documentId).getQuantityCurrent() + 1);
+        documentDAO.updateDocumentQuantity(documentId, documentDAO.getDocumentById(documentId).getCurrentQuantity() + 1);
     }
 }

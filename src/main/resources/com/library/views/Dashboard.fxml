@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
    <top>
       <HBox alignment="CENTER" prefHeight="51.0" prefWidth="600.0" styleClass="sidebar" BorderPane.alignment="CENTER">
          <children>
@@ -70,7 +70,7 @@
    <center>
       <AnchorPane fx:id="contentPane" prefHeight="300.0" prefWidth="301.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox layoutX="143.0" layoutY="7.0" prefHeight="200.0" prefWidth="340.0" styleClass="anchor-pane" stylesheets="@../style.css" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox layoutX="143.0" layoutY="7.0" prefHeight="200.0" prefWidth="340.0" styleClass="anchor-pane" stylesheets="@../style.css" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox prefHeight="43.0" prefWidth="883.0">
                      <children>
@@ -101,7 +101,7 @@
                      <children>
                         <Pane prefHeight="150.0" prefWidth="150.0" styleClass="blue-colored-btn">
                            <HBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                              <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
                            </HBox.margin>
                            <children>
                               <Label layoutX="14.0" layoutY="14.0" text="BOOK LIST" textFill="#f8f8f8">
@@ -113,7 +113,7 @@
                         </Pane>
                         <Pane layoutX="15.0" layoutY="15.0" prefHeight="150.0" prefWidth="150.0" styleClass="red-colored-btn">
                            <HBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                              <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
                            </HBox.margin>
                            <children>
                               <Label layoutX="14.0" layoutY="14.0" text="AUTHOR LIST" textFill="#dacdcd">
@@ -125,7 +125,7 @@
                         </Pane>
                         <Pane layoutX="136.0" layoutY="15.0" prefHeight="150.0" prefWidth="150.0" styleClass="yellow-colored-btn">
                            <HBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                              <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
                            </HBox.margin>
                            <children>
                               <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="38.0" text="USER" textFill="#140202">
@@ -137,7 +137,7 @@
                         </Pane>
                         <Pane layoutX="252.0" layoutY="10.0" prefHeight="150.0" prefWidth="150.0" styleClass="gray-colored-btn">
                            <HBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                              <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
                            </HBox.margin>
                            <children>
                               <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="76.0" text="HISTORY" textFill="#140202">
@@ -151,14 +151,14 @@
                   </HBox>
                </children>
             </VBox>
-            <AnchorPane layoutX="10.0" layoutY="240.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="240.0">
+            <AnchorPane layoutX="10.0" layoutY="307.0" prefHeight="273.0" prefWidth="1105.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="307.0">
                <children>
                   <Label layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="192.0" text="Monthly Summary">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <VBox alignment="CENTER" layoutX="12.0" layoutY="48.0" prefHeight="153.0" prefWidth="141.0" styleClass="summary">
+                  <VBox alignment="CENTER" layoutX="12.0" layoutY="48.0" prefHeight="192.0" prefWidth="175.0" styleClass="summary">
                      <children>
                         <Label text="Visitors" textFill="#08b905">
                            <font>
@@ -199,14 +199,14 @@
                         </Label>
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_RIGHT" layoutX="164.0" layoutY="28.0" prefHeight="182.0" prefWidth="415.0">
+                  <VBox alignment="TOP_RIGHT" layoutX="271.0" layoutY="35.0" prefHeight="182.0" prefWidth="415.0">
                      <children>
                         <Label text="Generate Report" textFill="#1613c6">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <BarChart>
+                        <BarChart prefHeight="168.0" prefWidth="459.0">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -221,12 +221,12 @@
                         </Label>
                      </children>
                   </VBox>
-                  <Button layoutX="665.0" layoutY="65.0" mnemonicParsing="false" text="New Transaction">
+                  <Button layoutX="820.0" layoutY="88.0" mnemonicParsing="false" text="New Transaction">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button layoutX="695.0" layoutY="108.0" mnemonicParsing="false" text="Setting">
+                  <Button layoutX="850.0" layoutY="137.0" mnemonicParsing="false" text="Setting">
                      <font>
                         <Font size="14.0" />
                      </font>

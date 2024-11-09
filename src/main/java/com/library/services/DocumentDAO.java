@@ -1,153 +1,137 @@
 package com.library.services;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.library.model.Document;
-import com.library.util.LibraryDatabaseUtil;
 
-public class DocumentDAO {
+public class DocumentDAO extends BaseDAO<Document> {
 
     private static final String INSERT_DOCUMENT_QUERY = 
-    "INSERT INTO documents (name, author_ids, tag_ids, publisher_id, isbn10, isbn13, date_published, date_added, quantity_current, quantity_total) " +
-    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_DOCUMENT_BY_ID =
-            "SELECT * FROM documents WHERE document_id = ?";
-    private static final String SELECT_ALL_DOCUMENTS =
-            "SELECT * FROM documents";
-
-    // Method to add a new document
+        "INSERT INTO documents (name, author_ids, category_ids, publisher_id, isbn, publication_date, date_added, current_quantity, total_quantity) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    private static final String SELECT_DOCUMENT_BY_ID = "SELECT * FROM documents WHERE document_id = ?";
+    private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
+    
+    // Add a new document
     public int addDocument(Document document) {
-        try (Connection connection = LibraryDatabaseUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(INSERT_DOCUMENT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
-
-                stmt.setString(1, document.getName());
-                stmt.setString(2, listToString(document.getAuthorIds()));  // Convert List<Integer> to comma-separated String
-                stmt.setString(3, listToString(document.getTagIds()));     // Convert List<Integer> to comma-separated String
-                stmt.setObject(4, document.getPublisherId() != 0 ? document.getPublisherId() : null, Types.INTEGER); // Handle publisher_id null
-                stmt.setString(5, document.getIsbn10());
-                stmt.setString(6, document.getIsbn13());
-                stmt.setDate(7, document.getDatePublished() != null ? Date.valueOf(document.getDatePublished()) : null);
-                stmt.setDate(8, document.getDateAdded() != null ? Date.valueOf(document.getDateAdded()) : null);
-                stmt.setInt(9, document.getQuantityCurrent());
-                stmt.setInt(10, document.getQuantityTotal());
-
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                ResultSet generatedKeys = stmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);  // Return the generated document ID
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;  // Return -1 if insertion failed
-    }
-
-    public boolean deleteDocument(int documentId) {
-        String query = "DELETE FROM documents WHERE document_id = ?";
-        try (Connection connection = LibraryDatabaseUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-    
-            // Set the document ID in the query
-            stmt.setInt(1, documentId);
-            int rowsAffected = stmt.executeUpdate();
-    
-            // If rowsAffected is greater than 0, the document was deleted
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false; // If something goes wrong, return false
-        }
-    }
-
-    public boolean deleteDocument(List<Integer> documentIds) {
-        boolean success = true;
-        for (int documentId : documentIds) {
-            if (!deleteDocument(documentId)) {
-                success = false;
-            }
-        }
-        return success;
-    }   
-    
-
-    // Method to retrieve a document by ID
-    public Document getDocumentById(int documentId) {
-        try (Connection connection = LibraryDatabaseUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(SELECT_DOCUMENT_BY_ID)) {
-
-            stmt.setInt(1, documentId);
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                return buildDocumentFromResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    // Method to retrieve all documents
-    public List<Document> getAllDocuments() {
-        List<Document> documents = new ArrayList<>();
-        try (Connection connection = LibraryDatabaseUtil.getConnection();
-             Statement stmt = connection.createStatement()) {
-
-            ResultSet resultSet = stmt.executeQuery(SELECT_ALL_DOCUMENTS);
-            while (resultSet.next()) {
-                documents.add(buildDocumentFromResultSet(resultSet));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return documents;
-    }
-
-    public int countAllDocument() {
-        String query = "SELECT COUNT(*) FROM documents";  // Assuming you want the count directly from the DB
-        try (Connection connection = LibraryDatabaseUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            
-            ResultSet resultSet = stmt.executeQuery();
-            
-            if (resultSet.next()) {
-                return resultSet.getInt(1);  // Getting the count directly from the result set
-            }
-        } catch (SQLException e) {
-            // Log the error instead of just printing the stack trace
-            System.err.println("Error counting documents: " + e.getMessage());
-            e.printStackTrace(); // Optionally, log this using a logging framework
-        }
-        return 0;
-    }
-    
-
-    private Document buildDocumentFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Document(
-                resultSet.getInt("document_id"),
-                resultSet.getString("name"),
-                stringToList(resultSet.getString("author_ids")),
-                stringToList(resultSet.getString("tag_ids")),
-                resultSet.getInt("publisher_id"),
-                resultSet.getString("isbn10"),
-                resultSet.getString("isbn13"),
-                resultSet.getDate("date_published").toLocalDate(),
-                resultSet.getDate("date_added").toLocalDate(),
-                resultSet.getInt("quantity_current"),
-                resultSet.getInt("quantity_total")
+        return executeUpdate(INSERT_DOCUMENT_QUERY, 
+            document.getTitle(), 
+            listToString(document.getAuthorIds()), 
+            listToString(document.getCategoryIds()), 
+            document.getPublisherId() != 0 ? document.getPublisherId() : null, 
+            document.getIsbn(), 
+            document.getPublicationDate() != null ? Date.valueOf(document.getPublicationDate()) : null, 
+            document.getDateAddedToLibrary() != null ? Date.valueOf(document.getDateAddedToLibrary()) : null, 
+            document.getCurrentQuantity(), 
+            document.getTotalQuantity()
         );
     }
 
-    // Helper methods to convert List to CSV string and vice versa
+    // Delete a document by ID
+    public boolean deleteDocument(int documentId) {
+        String query = "DELETE FROM documents WHERE document_id = ?";
+        return executeUpdate(query, documentId) > 0;
+    }
+
+    public boolean deleteDocuments(List<Integer> documentIds) {
+        if (documentIds == null || documentIds.isEmpty()) {
+            return false; // No documents to delete
+        }
+
+        // Build the SQL query dynamically with placeholders for each document ID
+        StringBuilder sql = new StringBuilder("DELETE FROM documents WHERE document_id IN (");
+        for (int i = 0; i < documentIds.size(); i++) {
+            sql.append("?");
+            if (i < documentIds.size() - 1) {
+                sql.append(", ");
+            }
+        }
+        sql.append(")");
+
+        // Use the executeUpdate method from BaseDAO to execute the query
+        Integer rowsAffected = executeUpdate(sql.toString(), documentIds.toArray());
+
+        return rowsAffected != null && rowsAffected > 0;
+    }
+
+    // Update document quantity
+    public void updateDocumentQuantity(int documentId, int quantity) {
+        String query = "UPDATE documents SET current_quantity = ? WHERE document_id = ?";
+        executeUpdate(query, quantity, documentId);
+    }
+
+    // Retrieve a document by ID
+    public Document getDocumentById(int documentId) {
+        return executeQueryForSingleEntity(SELECT_DOCUMENT_BY_ID, documentId);
+    }
+
+    // Retrieve all documents
+    public List<Document> getAllDocuments() {
+        return executeQueryForList(SELECT_ALL_DOCUMENTS);
+    }
+
+    // Count all documents
+    public int countAllDocuments() {
+        String query = "SELECT COUNT(*) FROM documents";
+        return executeQueryForSingleInt(query);
+    }
+
+    // Convert ResultSet to Document object
+    @Override
+    protected Document mapToEntity(ResultSet rs) throws SQLException {
+        int documentId = rs.getInt("document_id");
+        String name = rs.getString("name");
+        if (rs.wasNull()) {
+            name = "Unknown Name";
+        }
+
+        List<Integer> authorIds = rs.getString("author_ids") != null ? stringToList(rs.getString("author_ids")) : Collections.emptyList();
+        List<Integer> categoryIds = rs.getString("category_ids") != null ? stringToList(rs.getString("category_ids")) : Collections.emptyList();
+        
+        int publisherId = rs.getInt("publisher_id");
+        if (rs.wasNull()) {
+            publisherId = -1; // Assuming -1 indicates an unknown publisher
+        }
+
+        String isbn = rs.getString("isbn");
+        if (rs.wasNull()) {
+            isbn = "Unknown ISBN";
+        }
+
+        LocalDate datePublished = rs.getDate("publication_date") != null ? rs.getDate("publication_date").toLocalDate() : LocalDate.now();
+        LocalDate dateAdded = rs.getDate("date_added") != null ? rs.getDate("date_added").toLocalDate() : LocalDate.now();
+
+        int quantityCurrent = rs.getInt("current_quantity");
+        if (rs.wasNull()) {
+            quantityCurrent = 0;
+        }
+
+        int quantityTotal = rs.getInt("total_quantity");
+        if (rs.wasNull()) {
+            quantityTotal = 0;
+        }
+
+        return new Document.Builder(name)
+            .documentId(documentId)
+            .authorIds(authorIds)
+            .categoryIds(categoryIds)
+            .publisherId(publisherId)
+            .isbn(isbn)
+            .publicationDate(datePublished)
+            .dateAddedToLibrary(dateAdded)
+            .currentQuantity(quantityCurrent)
+            .totalQuantity(quantityTotal)
+            .build();
+    }
+
+    // Helper method to convert List to CSV string
     private String listToString(List<Integer> list) {
         if (list == null || list.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
@@ -158,6 +142,7 @@ public class DocumentDAO {
         return sb.toString();
     }
 
+    // Helper method to convert CSV string back to List
     private List<Integer> stringToList(String str) {
         List<Integer> list = new ArrayList<>();
         if (str != null && !str.isEmpty()) {

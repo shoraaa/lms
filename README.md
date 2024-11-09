@@ -28,7 +28,7 @@ The project follows a **Model-View-Controller (MVC)** pattern to organize code e
   - `Book.java`: Represents a book entity, with fields such as `title`, `author`, `ISBN`, etc.
   - `Author.java`: Defines author data with properties like `name` and `biography`.
   - `User.java`: Represents users who can borrow books, including admin and regular user types.
-- **`DAO` Package**: Data Access Objects for managing database interactions.
+- **`Services` Package**: Data Access Objects for managing database interactions.
   - `BookDAO.java`: Contains CRUD operations for books in SQLite.
   - `AuthorDAO.java`: Handles author-related database interactions.
   - `UserDAO.java`: Manages user information, including user authentication.

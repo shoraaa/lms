@@ -1,4 +1,4 @@
-package base.document;
+package com.library.model.document;
 import java.time.LocalDateTime;
 
 public class Document {
@@ -14,6 +14,10 @@ public class Document {
      */
     public Document(DocumentInfo documentInfo, int documentId) {
         this.documentInfo = documentInfo;
+        this.documentId = documentId;
+    }
+
+    public void setDocumentId(int documentId) {
         this.documentId = documentId;
     }
 
@@ -55,12 +59,5 @@ public class Document {
      */
     public void setCurrentQuantity(DocumentQuantity quantity) {
         this.quantity = quantity;
-    }
-
-    /*
-     * Update document information.
-     */
-    public void updateDocumentInfo(DocumentInfo newData) {
-        this.documentInfo.update(newData);
     }
 }

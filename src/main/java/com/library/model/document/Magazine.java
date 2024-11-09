@@ -1,4 +1,4 @@
-package base.document;
+package com.library.model.document;
 public class Magazine extends Document {
 
     /**

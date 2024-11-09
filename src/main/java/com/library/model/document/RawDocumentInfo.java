@@ -1,15 +1,27 @@
-package base.document;
+package com.library.model.document;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RawDocumentInfo {
-    private String name;
-    private ArrayList<Integer> authorIds;
-    private ArrayList<Integer> tagIds;
-    private String isbn_13;
-    private String isbn_10;
-    private String publisher;
-    private LocalDate publishedDate;
+    public String name;
+    public List<Integer> authorIds;
+    public ArrayList<Integer> tagIds;
+    public String isbn_13;
+    public String isbn_10;
+    public String publisher;
+    public LocalDate publishedDate;
+
+    public RawDocumentInfo(String name, List<Integer> authorIds, ArrayList<Integer> tagIds, String isbn_13, String isbn_10, String publisher, LocalDate publishedDate) {
+        this.name = name;
+        this.authorIds = authorIds;
+        this.tagIds = tagIds;
+        this.isbn_13 = isbn_13;
+        this.isbn_10 = isbn_10;
+        this.publisher = publisher;
+        this.publishedDate = publishedDate;
+    }
+
 
     /**
      * Get name of document.
@@ -23,7 +35,7 @@ public class RawDocumentInfo {
      * Get author id list.
      * @return authorIds
      */
-    public ArrayList<Integer> getAuthorIds() {
+    public List<Integer> getAuthorIds() {
         return authorIds;
     }
 
@@ -65,54 +77,5 @@ public class RawDocumentInfo {
      */
     public LocalDate getPublishedDate() {
         return publishedDate;
-    }
-
-    /*
-     * Set name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /*
-     * Set author id.
-     */
-    public void setAuthorIds(ArrayList<Integer> authorIds) {
-        this.authorIds = authorIds;
-    }
-
-    /*
-    * Set tag id.
-    */
-    public void setTagIds(ArrayList<Integer> tagIds) {
-        this.tagIds = tagIds;
-    }
-    
-    /*
-     * Set isbn_13.
-     */
-    public void setIsbn_13(String isbn_13) {
-        this.isbn_13 = isbn_13;
-    }
-
-    /*
-     * Set isbn 10.
-     */
-    public void setIsbn_10(String isbn_10) {
-        this.isbn_10 = isbn_10;
-    }
-
-    /*
-     * Set publisher.
-     */
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    /*
-     * Set publisher date.
-     */
-    public void setPublishedDate(LocalDate publishedDate) {
-        this.publishedDate = publishedDate;
     }
 }

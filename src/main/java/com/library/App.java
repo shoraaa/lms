@@ -1,12 +1,16 @@
 package com.library;
 
+import java.io.IOException;
+
+import com.library.services.DatabaseInitializer;
+
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import javafx.stage.StageStyle;
 
 /**
  * JavaFX App
@@ -17,10 +21,19 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("Dashboard"), 1920, 1080);
+
+        initializeDatabase();
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+
+        scene = new Scene(loadFXML("/com/library/views/Dashboard"), 1000, 600);
         stage.setTitle("Library Management System");
         stage.setScene(scene);
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
+    }
+
+    private void initializeDatabase() {
+        DatabaseInitializer.initializeDatabase();
     }
 
     static void setRoot(String fxml) throws IOException {

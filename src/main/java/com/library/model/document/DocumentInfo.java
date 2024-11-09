@@ -1,4 +1,4 @@
-package base.document;
+package com.library.model.document;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -81,55 +81,6 @@ public class DocumentInfo {
         return publishedDate;
     }
 
-    /*
-     * Set name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /*
-     * Set author id.
-     */
-    public void setAuthorIds(ArrayList<Integer> authorIds) {
-        this.authorIds = authorIds;
-    }
-
-    /*
-    * Set tag id.
-    */
-    public void setTagIds(ArrayList<Integer> tagIds) {
-        this.tagIds = tagIds;
-    }
-    
-    /*
-     * Set isbn_13.
-     */
-    public void setIsbn_13(String isbn_13) {
-        this.isbn_13 = isbn_13;
-    }
-
-    /*
-     * Set isbn 10.
-     */
-    public void setIsbn_10(String isbn_10) {
-        this.isbn_10 = isbn_10;
-    }
-
-    /*
-     * Set publisher.
-     */
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    /*
-     * Set publisher date.
-     */
-    public void setPublishedDate(LocalDate publishedDate) {
-        this.publishedDate = publishedDate;
-    }
-
     /**
      * Search an id in author id list
      * @param id id
@@ -157,19 +108,4 @@ public class DocumentInfo {
         }
         return false;
     }
-
-    /**
-     * Update document information.
-     * @param newData new document information
-     */    
-    public void update(DocumentInfo newData) {
-        setName(newData.name);
-        setAuthorIds(newData.authorIds);
-        setTagIds(newData.tagIds);
-        setIsbn_10(newData.isbn_10);
-        setIsbn_13(newData.isbn_13);
-        setPublishedDate(newData.publishedDate);
-        setPublisher(newData.publisher);
-    }
-    
 }

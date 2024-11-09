@@ -1,4 +1,4 @@
-package base.document;
+package com.library.model.document;
 public class DocumentQuantity {
     private int total;
     private int current;

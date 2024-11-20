@@ -8,6 +8,7 @@ import com.library.model.Author;
 import com.library.model.Category;
 import com.library.model.Document;
 import com.library.model.Publisher;
+import com.library.model.User;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.PublisherDAO;
@@ -117,8 +118,11 @@ public class DocumentsView {
             return new SimpleStringProperty(String.valueOf(quantity) + "/" + String.valueOf(cellData.getValue().getTotalQuantity()));
         });
 
+        TableColumn<Document, String> dateAddedCollumn = new TableColumn<>("Date Added");
+        dateAddedCollumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateAddedToLibrary().toString()));
+
         // Add all columns to the TableView
-        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, categorysColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn);
+        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, categorysColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedCollumn);
         documentTable.setPrefWidth(1000);
 
         int columnCount = documentTable.getColumns().size();

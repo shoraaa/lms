@@ -18,7 +18,7 @@ public class TransactionService {
         Document document = documentDAO.getDocumentById(documentId);
         if (document.getCurrentQuantity() > 0) {
             Transaction transaction = new Transaction(userId, documentId, LocalDate.now());
-            transactionDAO.createTransaction(transaction);
+            transactionDAO.add(transaction);
             documentDAO.updateDocumentQuantity(documentId, document.getCurrentQuantity() - 1);
             return true;
         } else {

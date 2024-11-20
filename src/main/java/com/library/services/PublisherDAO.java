@@ -14,7 +14,7 @@ public class PublisherDAO extends BaseDAO<Publisher> {
     }
 
     // Add a publisher if it doesn't already exist, leveraging the BaseDAO's methods
-    public int addPublisher(Publisher publisher) {
+    public int add(Publisher publisher) {
         // Check if the publisher exists first
         Publisher existingPublisher = getPublisherByName(publisher.getName());
         if (existingPublisher != null) {

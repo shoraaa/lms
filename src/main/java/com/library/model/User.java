@@ -23,11 +23,11 @@ public class User {
     }
 
     // Getters and Setters
-    public int getId() {
+    public int getUserId() {
         return userId;
     }
     
-    public void setId(int userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -66,7 +66,7 @@ public class User {
         /**
      * @return The property for the checkbox
      */
-    public SimpleBooleanProperty selectedProperty() {
+    public SimpleBooleanProperty isSelectedProperty() {
         return selected;
     }
 

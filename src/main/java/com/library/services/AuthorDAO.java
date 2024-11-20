@@ -8,7 +8,7 @@ import com.library.model.Author;
 public class AuthorDAO extends BaseDAO<Author> {
 
     // Add a new author to the database
-    public Integer addAuthor(Author author) {
+    public Integer add(Author author) {
         if (getAuthorByName(author.getName()) != null) {
             return getAuthorByName(author.getName()).getId();
         }

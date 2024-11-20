@@ -214,20 +214,20 @@ public class AddDocumentController {
         Publisher publisher = publisherDAO.getPublisherByName(publisherName);
         if (publisher == null) {
             publisher = new Publisher(0, publisherName);  // Create new publisher if not found
-            int publisherId = publisherDAO.addPublisher(publisher);
+            int publisherId = publisherDAO.add(publisher);
             publisher.setId(publisherId);
         }
 
 
         List<Integer> authorIds = new ArrayList<>();
         for (Author author : authorList) {
-            int authorId = authorDAO.addAuthor(author);
+            int authorId = authorDAO.add(author);
             authorIds.add(authorId);
         }
 
         List<Integer> categoryIds = new ArrayList<>();
         for (Category category : categoryList) {
-            int categoryId = categoryDAO.addCategory(category);
+            int categoryId = categoryDAO.add(category);
             categoryIds.add(categoryId);
         }
 
@@ -245,7 +245,7 @@ public class AddDocumentController {
 
         // Save document (you need to implement saving logic)
         DocumentDAO documentDAO = new DocumentDAO();
-        int documentId = documentDAO.addDocument(document);
+        int documentId = documentDAO.add(document);
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
@@ -284,7 +284,7 @@ public class AddDocumentController {
         if (bookDetails.getAuthors() != null) {
             for (String authorName : bookDetails.getAuthors()) {
                 List<Author> authors = authorDAO.searchAuthorsByName(authorName);
-                Author author = authors.isEmpty() ? authorDAO.getAuthorById(authorDAO.addAuthor(new Author(-1, authorName, ""))) : authors.get(0);
+                Author author = authors.isEmpty() ? authorDAO.getAuthorById(authorDAO.add(new Author(-1, authorName, ""))) : authors.get(0);
                 authorList.add(author);
             }
         }
@@ -296,7 +296,7 @@ public class AddDocumentController {
             for (String categoryName : bookDetails.getCategories()) {
                 Category category = categoryDAO.getCategoryByName(categoryName);
                 if (category == null) {
-                    category = categoryDAO.getCategoryById(categoryDAO.addCategory(new Category(-1, categoryName)));
+                    category = categoryDAO.getCategoryById(categoryDAO.add(new Category(-1, categoryName)));
                 }
                 categoryList.add(category);
             }

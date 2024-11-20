@@ -1,6 +1,5 @@
 package com.library.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,11 +11,7 @@ import com.library.view.UsersView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 public class UsersViewController {
 
@@ -34,7 +29,8 @@ public class UsersViewController {
         usersView.setUserData(users);
         updateTotalUsers();
 
-        usersView.getAddButton().setOnAction(event -> handleAddNewBook());
+        usersView.getAddButton().setOnAction(event -> handleAddNewUser());
+        usersView.getImportButton().setOnAction(event -> handleImportUser());
         usersView.getDeleteButton().setOnAction(event -> handleDeleteSelected());
 
         contentPane.getChildren().clear();
@@ -46,14 +42,18 @@ public class UsersViewController {
         usersView.getTotalUsersLabel().setText("Total Users: " + totalUsers);
     }
 
-    private void handleAddNewBook() {
-        WindowUtil.openNewWindow("/com/library/views/AddBookWindow.fxml","Add New Book");
+    private void handleAddNewUser() {
+        WindowUtil.openNewWindow("/com/library/views/AddUserWindow.fxml","Add New User");
+    }
+
+    private void handleImportUser() {
+        WindowUtil.openNewWindow("/com/library/views/ImportUsersWindow.fxml","Import Users");
     }
 
     private void handleDeleteSelected() {
         List<Integer> selectedUserIds = usersView.getUserTable().getItems().stream()
             .filter(User::isSelected)
-            .map(User::getId)
+            .map(User::getUserId)
             .collect(Collectors.toList());
 
         if (!selectedUserIds.isEmpty()) {

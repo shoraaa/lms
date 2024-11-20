@@ -13,17 +13,18 @@ public class UserDAO extends BaseDAO<User> {
         User user = new User(
                 rs.getString("name"),
                 rs.getString("email"),
-                rs.getString("phoneNumber")
+                rs.getString("phone_number")
         );
-        user.setId(rs.getInt("id"));
-        user.setTimeRegistered(rs.getTimestamp("timeRegistered").toLocalDateTime());
+        user.setUserId(rs.getInt("user_id"));
+        user.setTimeRegistered(rs.getTimestamp("time_registered").toLocalDateTime());
         return user;
     }
 
     // Method to add a new user
-    public boolean createUser(User user) {
-        String sql = "INSERT INTO users (name, email, phoneNumber, timeRegistered) VALUES (?, ?, ?, ?)";
-        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), Timestamp.valueOf(user.getTimeRegistered())) > 0;
+    public int add(User user) {
+        String sql = "INSERT INTO users (name, email, phone_number, time_registered) VALUES (?, ?, ?, ?)";
+        System.out.println(user.getName() + ", " + user.getEmail() + ", " + user.getPhoneNumber());
+        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), Timestamp.valueOf(user.getTimeRegistered()));
     }
 
     // Method to retrieve a user by ID
@@ -34,8 +35,8 @@ public class UserDAO extends BaseDAO<User> {
 
     // Method to update user details
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET name = ?, email = ?, phoneNumber = ? WHERE id = ?";
-        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), user.getId()) > 0;
+        String sql = "UPDATE users SET name = ?, email = ?, phone_number = ? WHERE id = ?";
+        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), user.getUserId()) > 0;
     }
 
     // Method to delete a user by ID

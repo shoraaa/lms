@@ -9,7 +9,7 @@ import com.library.model.Category;
 public class CategoryDAO extends BaseDAO<Category> {
 
     // Add a new category if it doesn't already exist
-    public int addCategory(Category category) {
+    public int add(Category category) {
         if (getCategoryByName(category.getName()) != null) {
             return getCategoryByName(category.getName()).getId();
         }

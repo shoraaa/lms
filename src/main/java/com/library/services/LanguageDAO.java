@@ -20,7 +20,7 @@ public class LanguageDAO extends BaseDAO<Language> {
     private static final String SELECT_LANGUAGES_BY_NAME_PARTIAL = "SELECT * FROM languages WHERE name LIKE ?";
 
     // Method to add a new language
-    public int addLanguage(Language language) {
+    public int add(Language language) {
         // Check if the language already exists
         if (getLanguageByName(language.getName()) != null) {
             return getLanguageByName(language.getName()).getId();

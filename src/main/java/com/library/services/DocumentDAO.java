@@ -20,7 +20,7 @@ public class DocumentDAO extends BaseDAO<Document> {
     private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
     
     // Add a new document
-    public int addDocument(Document document) {
+    public int add(Document document) {
         return executeUpdate(INSERT_DOCUMENT_QUERY, 
             document.getTitle(), 
             listToString(document.getAuthorIds()), 

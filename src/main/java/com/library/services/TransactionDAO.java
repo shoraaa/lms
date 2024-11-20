@@ -22,7 +22,7 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     }
 
     // Create a new transaction
-    public void createTransaction(Transaction transaction) {
+    public void add(Transaction transaction) {
         String sql = "INSERT INTO transactions (user_id, document_id, borrow_date, is_returned) VALUES (?, ?, ?, ?)";
         executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), transaction.getBorrowDate(), transaction.isReturned());
     }

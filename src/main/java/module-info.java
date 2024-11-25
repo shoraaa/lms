@@ -5,6 +5,7 @@ module com.library {
     requires com.google.gson;
     requires atlantafx.base;
     requires spring.jdbc;
+    requires transitive javafx.graphics;
 
     opens com.library to javafx.fxml;
     opens com.library.controller to javafx.fxml;

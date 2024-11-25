@@ -30,7 +30,7 @@ public class DocumentsViewController {
     @FXML private TableView<Document> documentTable;
     @FXML private Label totalDocumentsLabel;
     @FXML private Button addButton;
-    @FXML private  Button importButton;
+    @FXML private Button importButton;
     @FXML private Button searchButton;
     @FXML private Button deleteButton;
     @FXML private VBox mainLayout;
@@ -39,8 +39,6 @@ public class DocumentsViewController {
     private ObservableList<Document> documents;
 
     public void initialize() {
-        // mainLayout.getChildren().clear();
-
         documentDAO = new DocumentDAO();
         documents = FXCollections.observableList(documentDAO.getAllDocuments());
 
@@ -58,7 +56,7 @@ public class DocumentsViewController {
     }
 
     private void handleAddNewDocument() {
-        WindowUtil.openNewWindow("/com/library/views/AddDocumentWindow.fxml","Add New Document");
+        WindowUtil.openNewWindow("/com/library/views/AddDocumentWindow.fxml", "Add New Document");
     }
 
     private void handleDeleteSelected() {
@@ -76,69 +74,18 @@ public class DocumentsViewController {
 
     private void initializeDocumentTable() {
         documentTable.setEditable(true);
-        // Define columns
-        TableColumn<Document, Boolean> selectColumn = new TableColumn<>("Select");
-        selectColumn.setCellValueFactory(cellData -> cellData.getValue().isSelectedProperty());
-        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
 
-        TableColumn<Document, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        TableColumn<Document, Boolean> selectColumn = createSelectColumn();
+        TableColumn<Document, String> nameColumn = createNameColumn();
+        TableColumn<Document, String> authorsColumn = createAuthorsColumn();
+        TableColumn<Document, String> categoriesColumn = createCategoriesColumn();
+        TableColumn<Document, String> publisherColumn = createPublisherColumn();
+        TableColumn<Document, String> isbnColumn = createIsbnColumn();
+        TableColumn<Document, String> publishedDateColumn = createPublishedDateColumn();
+        TableColumn<Document, String> quantityColumn = createQuantityColumn();
+        TableColumn<Document, String> dateAddedColumn = createDateAddedColumn();
 
-        // Authors Column
-        AuthorDAO authorDAO = new AuthorDAO();
-        TableColumn<Document, String> authorsColumn = new TableColumn<>("Authors");
-        authorsColumn.setCellValueFactory(cellData -> {
-            // Join the author names into a single string
-            List<Integer> authorIds = cellData.getValue().getAuthorIds();
-            List<Author> authors = authorIds != null ? authorDAO.getAuthorsByIds(authorIds) : null;
-            return new SimpleStringProperty(authors.stream()
-                .map(Author::getName)
-                .collect(Collectors.joining(", ")));
-        });
-
-        // Categorys Column
-        CategoryDAO categoryDAO = new CategoryDAO();
-        TableColumn<Document, String> categorysColumn = new TableColumn<>("Categorys");
-        categorysColumn.setCellValueFactory(cellData -> {
-            // Join the category names into a single string
-            List<Integer> categoryIds = cellData.getValue().getCategoryIds();
-            List<Category> categorys = categoryIds != null ? categoryDAO.getCategoriesByIds(categoryIds) : null;
-            return new SimpleStringProperty(categorys.stream().map(Category::getName).collect(Collectors.joining(", ")));
-        });
-
-        // Publisher Column
-        PublisherDAO publisherDAO = new PublisherDAO();
-        TableColumn<Document, String> publisherColumn = new TableColumn<>("Publisher");
-        publisherColumn.setCellValueFactory(cellData -> {
-            // Get the publisher name from the document
-            int publisherId = cellData.getValue().getPublisherId();
-            Publisher publisher = publisherId != 0 ? publisherDAO.getPublisherById(publisherId) : null;
-            return publisher != null ? new SimpleStringProperty(publisher.getName()) : new SimpleStringProperty("N/A");
-        });
-
-        // ISBN  Column
-        TableColumn<Document, String> isbnColumn = new TableColumn<>("ISBN");
-        isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsbn()));
-
-        // Published Date Column
-        TableColumn<Document, String> publishedDateColumn = new TableColumn<>("Published Date");
-        publishedDateColumn.setCellValueFactory(cellData -> {
-            LocalDate publishedDate = cellData.getValue().getPublicationDate();
-            return new SimpleStringProperty(publishedDate != null ? publishedDate.toString() : "N/A");
-        });
-
-        // Quantity Column
-        TableColumn<Document, String> quantityColumn = new TableColumn<>("Quantity");
-        quantityColumn.setCellValueFactory(cellData -> {
-            int quantity = cellData.getValue().getCurrentQuantity();
-            return new SimpleStringProperty(String.valueOf(quantity) + "/" + String.valueOf(cellData.getValue().getTotalQuantity()));
-        });
-
-        TableColumn<Document, String> dateAddedCollumn = new TableColumn<>("Date Added");
-        dateAddedCollumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateAddedToLibrary().toString()));
-
-        // Add all columns to the TableView
-        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, categorysColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedCollumn);
+        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn);
         documentTable.setPrefWidth(1000);
 
         int columnCount = documentTable.getColumns().size();
@@ -153,11 +100,89 @@ public class DocumentsViewController {
                 // openEditDialog(selectedDocument);
             }
         });
-        
+    }
+
+    private TableColumn<Document, Boolean> createSelectColumn() {
+        TableColumn<Document, Boolean> selectColumn = new TableColumn<>("Select");
+        selectColumn.setCellValueFactory(cellData -> cellData.getValue().isSelectedProperty());
+        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
+        return selectColumn;
+    }
+
+    private TableColumn<Document, String> createNameColumn() {
+        TableColumn<Document, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        return nameColumn;
+    }
+
+    private TableColumn<Document, String> createAuthorsColumn() {
+        AuthorDAO authorDAO = new AuthorDAO();
+        TableColumn<Document, String> authorsColumn = new TableColumn<>("Authors");
+        authorsColumn.setCellValueFactory(cellData -> {
+            List<Integer> authorIds = cellData.getValue().getAuthorIds();
+            List<Author> authors = authorIds != null ? authorDAO.getAuthorsByIds(authorIds) : null;
+            return new SimpleStringProperty(authors.stream()
+                .map(Author::getName)
+                .collect(Collectors.joining(", ")));
+        });
+        return authorsColumn;
+    }
+
+    private TableColumn<Document, String> createCategoriesColumn() {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        TableColumn<Document, String> categoriesColumn = new TableColumn<>("Categories");
+        categoriesColumn.setCellValueFactory(cellData -> {
+            List<Integer> categoryIds = cellData.getValue().getCategoryIds();
+            List<Category> categories = categoryIds != null ? categoryDAO.getCategoriesByIds(categoryIds) : null;
+            return new SimpleStringProperty(categories.stream()
+                .map(Category::getName)
+                .collect(Collectors.joining(", ")));
+        });
+        return categoriesColumn;
+    }
+
+    private TableColumn<Document, String> createPublisherColumn() {
+        PublisherDAO publisherDAO = new PublisherDAO();
+        TableColumn<Document, String> publisherColumn = new TableColumn<>("Publisher");
+        publisherColumn.setCellValueFactory(cellData -> {
+            int publisherId = cellData.getValue().getPublisherId();
+            Publisher publisher = publisherId != 0 ? publisherDAO.getPublisherById(publisherId) : null;
+            return publisher != null ? new SimpleStringProperty(publisher.getName()) : new SimpleStringProperty("N/A");
+        });
+        return publisherColumn;
+    }
+
+    private TableColumn<Document, String> createIsbnColumn() {
+        TableColumn<Document, String> isbnColumn = new TableColumn<>("ISBN");
+        isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsbn()));
+        return isbnColumn;
+    }
+
+    private TableColumn<Document, String> createPublishedDateColumn() {
+        TableColumn<Document, String> publishedDateColumn = new TableColumn<>("Published Date");
+        publishedDateColumn.setCellValueFactory(cellData -> {
+            LocalDate publishedDate = cellData.getValue().getPublicationDate();
+            return new SimpleStringProperty(publishedDate != null ? publishedDate.toString() : "N/A");
+        });
+        return publishedDateColumn;
+    }
+
+    private TableColumn<Document, String> createQuantityColumn() {
+        TableColumn<Document, String> quantityColumn = new TableColumn<>("Quantity");
+        quantityColumn.setCellValueFactory(cellData -> {
+            int quantity = cellData.getValue().getCurrentQuantity();
+            return new SimpleStringProperty(String.valueOf(quantity) + "/" + String.valueOf(cellData.getValue().getTotalQuantity()));
+        });
+        return quantityColumn;
+    }
+
+    private TableColumn<Document, String> createDateAddedColumn() {
+        TableColumn<Document, String> dateAddedColumn = new TableColumn<>("Date Added");
+        dateAddedColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateAddedToLibrary().toString()));
+        return dateAddedColumn;
     }
 
     public void setDocumentData(ObservableList<Document> documents) {
         documentTable.setItems(documents);
     }
 }
-

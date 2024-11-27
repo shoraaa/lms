@@ -48,7 +48,7 @@ public class AddUserController {
 
         User user = new User(userName, userEmail, userPhoneNumber);
 
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = UserDAO.getInstance();
         int userId = userDAO.add(user);
 
         if (userId > -1) {

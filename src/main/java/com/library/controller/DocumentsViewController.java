@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,11 +20,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class DocumentsViewController {
 
@@ -39,7 +43,7 @@ public class DocumentsViewController {
     private ObservableList<Document> documents;
 
     public void initialize() {
-        documentDAO = new DocumentDAO();
+        documentDAO = DocumentDAO.getInstance();
         documents = FXCollections.observableList(documentDAO.getAllDocuments());
 
         initializeDocumentTable();
@@ -48,6 +52,7 @@ public class DocumentsViewController {
 
         addButton.setOnAction(event -> handleAddNewDocument());
         deleteButton.setOnAction(event -> handleDeleteSelected());
+        importButton.setOnAction(event -> handleImportDocuments());
     }
 
     private void updateTotalDocuments() {
@@ -72,26 +77,45 @@ public class DocumentsViewController {
         }
     }
 
+    private void handleImportDocuments() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        fileChooser.setTitle("Import Documents");
+
+        Stage stage = (Stage) mainLayout.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            documentDAO.importDocumentsFromJson(selectedFile);
+            documents.setAll(documentDAO.getAllDocuments());
+            updateTotalDocuments();
+        }
+    }
+
     private void initializeDocumentTable() {
         documentTable.setEditable(true);
 
-        TableColumn<Document, Boolean> selectColumn = createSelectColumn();
-        TableColumn<Document, String> nameColumn = createNameColumn();
-        TableColumn<Document, String> authorsColumn = createAuthorsColumn();
-        TableColumn<Document, String> categoriesColumn = createCategoriesColumn();
-        TableColumn<Document, String> publisherColumn = createPublisherColumn();
-        TableColumn<Document, String> isbnColumn = createIsbnColumn();
-        TableColumn<Document, String> publishedDateColumn = createPublishedDateColumn();
-        TableColumn<Document, String> quantityColumn = createQuantityColumn();
-        TableColumn<Document, String> dateAddedColumn = createDateAddedColumn();
+        var selectAll = new CheckBox();
+        var selectColumn = createSelectColumn(selectAll);
+        var nameColumn = createNameColumn();
+        var authorsColumn = createAuthorsColumn();
+        var categoriesColumn = createCategoriesColumn();
+        var publisherColumn = createPublisherColumn();
+        var isbnColumn = createIsbnColumn();
+        var publishedDateColumn = createPublishedDateColumn();
+        var quantityColumn = createQuantityColumn();
+        var dateAddedColumn = createDateAddedColumn();
 
-        documentTable.getColumns().addAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn);
-        documentTable.setPrefWidth(1000);
+        documentTable.getColumns().setAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn);
+        documentTable.setColumnResizePolicy(
+            TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN
+        );
 
-        int columnCount = documentTable.getColumns().size();
-        for (TableColumn<?, ?> column : documentTable.getColumns()) {
-            column.setPrefWidth(1000 / columnCount);
-        }
+        selectAll.setOnAction(event -> {
+            documentTable.getItems().forEach(
+                item -> item.isSelectedProperty().set(selectAll.isSelected())
+            );
+        });
 
         documentTable.setOnMouseClicked(event -> {
             Document selectedDocument = documentTable.getSelectionModel().getSelectedItem();
@@ -102,10 +126,13 @@ public class DocumentsViewController {
         });
     }
 
-    private TableColumn<Document, Boolean> createSelectColumn() {
-        TableColumn<Document, Boolean> selectColumn = new TableColumn<>("Select");
+    private TableColumn<Document, Boolean> createSelectColumn(CheckBox selectAll) {    
+        TableColumn<Document, Boolean> selectColumn = new TableColumn<>();
+        selectColumn.setGraphic(selectAll);
+        selectColumn.setSortable(false);
         selectColumn.setCellValueFactory(cellData -> cellData.getValue().isSelectedProperty());
         selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
+        selectColumn.setEditable(true);
         return selectColumn;
     }
 
@@ -116,33 +143,33 @@ public class DocumentsViewController {
     }
 
     private TableColumn<Document, String> createAuthorsColumn() {
-        AuthorDAO authorDAO = new AuthorDAO();
+        AuthorDAO authorDAO = AuthorDAO.getInstance();
         TableColumn<Document, String> authorsColumn = new TableColumn<>("Authors");
         authorsColumn.setCellValueFactory(cellData -> {
             List<Integer> authorIds = cellData.getValue().getAuthorIds();
             List<Author> authors = authorIds != null ? authorDAO.getAuthorsByIds(authorIds) : null;
-            return new SimpleStringProperty(authors.stream()
+            return new SimpleStringProperty(authors != null ? authors.stream()
                 .map(Author::getName)
-                .collect(Collectors.joining(", ")));
+                .collect(Collectors.joining(", ")) : "N/A");
         });
         return authorsColumn;
     }
 
     private TableColumn<Document, String> createCategoriesColumn() {
-        CategoryDAO categoryDAO = new CategoryDAO();
+        CategoryDAO categoryDAO = CategoryDAO.getInstance();
         TableColumn<Document, String> categoriesColumn = new TableColumn<>("Categories");
         categoriesColumn.setCellValueFactory(cellData -> {
             List<Integer> categoryIds = cellData.getValue().getCategoryIds();
             List<Category> categories = categoryIds != null ? categoryDAO.getCategoriesByIds(categoryIds) : null;
-            return new SimpleStringProperty(categories.stream()
+            return new SimpleStringProperty(categories != null ? categories.stream()
                 .map(Category::getName)
-                .collect(Collectors.joining(", ")));
+                .collect(Collectors.joining(", ")) : "N/A");
         });
         return categoriesColumn;
     }
 
     private TableColumn<Document, String> createPublisherColumn() {
-        PublisherDAO publisherDAO = new PublisherDAO();
+        PublisherDAO publisherDAO = PublisherDAO.getInstance();
         TableColumn<Document, String> publisherColumn = new TableColumn<>("Publisher");
         publisherColumn.setCellValueFactory(cellData -> {
             int publisherId = cellData.getValue().getPublisherId();

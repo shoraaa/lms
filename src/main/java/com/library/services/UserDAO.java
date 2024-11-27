@@ -1,11 +1,30 @@
 package com.library.services;
 
-import com.library.model.User;
-
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
+import com.library.model.User;
+
 public class UserDAO extends BaseDAO<User> {
+
+    private static UserDAO instance;
+
+    private UserDAO() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static UserDAO getInstance() {
+        if (instance == null) {
+            synchronized (UserDAO.class) {
+                if (instance == null) {
+                    instance = new UserDAO();
+                }
+            }
+        }
+        return instance;
+    }
 
     // Map ResultSet to User entity
     @Override

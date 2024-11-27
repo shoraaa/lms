@@ -19,6 +19,20 @@ public class LanguageDAO extends BaseDAO<Language> {
     private static final String SELECT_ALL_LANGUAGES = "SELECT * FROM languages";
     private static final String SELECT_LANGUAGES_BY_NAME_PARTIAL = "SELECT * FROM languages WHERE name LIKE ?";
 
+    // Singleton instance
+    private static LanguageDAO instance;
+
+    // Private constructor to prevent instantiation
+    private LanguageDAO() {}
+
+    // Method to get the singleton instance
+    public static synchronized LanguageDAO getInstance() {
+        if (instance == null) {
+            instance = new LanguageDAO();
+        }
+        return instance;
+    }
+
     // Method to add a new language
     public int add(Language language) {
         // Check if the language already exists

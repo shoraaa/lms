@@ -8,6 +8,23 @@ import com.library.model.Category;
 
 public class CategoryDAO extends BaseDAO<Category> {
 
+    private static CategoryDAO instance;
+
+    private CategoryDAO() {
+        // private constructor to prevent instantiation
+    }
+
+    public static CategoryDAO getInstance() {
+        if (instance == null) {
+            synchronized (CategoryDAO.class) {
+                if (instance == null) {
+                    instance = new CategoryDAO();
+                }
+            }
+        }
+        return instance;
+    }
+
     // Add a new category if it doesn't already exist
     public int add(Category category) {
         if (getCategoryByName(category.getName()) != null) {

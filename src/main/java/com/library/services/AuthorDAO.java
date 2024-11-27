@@ -7,6 +7,23 @@ import com.library.model.Author;
 
 public class AuthorDAO extends BaseDAO<Author> {
 
+    private static AuthorDAO instance;
+
+    private AuthorDAO() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static AuthorDAO getInstance() {
+        if (instance == null) {
+            synchronized (AuthorDAO.class) {
+                if (instance == null) {
+                    instance = new AuthorDAO();
+                }
+            }
+        }
+        return instance;
+    }
+
     // Add a new author to the database
     public Integer add(Author author) {
         if (getAuthorByName(author.getName()) != null) {

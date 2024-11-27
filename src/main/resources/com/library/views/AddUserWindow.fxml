@@ -1,17 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.Tile?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="286.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddUserController">
+<VBox alignment="CENTER" prefHeight="442.0" prefWidth="555.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddUserController">
    <children>
-      <TextField fx:id="userNameTextField" layoutX="69.0" layoutY="140.0" promptText="Name" />
-      <TextField fx:id="userEmailTextField" layoutX="69.0" layoutY="174.0" promptText="E-mail" />
-      <TextField fx:id="userPhoneNumberTextField" layoutX="69.0" layoutY="210.0" promptText="Phone Number" />
-      <Label layoutX="105.0" layoutY="94.0" text="Add New User" />
-      <Button fx:id="saveButton" layoutX="78.0" layoutY="274.0" mnemonicParsing="false" text="Save" />
-      <Button fx:id="cancelButton" layoutX="158.0" layoutY="274.0" mnemonicParsing="false" text="Cancel" />
+      <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Add New User" />
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="User Name" />
+            <TextField fx:id="userNameTextField" promptText="Name">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Tile description="Please enter the user's e-mail:" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
+            <TextField fx:id="userEmailTextField" promptText="E-mail">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Tile description="Please enter the user's phone number:" prefHeight="42.0" prefWidth="310.0" title="Phone" />
+            <TextField fx:id="userPhoneNumberTextField" promptText="Phone Number">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="48.0">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" prefWidth="100.0" text="Save" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="100.0" text="Cancel" />
+         </children>
+      </HBox>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

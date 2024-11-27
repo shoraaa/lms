@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.library.util.DatabaseInitializer;
 
-import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,9 +22,9 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         initializeDatabase();
-        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
 
-        scene = new Scene(loadFXML("/com/library/views/Main"), 1280, 720);
+        scene = new Scene(loadFXML("/com/library/views/Main"));
         stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();

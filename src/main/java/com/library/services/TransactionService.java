@@ -9,9 +9,9 @@ public class TransactionService {
     private final DocumentDAO documentDAO;
     private final TransactionDAO transactionDAO;
 
-    public TransactionService(DocumentDAO documentDAO, TransactionDAO transactionDAO) {
-        this.documentDAO = documentDAO;
-        this.transactionDAO = transactionDAO;
+    public TransactionService() {
+        this.documentDAO = DocumentDAO.getInstance();
+        this.transactionDAO = TransactionDAO.getInstance();
     }
 
     public boolean borrowDocument(int userId, int documentId) {

@@ -1,3 +1,5 @@
+
+
 package com.library.services;
 
 import java.sql.ResultSet;
@@ -6,6 +8,23 @@ import java.sql.SQLException;
 import com.library.model.Publisher;
 
 public class PublisherDAO extends BaseDAO<Publisher> {
+
+    private static PublisherDAO instance;
+
+    private PublisherDAO() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static PublisherDAO getInstance() {
+        if (instance == null) {
+            synchronized (PublisherDAO.class) {
+                if (instance == null) {
+                    instance = new PublisherDAO();
+                }
+            }
+        }
+        return instance;
+    }
 
     // Implement the abstract method to map ResultSet to Publisher entity
     @Override

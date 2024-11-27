@@ -10,12 +10,12 @@ import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
 import com.library.model.Category;
-import com.library.model.Document;
 import com.library.model.Publisher;
+import com.library.model.Transaction;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
-import com.library.services.DocumentDAO;
 import com.library.services.PublisherDAO;
+import com.library.services.TransactionDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.util.StringConverter;
 
-public class AddDocumentController {
+public class AddTransactionController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;
@@ -52,7 +52,7 @@ public class AddDocumentController {
     private ObservableList<Author> authorList;
     private ObservableList<Category> categoryList;
 
-    public AddDocumentController() {
+    public AddTransactionController() {
         authorList = FXCollections.observableArrayList();
         categoryList = FXCollections.observableArrayList();
     }
@@ -69,7 +69,7 @@ public class AddDocumentController {
         initializeCategoryComboBox();
 
         // Initialize the save button action
-        saveButton.setOnAction(event -> saveNewDocument());
+        saveButton.setOnAction(event -> saveNewTransaction());
 
         fetchButton.setOnAction(event -> fetchButtonAction());
 
@@ -190,7 +190,7 @@ public class AddDocumentController {
     }
 
     // Method to save the new book to the database
-    private void saveNewDocument() {
+    private void saveNewTransaction() {
 
         String title = titleTextField.getText();
         String isbn = isbnTextField.getText();
@@ -225,23 +225,14 @@ public class AddDocumentController {
             categoryIds.add(categoryId);
         }
 
-        Document document = new Document.Builder(title)  // Only title is required
-                .authorIds(authorIds)                        // Optional
-                .categoryIds(categoryIds)                    // Optional
-                .publisherId(publisher.getId())              // Optional
-                .isbn(isbn)                                  // Optional
-                .publicationDate(publishedDate)              // Optional
-                .dateAddedToLibrary(LocalDate.now())         // Optional
-                .currentQuantity(1)                          // Optional
-                .totalQuantity(1)                            // Optional
-                .build();                                    // Final build step
+        Transaction transaction = new Transaction(0, 0, LocalDate.now());
 
 
-        // Save document (you need to implement saving logic)
-        int documentId = DocumentDAO.getInstance().add(document);
+        // Save transaction (you need to implement saving logic)
+        int transactionId = TransactionDAO.getInstance().add(transaction);
 
-        if (documentId > -1) {
-            showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
+        if (transactionId > -1) {
+            showAlert("Success", "Transaction has been added successfully!", Alert.AlertType.INFORMATION);
             clearForm();  // Clear the form after successful save
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);

@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 
-
+// https://github.com/mkpaz/atlantafx/releases
 public class MainController {
 
     @FXML private AnchorPane contentPane;
@@ -22,6 +22,7 @@ public class MainController {
         dashboardButton.setOnAction(event -> loadContent("/com/library/views/Dashboard.fxml"));
         booksButton.setOnAction(event -> loadContent("/com/library/views/DocumentsView.fxml"));
         usersButton.setOnAction(event -> loadContent("/com/library/views/UsersView.fxml"));
+        transactionsButton.setOnAction(event -> loadContent("/com/library/views/TransactionsView.fxml"));
 
     }
 
@@ -33,6 +34,8 @@ public class MainController {
             contentPane.getChildren().clear();
             contentPane.getChildren().add(root);
         } catch (Exception e) {
+            // Log the exception and show an error message to the user
+            System.err.println("Error loading FXML file: " + fxmlFile);
             e.printStackTrace();
         }
     }

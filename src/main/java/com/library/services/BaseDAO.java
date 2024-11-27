@@ -88,7 +88,7 @@ public abstract class BaseDAO<T> {
     }
 
     // Helper method to set parameters for a PreparedStatement
-    protected void setParameters(PreparedStatement stmt, Object... params) throws SQLException {
+    private void setParameters(PreparedStatement stmt, Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             stmt.setObject(i + 1, params[i]);
         }

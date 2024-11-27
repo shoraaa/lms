@@ -55,7 +55,7 @@
     -fx-background-color: #FFFFFF;
     -fx-border-color: #C1C1C1;
     -fx-background-radius: 15px 0px 0px 15px;
-    -fx-border-radius: 0px 0px 15px 15px;
+    -fx-border-radius: 15px 15px 15px 15px;
 }
 
 .summary {

@@ -46,7 +46,7 @@ public class DatabaseInitializer {
         ");";
     
     private static String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS transactions (" +
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "transaction_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "user_id INTEGER NOT NULL, " +
         "document_id INTEGER NOT NULL, " +
         "borrow_date DATE NOT NULL, " +

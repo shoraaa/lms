@@ -1,5 +1,9 @@
 package com.library.services;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +12,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.library.model.Document;
+import com.library.util.AdapterUtil;
+
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class DocumentDAO extends BaseDAO<Document> {
 
@@ -19,6 +31,22 @@ public class DocumentDAO extends BaseDAO<Document> {
     private static final String SELECT_DOCUMENT_BY_ID = "SELECT * FROM documents WHERE document_id = ?";
     private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
     
+    private static DocumentDAO instance;
+
+    private DocumentDAO() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static DocumentDAO getInstance() {
+        if (instance == null) {
+            synchronized (DocumentDAO.class) {
+                if (instance == null) {
+                    instance = new DocumentDAO();
+                }
+            }
+        }
+        return instance;
+    }
     // Add a new document
     public int add(Document document) {
         return executeUpdate(INSERT_DOCUMENT_QUERY, 
@@ -32,6 +60,25 @@ public class DocumentDAO extends BaseDAO<Document> {
             document.getCurrentQuantity(), 
             document.getTotalQuantity()
         );
+    }
+
+    public void importDocumentsFromJson(File file) {
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new AdapterUtil.LocalDateAdapter())
+            .registerTypeAdapter(SimpleBooleanProperty.class, new AdapterUtil.SimpleBooleanPropertyAdapter())
+            .registerTypeAdapter(SimpleIntegerProperty.class, new AdapterUtil.SimpleIntegerPropertyAdapter())
+            .registerTypeAdapter(SimpleStringProperty.class, new AdapterUtil.SimpleStringPropertyAdapter())
+            .create();
+        try (FileReader reader = new FileReader(file)) {
+            Type documentListType = new TypeToken<List<Document>>() {}.getType();
+            List<Document> documents = gson.fromJson(reader, documentListType);
+            for (Document document : documents) {
+                System.out.println("Importing document: " + document.getTitle() + ", ISBN: " + document.getIsbn() + ", Quantity: " + document.getCurrentQuantity());
+                // add(document);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Delete a document by ID

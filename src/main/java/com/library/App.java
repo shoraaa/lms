@@ -24,7 +24,7 @@ public class App extends Application {
         initializeDatabase();
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        scene = new Scene(loadFXML("/com/library/views/Dashboard"), 1280, 720);
+        scene = new Scene(loadFXML("/com/library/views/Main"), 1280, 720);
         stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();

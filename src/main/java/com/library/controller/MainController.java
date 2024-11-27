@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 public class MainController {
 
     @FXML private AnchorPane contentPane;
+    @FXML private Button dashboardButton;
     @FXML private Button booksButton;
     @FXML private Button usersButton;
     @FXML private Button transactionsButton;
@@ -18,6 +19,7 @@ public class MainController {
     @FXML
     public void initialize() {
 
+        dashboardButton.setOnAction(event -> loadContent("/com/library/views/Dashboard.fxml"));
         booksButton.setOnAction(event -> loadContent("/com/library/views/DocumentsView.fxml"));
         usersButton.setOnAction(event -> loadContent("/com/library/views/UsersView.fxml"));
 

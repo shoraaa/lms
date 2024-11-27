@@ -119,6 +119,13 @@ public class DocumentDAO extends BaseDAO<Document> {
         return executeQueryForSingleEntity(SELECT_DOCUMENT_BY_ID, documentId);
     }
 
+    // Retrieve list of document by keyword
+    public List<Document> getDocumentsByKeyword(String keyword) {
+        String query = "SELECT * FROM documents WHERE name LIKE ? OR isbn LIKE ?";
+        String keywordPattern = "%" + keyword + "%";
+        return executeQueryForList(query, keywordPattern, keywordPattern);
+    }
+
     // Retrieve all documents
     public List<Document> getAllDocuments() {
         return executeQueryForList(SELECT_ALL_DOCUMENTS);

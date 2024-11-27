@@ -22,9 +22,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,8 +37,8 @@ public class DocumentsViewController {
     @FXML private TableView<Document> documentTable;
     @FXML private Label totalDocumentsLabel;
     @FXML private Button addButton;
-    @FXML private Button importButton;
-    @FXML private Button searchButton;
+    @FXML private Button filterButton;
+    @FXML private TextField searchTextField;
     @FXML private Button deleteButton;
     @FXML private VBox mainLayout;
 
@@ -44,15 +47,22 @@ public class DocumentsViewController {
 
     public void initialize() {
         documentDAO = DocumentDAO.getInstance();
-        documents = FXCollections.observableList(documentDAO.getAllDocuments());
 
         initializeDocumentTable();
-        setDocumentData(documents);
         updateTotalDocuments();
 
         addButton.setOnAction(event -> handleAddNewDocument());
         deleteButton.setOnAction(event -> handleDeleteSelected());
-        importButton.setOnAction(event -> handleImportDocuments());
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 0) {
+                documents = FXCollections.observableList(DocumentDAO.getInstance().getDocumentsByKeyword(newValue));
+                setDocumentData(documents);
+            } else {
+                documents = FXCollections.observableList(documentDAO.getAllDocuments());
+                setDocumentData(documents);
+            }
+        });
+        filterButton.setOnAction(event -> handleFilterDocuments());
     }
 
     private void updateTotalDocuments() {
@@ -77,19 +87,8 @@ public class DocumentsViewController {
         }
     }
 
-    private void handleImportDocuments() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-        fileChooser.setTitle("Import Documents");
-
-        Stage stage = (Stage) mainLayout.getScene().getWindow();
-        File selectedFile = fileChooser.showOpenDialog(stage);
-
-        if (selectedFile != null) {
-            documentDAO.importDocumentsFromJson(selectedFile);
-            documents.setAll(documentDAO.getAllDocuments());
-            updateTotalDocuments();
-        }
+    private void handleFilterDocuments() {
+        
     }
 
     private void initializeDocumentTable() {
@@ -105,8 +104,9 @@ public class DocumentsViewController {
         var publishedDateColumn = createPublishedDateColumn();
         var quantityColumn = createQuantityColumn();
         var dateAddedColumn = createDateAddedColumn();
+        var actionColumn = createActionColumn();
 
-        documentTable.getColumns().setAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn);
+        documentTable.getColumns().setAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn, actionColumn);
         documentTable.setColumnResizePolicy(
             TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN
         );
@@ -124,6 +124,9 @@ public class DocumentsViewController {
                 // openEditDialog(selectedDocument);
             }
         });
+
+        documents = FXCollections.observableList(documentDAO.getAllDocuments());
+        setDocumentData(documents);
     }
 
     private TableColumn<Document, Boolean> createSelectColumn(CheckBox selectAll) {    
@@ -207,6 +210,41 @@ public class DocumentsViewController {
         TableColumn<Document, String> dateAddedColumn = new TableColumn<>("Date Added");
         dateAddedColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateAddedToLibrary().toString()));
         return dateAddedColumn;
+    }
+
+    private TableColumn<Document, Void> createActionColumn() {
+        TableColumn<Document, Void> actionColumn = new TableColumn<>("Actions");
+        actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button editButton = new Button("Edit");
+            private final Button deleteButton = new Button("Delete");
+            private final HBox pane = new HBox(editButton, deleteButton);
+
+            {
+                editButton.setOnAction(event -> {
+                    Document document = getTableView().getItems().get(getIndex());
+                    // Open edit dialog
+                    // openEditDialog(document);
+                });
+
+                deleteButton.setOnAction(event -> {
+                    Document document = getTableView().getItems().get(getIndex());
+                    documentDAO.deleteDocument(document.getDocumentId());
+                    documents.setAll(documentDAO.getAllDocuments());
+                    updateTotalDocuments();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(pane);
+                }
+            }
+        });
+        return actionColumn;
     }
 
     public void setDocumentData(ObservableList<Document> documents) {

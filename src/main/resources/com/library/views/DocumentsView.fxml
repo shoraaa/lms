@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox prefHeight="956.0" prefWidth="1780.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.DocumentsViewController">
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="48.0">
@@ -33,7 +32,13 @@
                </VBox.margin>
             </TableView>
             <Separator prefWidth="200.0" />
-            <Label fx:id="totalDocumentsLabel" text="Total Documents: 0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="48.0">
+               <children>
+                  <Label fx:id="totalDocumentsLabel" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Total Documents: 0" />
+                  <Button fx:id="importFromCSVButton" mnemonicParsing="false" prefHeight="48.0" prefWidth="200.0" scaleShape="false" stylesheets="@../css/cupertino-light.css" text="Import from CSV" />
+                  <Button fx:id="exportToCSVButton" mnemonicParsing="false" prefHeight="48.0" prefWidth="200.0" scaleShape="false" stylesheets="@../css/cupertino-light.css" text="Export to CSV" />
+               </children>
+            </HBox>
          </children>
          <opaqueInsets>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

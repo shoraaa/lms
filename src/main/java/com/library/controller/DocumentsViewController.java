@@ -1,6 +1,5 @@
 package com.library.controller;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -29,8 +30,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 public class DocumentsViewController {
 
@@ -71,7 +70,14 @@ public class DocumentsViewController {
     }
 
     private void handleAddNewDocument() {
-        WindowUtil.openNewWindow("/com/library/views/AddDocumentWindow.fxml", "Add New Document");
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.initOwner(mainLayout.getScene().getWindow());
+        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddDocumentWindow.fxml"));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+
+        documents.setAll(documentDAO.getAllDocuments());
+        updateTotalDocuments();
     }
 
     private void handleDeleteSelected() {

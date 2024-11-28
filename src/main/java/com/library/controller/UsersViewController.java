@@ -15,7 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -56,7 +58,14 @@ public class UsersViewController {
     }
 
     private void handleAddNewUser() {
-        WindowUtil.openNewWindow("/com/library/views/AddUserWindow.fxml", "Add New User");
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.initOwner(mainLayout.getScene().getWindow());
+        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddUserWindow.fxml"));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+
+        users.setAll(userDAO.getAllUsers());
+        updateTotalUsers();
     }
 
     private void handleDeleteSelected() {

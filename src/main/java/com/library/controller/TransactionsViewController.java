@@ -16,7 +16,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -55,7 +57,14 @@ public class TransactionsViewController {
     }
 
     private void handleAddNewTransaction() {
-        WindowUtil.openNewWindow("/com/library/views/AddTransactionWindow.fxml", "Add New Transaction");
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.initOwner(mainLayout.getScene().getWindow());
+        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddTransactionWindow.fxml"));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+
+        transactions.setAll(transactionDAO.getAllTransactions());
+        updateTotalTransactions();
     }
 
     private void handleDeleteSelected() {

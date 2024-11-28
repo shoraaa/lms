@@ -10,56 +10,17 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutY="106.0" prefHeight="976.0" prefWidth="120.0" spacing="32.0" AnchorPane.topAnchor="106.0">
+      <VBox alignment="TOP_CENTER" layoutY="106.0" prefHeight="976.0" prefWidth="176.0" spacing="32.0" AnchorPane.topAnchor="106.0">
          <children>
-            <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Dashboard">
-               <graphic>
-                  <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
+            <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Dashboard">
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="booksButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Books">
-               <graphic>
-                  <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="usersButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Users">
-               <graphic>
-                  <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="transactionsButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Transactions">
-               <graphic>
-                  <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Setting">
-               <graphic>
-                  <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <Button fx:id="documentButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Books" />
+            <Button fx:id="userButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Users" />
+            <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Transactions" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Setting" />
             <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" text="Logout">
                <graphic>
                   <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
@@ -77,7 +38,7 @@
             <Insets top="80.0" />
          </padding>
       </VBox>
-      <AnchorPane fx:id="contentPane" layoutX="120.0" layoutY="98.0" prefHeight="976.0" prefWidth="1786.0" styleClass="anchor-pane" stylesheets="@../style.css">
+      <AnchorPane fx:id="contentPane" layoutX="200.0" layoutY="106.0" prefHeight="956.0" prefWidth="1700.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0">
          <padding>
             <Insets right="20.0" />
          </padding></AnchorPane>

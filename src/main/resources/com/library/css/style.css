@@ -67,3 +67,20 @@
 }
 
 
+/* General button style */
+.sidebar-button {
+    -fx-font-weight: bold;           /* Bold font */
+    -fx-background-color: transparent; /* Default transparent background */
+    -fx-text-fill: #202020;             /* Default text color */
+    -fx-font-size: 14px;              /* Text size */
+    -fx-padding: 10 20 10 20;         /* Padding around the text with 20px on the left */
+    -fx-alignment: center-left;       /* Align text to the left */
+}
+
+/* Style for the selected button */
+.sidebar-button.selected {
+    -fx-background-color: #e3f2fd; /* Slight blue foreground color */
+    -fx-text-fill: #0D47A1;        /* Font color blue */
+    -fx-border-width: 0 4px 0 0;  /* Blue vertical bar on the right */
+    -fx-border-color: transparent #0D47A1 transparent transparent; 
+}

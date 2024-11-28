@@ -5,34 +5,67 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 
 // https://github.com/mkpaz/atlantafx/releases
 public class MainController {
 
     @FXML private AnchorPane contentPane;
     @FXML private Button dashboardButton;
-    @FXML private Button booksButton;
-    @FXML private Button usersButton;
-    @FXML private Button transactionsButton;
+    @FXML private Button documentButton;
+    @FXML private Button userButton;
+    @FXML private Button transactionButton;
 
 
     @FXML
     public void initialize() {
+        dashboardButton.setOnAction(event -> handleDashboardButton());
+        documentButton.setOnAction(event -> handleDocumentButton());
+        userButton.setOnAction(event -> handleUserButton());
+        transactionButton.setOnAction(event -> handleTransactionButton());
 
-        dashboardButton.setOnAction(event -> loadContent("/com/library/views/Dashboard.fxml"));
-        booksButton.setOnAction(event -> loadContent("/com/library/views/DocumentsView.fxml"));
-        usersButton.setOnAction(event -> loadContent("/com/library/views/UsersView.fxml"));
-        transactionsButton.setOnAction(event -> loadContent("/com/library/views/TransactionsView.fxml"));
+        handleDashboardButton();
+    }
 
+    private void selectSidebarButton(Button selectedButton) {
+        // Clear the 'selected' style class from all buttons
+        dashboardButton.getStyleClass().remove("selected");
+        userButton.getStyleClass().remove("selected");
+        documentButton.getStyleClass().remove("selected");
+        transactionButton.getStyleClass().remove("selected");
+    
+        // Add the 'selected' style class to the clicked button
+        selectedButton.getStyleClass().add("selected");
+    }
+
+    private void handleDashboardButton() {
+        selectSidebarButton(dashboardButton);
+        loadContent("/com/library/views/Dashboard.fxml");
+    }
+
+    private void handleDocumentButton() {
+        selectSidebarButton(documentButton);
+        loadContent("/com/library/views/DocumentsView.fxml");
+    }
+
+    private void handleUserButton() {
+        selectSidebarButton(userButton);
+        loadContent("/com/library/views/UsersView.fxml");
+    }
+
+    private void handleTransactionButton() {
+        selectSidebarButton(transactionButton);
+        loadContent("/com/library/views/TransactionsView.fxml");
     }
 
     // Helper method to load the content dynamically
     private void loadContent(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
+            Parent loadedPane = loader.load();
             contentPane.getChildren().clear();
-            contentPane.getChildren().add(root);
+            contentPane.getChildren().add(loadedPane);
+
         } catch (Exception e) {
             // Log the exception and show an error message to the user
             System.err.println("Error loading FXML file: " + fxmlFile);

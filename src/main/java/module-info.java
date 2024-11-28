@@ -6,11 +6,16 @@ module com.library {
     requires atlantafx.base;
     requires spring.jdbc;
     requires transitive javafx.graphics;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.javafx;
+    // add icon pack modules
+    requires org.kordamp.ikonli.material2;
 
     opens com.library to javafx.fxml;
     opens com.library.controller to javafx.fxml;
     opens com.library.model to com.google.gson;
 
+    
     exports com.library;
 }
 

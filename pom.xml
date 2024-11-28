@@ -54,12 +54,24 @@
             <artifactId>javafx-fxml</artifactId>
             <version>13</version>
         </dependency>
+        <!-- testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- icon & font -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+        <groupId>org.kordamp.ikonli</groupId>
+        <artifactId>ikonli-material2-pack</artifactId>
+        <version>12.3.1</version>
+    </dependency>
     </dependencies>
     <build>
         <plugins>

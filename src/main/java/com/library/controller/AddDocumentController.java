@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
@@ -16,19 +17,18 @@ import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
 import com.library.services.PublisherDAO;
+import com.library.util.AutoCompletionTextField;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.util.StringConverter;
 
 public class AddDocumentController {
 
@@ -37,11 +37,11 @@ public class AddDocumentController {
     @FXML private TextField publisherTextField;
     @FXML private DatePicker publishedDatePicker;
 
-    @FXML private ComboBox<Author> authorComboBox;
     @FXML private ListView<Author> authorListView;
+    @FXML private TextField authorTextField;
 
-    @FXML private ComboBox<Category> categoryComboBox;
     @FXML private ListView<Category> categoryListView;
+    @FXML private TextField categoryTextField;
 
     @FXML private Button saveButton;
     @FXML private Button fetchButton;
@@ -64,9 +64,37 @@ public class AddDocumentController {
         categoryListView.setItems(categoryList);
 
         // Initialize ComboBox for author search (auto-complete)
-        initializeAuthorComboBox();
+        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()), authorList);
+        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()), categoryList);
 
-        initializeCategoryComboBox();
+
+        authorTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String authorName = authorTextField.getText().trim();
+                if (authorName.isEmpty()) return;
+
+                Author author = new Author(-1, authorName, "");
+                if (authorList.contains(author)) return;
+
+                // Add the category to the ListView and clear the ComboBox
+                authorList.add(author);
+                authorTextField.clear();
+            }
+        });
+
+        categoryTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String categoryName = categoryTextField.getText().trim();
+                if (categoryName.isEmpty()) return;
+
+                Category category = new Category(-1, categoryName);
+                if (categoryList.contains(category)) return;
+
+                // Add the category to the ListView and clear the ComboBox
+                categoryList.add(category);
+                categoryTextField.clear();
+            }
+        });
 
         // Initialize the save button action
         saveButton.setOnAction(event -> saveNewDocument());
@@ -77,97 +105,8 @@ public class AddDocumentController {
     }
 
     // Initialize ComboBox with a listener for the text input to perform auto-completion
-    private void initializeAuthorComboBox() {
-        // Set the string converter for the ComboBox to show the author's name
-        authorComboBox.setConverter(new StringConverter<Author>() {
-            @Override
-            public String toString(Author author) {
-                return author == null ? "" : author.getName();
-            }
-
-            @Override
-            public Author fromString(String string) {
-                // Create a new author if necessary, or return null to rely on database suggestions
-                return new Author(-1, string, "");
-            }
-        });
-
-        // Add a listener to update suggestions as the user types
-        authorComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 0) {
-                List<Author> authors = AuthorDAO.getInstance().searchAuthorsByName(newValue);
-                if (authors.isEmpty()) return;
-                
-                authorComboBox.getItems().setAll(authors);
-                authorComboBox.show();
-            } else {
-                authorComboBox.hide();
-            }
-        });
-
-
-        // Listen for when the user presses Enter in the ComboBox
-        authorComboBox.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                String enteredAuthorName = authorComboBox.getEditor().getText().trim();
-                if (enteredAuthorName.isEmpty()) return;
-
-                Author author = new Author(-1, enteredAuthorName, "");
-                if (authorList.contains(author)) return;
-
-                // Add the author to the ListView and clear the ComboBox
-                authorList.add(author);
-                authorComboBox.getEditor().clear();
-                authorComboBox.hide();
-
-            }
-        });
-    }
-
-    private void initializeCategoryComboBox() {
-        // Set the string converter for the ComboBox to show the category's name
-        categoryComboBox.setConverter(new StringConverter<Category>() {
-            @Override
-            public String toString(Category category) {
-                return category == null ? "" : category.getName();
-            }
-
-            @Override
-            public Category fromString(String string) {
-                // Create a new category if necessary, or return null to rely on database suggestions
-                return new Category(-1, string);
-            }
-        });
-
-        // Add a listener to update suggestions as the user types
-        categoryComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 0) {
-                List<Category> categories = CategoryDAO.getInstance().getCategoriesByName(newValue);
-                if (categories.isEmpty()) return;
-                
-                categoryComboBox.getItems().setAll(categories);
-                categoryComboBox.show();
-            } else {
-                categoryComboBox.hide();
-            }
-        });
-
-
-        // Listen for when the user presses Enter in the ComboBox
-        categoryComboBox.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                String enteredCategoryName = categoryComboBox.getEditor().getText().trim();
-                if (enteredCategoryName.isEmpty()) return;
-
-                Category category = new Category(-1, enteredCategoryName);
-                if (categoryList.contains(category)) return;
-
-                // Add the category to the ListView and clear the ComboBox
-                categoryList.add(category);
-                categoryComboBox.getEditor().clear();
-
-            }
-        });
+    private void initializeAutoCompletionTextField(TextField textField, List<String> entries, ObservableList<?> list) {
+        AutoCompletionTextField autoCompleteTextField = new AutoCompletionTextField(textField, entries);
     }
 
     // Method to show an alert dialog

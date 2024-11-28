@@ -1,19 +1,6 @@
 /* Apply background color for the sidebar */
-.sidebar {
-    -fx-background-color: #2A4A8D;
-    -fx-padding: 20px;
-    -fx-spacing: 20px;
-}
 
 /* Style for sidebar buttons */
-.sidebar-button {
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: #2A4A8D;
-    -fx-font-size: 14px;
-    -fx-pref-width: 180px;
-    -fx-alignment: CENTER_LEFT;
-    -fx-background-radius: 5;
-}
 
 .sidebar-button:hover {
     -fx-background-color: #E0E0E0;
@@ -71,15 +58,17 @@
 .sidebar-button {
     -fx-font-weight: bold;           /* Bold font */
     -fx-background-color: transparent; /* Default transparent background */
-    -fx-text-fill: #202020;             /* Default text color */
+    -fx-text-fill: #353535;             /* Default text color */
     -fx-font-size: 14px;              /* Text size */
     -fx-padding: 10 20 10 20;         /* Padding around the text with 20px on the left */
     -fx-alignment: center-left;       /* Align text to the left */
+    -fx-font-size: 14px;
+    -fx-pref-width: 180px;
 }
 
 /* Style for the selected button */
 .sidebar-button.selected {
-    -fx-background-color: #e3f2fd; /* Slight blue foreground color */
+    -fx-background-color: #E3F2FD; /* Slight blue foreground color */
     -fx-text-fill: #0D47A1;        /* Font color blue */
     -fx-border-width: 0 4px 0 0;  /* Blue vertical bar on the right */
     -fx-border-color: transparent #0D47A1 transparent transparent; 

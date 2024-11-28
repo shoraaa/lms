@@ -3,12 +3,13 @@
 <?import atlantafx.base.controls.Tile?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="442.0" prefWidth="555.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddTransactionController">
+<VBox alignment="CENTER" prefHeight="693.0" prefWidth="555.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddTransactionController">
    <children>
       <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Add New Transaction" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
@@ -23,7 +24,7 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Tile description="Please enter the user's e-mail:" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
+            <Tile description="Please enter the document name:" prefHeight="42.0" prefWidth="310.0" title="Document" />
             <TextField fx:id="userEmailTextField" promptText="E-mail">
                <HBox.margin>
                   <Insets right="20.0" />
@@ -33,18 +34,14 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Tile description="Please enter the user's phone number:" prefHeight="42.0" prefWidth="310.0" title="Phone" />
-            <TextField fx:id="userPhoneNumberTextField" promptText="Phone Number">
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
-            </TextField>
+            <Tile description="Please enter the borrow date:" prefHeight="42.0" prefWidth="310.0" title="Borrow Date" />
+            <DatePicker />
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="48.0">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" prefWidth="100.0" text="Save" />
-            <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="100.0" text="Cancel" />
+            <Button fx:id="saveButton" mnemonicParsing="false" prefWidth="100.0" styleClass="blue-colored-btn" stylesheets="@../css/style.css" text="Save" textFill="WHITE" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="100.0" styleClass="blue-colored-btn" stylesheets="@../css/style.css" text="Cancel" textFill="WHITE" />
          </children>
       </HBox>
    </children>

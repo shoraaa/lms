@@ -1,10 +1,21 @@
 package com.library.controller;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.print.Doc;
+
+import com.library.api.GoogleBooksAPI;
+import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Document;
+import com.library.services.AuthorDAO;
 import com.library.services.DocumentDAO;
+import com.library.util.ISBNGenerator;
 import com.library.util.WindowUtil;
 import com.library.view.DocumentTableView;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -13,10 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import javafx.concurrent.Task;
 
 public class DocumentsViewController {
 
@@ -50,6 +57,17 @@ public class DocumentsViewController {
         filterButton.setOnAction(event -> handleFilterDocuments());
         importFromCSVButton.setOnAction(event -> documentTableView.importToCSV());
         exportToCSVButton.setOnAction(event -> documentTableView.exportToCSV());
+
+        // add random isbn
+        // List<String> isbns = ISBNGenerator.generateISBNs(100);
+        // for (String isbn : isbns) {
+        //     BookDetails bookDetails = GoogleBooksAPI.fetchBookDetails(isbn, "isbn");
+        //     Document document = new Document.Builder(bookDetails.getTitle())
+        //                                     .authorIds(AuthorDAO.getInstance().getbookDetails.getAuthors())
+        //                                     .build();
+
+        //     DocumentDAO.getInstance().add(document);
+        // }
     }
 
     private void updateTotalDocuments() {

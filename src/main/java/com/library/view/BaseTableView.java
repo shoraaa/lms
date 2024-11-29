@@ -39,6 +39,10 @@ public abstract class BaseTableView<T> {
         tableView.setItems(this.data);
     }
 
+    public void removeColumn(String title) {
+        tableView.getColumns().removeIf(column -> column.getText().equals(title));
+    }
+
     protected TableColumn<T, String> createTextColumn(String title, java.util.function.Function<T, SimpleStringProperty> valueFunction) {
         TableColumn<T, String> column = new TableColumn<>(title);
         column.setCellValueFactory(cellData -> valueFunction.apply(cellData.getValue()));

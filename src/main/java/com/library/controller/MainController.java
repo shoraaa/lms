@@ -2,9 +2,9 @@ package com.library.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 
 // https://github.com/mkpaz/atlantafx/releases
 public class MainController {
@@ -61,7 +61,11 @@ public class MainController {
     private void loadContent(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent loadedPane = loader.load();
+            Region loadedPane = loader.load();
+
+            loadedPane.prefWidthProperty().bind(contentPane.widthProperty()); // Bind the width
+            loadedPane.prefHeightProperty().bind(contentPane.heightProperty()); // Bind the height
+
             contentPane.getChildren().clear();
             contentPane.getChildren().add(loadedPane);
 

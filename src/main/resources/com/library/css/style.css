@@ -2,10 +2,6 @@
 
 /* Style for sidebar buttons */
 
-.sidebar-button:hover {
-    -fx-background-color: #E0E0E0;
-}
-
 /* Text styles */
 .title-text {
     -fx-font-size: 16px;
@@ -41,8 +37,8 @@
 .anchor-pane {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #C1C1C1;
-    -fx-background-radius: 15px 0px 0px 15px;
-    -fx-border-radius: 40px 40px 40px 40px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
 }
 
 .summary {
@@ -56,20 +52,38 @@
 
 /* General button style */
 .sidebar-button {
-    -fx-font-weight: bold;           /* Bold font */
     -fx-background-color: transparent; /* Default transparent background */
     -fx-text-fill: #353535;             /* Default text color */
-    -fx-font-size: 14px;              /* Text size */
-    -fx-padding: 10 20 10 20;         /* Padding around the text with 20px on the left */
-    -fx-alignment: center-left;       /* Align text to the left */
-    -fx-font-size: 14px;
-    -fx-pref-width: 180px;
+    -fx-padding: 10 20 10 20;         
+    -fx-alignment: center;
+    -fx-pref-width: 64px;
+    -fx-pref-height: 64px;
+    -fx-icon-size: 30px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.sidebar-icon {
+    -fx-icon-size: 30px;
 }
 
 /* Style for the selected button */
 .sidebar-button.selected {
-    -fx-background-color: #E3F2FD; /* Slight blue foreground color */
+    -fx-background-color: #49b3ff; /* Slight blue foreground color */
     -fx-text-fill: #0D47A1;        /* Font color blue */
-    -fx-border-width: 0 4px 0 0;  /* Blue vertical bar on the right */
-    -fx-border-color: transparent #0D47A1 transparent transparent; 
+}
+
+.sidebar-button.selected .sidebar-icon {
+    -fx-icon-color: white; /* Inverted icon color */
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #b4b4b4;
+}
+
+.table-view .column-header,
+.table-view .column-header-background,
+.table-view .table-row-cell {
+    -fx-border-width: 0 0 1px 0; /* Remove vertical borders, keep horizontal lines */
+    -fx-border-color: transparent; /* Make vertical borders invisible */
 }

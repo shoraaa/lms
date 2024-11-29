@@ -63,9 +63,9 @@ public class DocumentTableView extends BaseTableView<Document> {
             this::createCategoriesColumn,
             this::createPublisherColumn,
             () -> createTextColumn("ISBN", doc -> new SimpleStringProperty(doc.getIsbn())),
-            () -> createDateColumn("Published Date", Document::getPublicationDate),
+            () -> createDateColumn("Publication Date", Document::getPublicationDate),
             this::createQuantityColumn,
-            () -> createDateColumn("Date Added", Document::getDateAddedToLibrary),
+            () -> createDateColumn("Registration Date", Document::getDateAddedToLibrary),
             this::createActionColumn
         );
 

@@ -4,6 +4,7 @@ import org.kordamp.ikonli.material2.Material2MZ;
 
 import com.library.model.Document;
 import com.library.model.User;
+import com.library.view.DocumentTableView;
 
 import atlantafx.base.controls.Card;
 import atlantafx.base.theme.Styles;
@@ -25,6 +26,8 @@ public class DashboardController {
     @FXML private TableView<User> usersList;
     @FXML private TableView<Document> documentsList;
 
+    private DocumentTableView documentTableView;
+
     public void initialize() {
         helloLabel.setText("Hello, Admin");
 
@@ -37,6 +40,15 @@ public class DashboardController {
         setCardValue(newUserCard, "New Users", "5", Material2MZ.PERSON);
         setCardValue(borrowedBookCard, "Borrowed Books", "3", Material2MZ.PERSON);
         setCardValue(returnedBookCard, "Returned Books", "2", Material2MZ.PERSON);
+
+        documentTableView = new DocumentTableView(documentsList);
+        documentTableView.removeColumn("Categories");
+        documentTableView.removeColumn("Publisher");
+        documentTableView.removeColumn("Publication Date");
+        documentTableView.removeColumn("Registration Date");
+        documentTableView.removeColumn("");
+        documentTableView.removeColumn("Image");
+        documentTableView.loadData();
     }
 
     private void setCardValue(Card card, String body, String header, Material2MZ icon) {
@@ -47,8 +59,6 @@ public class DashboardController {
         Text bodyText = new Text(body);
         bodyText.getStyleClass().addAll(Styles.TITLE_3);
         card.setBody(bodyText);
-
-        
     }
 }
 

@@ -53,24 +53,24 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="40.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <VBox alignment="CENTER_RIGHT" prefHeight="330.0" prefWidth="793.0" spacing="20.0" styleClass="anchor-pane" stylesheets="@../css/style.css" HBox.hgrow="ALWAYS">
+                        <VBox alignment="TOP_CENTER" prefHeight="330.0" prefWidth="793.0" spacing="20.0" styleClass="anchor-pane" stylesheets="@../css/style.css" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0">
+                              <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0" VBox.vgrow="NEVER">
                                  <children>
                                     <Label styleClass="title-3" text="Users List" />
                                     <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Add New User" />
                                  </children>
                               </HBox>
                               <TableView fx:id="usersList" prefHeight="466.0" prefWidth="750.0" />
-                              <Button mnemonicParsing="false" text="See All" textFill="RED" />
+                              <Button alignment="CENTER" mnemonicParsing="false" text="See All" textFill="RED" />
                            </children>
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
                         </VBox>
-                        <VBox alignment="CENTER_RIGHT" prefHeight="330.0" prefWidth="789.0" spacing="20.0" styleClass="anchor-pane" stylesheets="@../css/style.css" HBox.hgrow="ALWAYS">
+                        <VBox alignment="TOP_CENTER" prefHeight="330.0" prefWidth="789.0" spacing="20.0" styleClass="anchor-pane" stylesheets="@../css/style.css" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0">
+                              <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0" VBox.vgrow="NEVER">
                                  <children>
                                     <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Documents List" />
                                     <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Add New Document" />

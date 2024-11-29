@@ -15,12 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -37,44 +32,47 @@ public class DocumentsViewController {
     @FXML private VBox mainLayout;
 
     private DocumentTableView documentTableView;
-    private ExecutorService executorService;
+    private final PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public void initialize() {
         documentTableView = new DocumentTableView(documentTable);
-        executorService = Executors.newCachedThreadPool();
+
+        // Load initial data
+        loadAllDocuments();
         updateTotalDocuments();
 
+        // Configure UI button actions
+        configureButtonActions();
+
+        // Add search field listener with debounce
+        configureSearchField();
+    }
+
+    private void configureButtonActions() {
         addButton.setOnAction(event -> handleAddNewDocument());
         deleteButton.setOnAction(event -> handleDeleteSelected());
+        filterButton.setOnAction(event -> handleFilterDocuments());
+        importFromCSVButton.setOnAction(event -> documentTableView.importToCSV());
+        exportToCSVButton.setOnAction(event -> documentTableView.exportToCSV());
+    }
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
+    private void configureSearchField() {
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             pause.setOnFinished(event -> {
-                if (newValue.length() > 0) {
-                    loadDocumentsByKeyword(newValue);
-                } else {
+                if (newValue != null && !newValue.isEmpty()) {
+                    loadDocuments(() -> DocumentDAO.getInstance().getDocumentsByTitle(newValue));
+                } else if (oldValue != null && !oldValue.isEmpty()) {
                     loadAllDocuments();
                 }
             });
             pause.playFromStart();
         });
-        
-        filterButton.setOnAction(event -> handleFilterDocuments());
-        importFromCSVButton.setOnAction(event -> documentTableView.importToCSV());
-        exportToCSVButton.setOnAction(event -> documentTableView.exportToCSV());
-
     }
 
     private void updateTotalDocuments() {
-        Task<Integer> task = new Task<>() {
-            @Override
-            protected Integer call() {
-                return DocumentDAO.getInstance().countAllDocuments();
-            }
-        };
-
-        task.setOnSucceeded(event -> totalDocumentsLabel.setText("Total Documents: " + task.getValue()));
-        executorService.submit(task);
+        executeBackgroundTask(() -> DocumentDAO.getInstance().countAllDocuments(), 
+            count -> totalDocumentsLabel.setText("Total Documents: " + count));
     }
 
     private void handleAddNewDocument() {
@@ -82,8 +80,7 @@ public class DocumentsViewController {
         dialog.initOwner(mainLayout.getScene().getWindow());
         dialog.setTitle("Add New Document");
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/com/library/views/AddDocumentWindow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/library/views/AddDocumentWindow.fxml"));
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
@@ -95,52 +92,61 @@ public class DocumentsViewController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.showAndWait();
 
+        // Refresh data
         loadAllDocuments();
         updateTotalDocuments();
     }
 
     private void handleDeleteSelected() {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                documentTableView.deleteSelectedDocuments();
-                return null;
-            }
-        };
-
-        task.setOnSucceeded(event -> updateTotalDocuments());
-        executorService.submit(task);
+        executeBackgroundTask(() -> {
+            documentTableView.deleteSelectedDocuments();
+            return null;
+        }, result -> updateTotalDocuments());
     }
 
     private void handleFilterDocuments() {
-        // Implement filter logic here
+        // Placeholder: Implement filter logic here
     }
 
     private void loadAllDocuments() {
-        Task<List<Document>> task = new Task<>() {
+        loadDocuments(() -> DocumentDAO.getInstance().getAllDocuments());
+    }
+
+    private void loadDocuments(LoaderFunction<List<Document>> loaderFunction) {
+        executeBackgroundTask(loaderFunction, documents ->
+            documentTableView.setDocumentData(FXCollections.observableArrayList(documents))
+        );
+    }
+
+    private <T> void executeBackgroundTask(LoaderFunction<T> loaderFunction, TaskSuccessHandler<T> onSuccess) {
+        Task<T> task = new Task<>() {
             @Override
-            protected List<Document> call() {
-                return DocumentDAO.getInstance().getAllDocuments();
+            protected T call() throws Exception {
+                return loaderFunction.load();
             }
         };
 
-        task.setOnSucceeded(event -> documentTableView.setDocumentData(FXCollections.observableArrayList(task.getValue())));
-        task.setOnFailed(event -> task.getException().printStackTrace());
+        task.setOnSucceeded(event -> onSuccess.handle(task.getValue()));
+        task.setOnFailed(event -> {
+            Throwable exception = task.getException();
+            System.err.println("Task failed: " + exception.getMessage());
+            exception.printStackTrace();
+        });
 
         executorService.submit(task);
     }
 
-    private void loadDocumentsByKeyword(String keyword) {
-        Task<List<Document>> task = new Task<>() {
-            @Override
-            protected List<Document> call() {
-                return DocumentDAO.getInstance().getDocumentsByKeyword(keyword);
-            }
-        };
+    public void shutdown() {
+        executorService.shutdownNow();
+    }
 
-        task.setOnSucceeded(event -> documentTableView.setDocumentData(FXCollections.observableArrayList(task.getValue())));
-        task.setOnFailed(event -> task.getException().printStackTrace());
+    @FunctionalInterface
+    private interface LoaderFunction<T> {
+        T load() throws Exception;
+    }
 
-        executorService.submit(task);
+    @FunctionalInterface
+    private interface TaskSuccessHandler<T> {
+        void handle(T result);
     }
 }

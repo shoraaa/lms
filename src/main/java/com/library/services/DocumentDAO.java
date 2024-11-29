@@ -73,24 +73,25 @@ public class DocumentDAO extends BaseDAO<Document> {
 
     public boolean deleteDocuments(List<Integer> documentIds) {
         if (documentIds == null || documentIds.isEmpty()) {
-            return false; // No documents to delete
+            return false;
         }
-
-        // Build the SQL query dynamically with placeholders for each document ID
-        StringBuilder sql = new StringBuilder("DELETE FROM documents WHERE document_id IN (");
-        for (int i = 0; i < documentIds.size(); i++) {
-            sql.append("?");
-            if (i < documentIds.size() - 1) {
-                sql.append(", ");
+    
+        String query = "DELETE FROM documents WHERE document_id = ?";
+        try (var connection = getConnection();
+             var preparedStatement = connection.prepareStatement(query)) {
+    
+            for (int documentId : documentIds) {
+                preparedStatement.setInt(1, documentId);
+                preparedStatement.addBatch();
             }
+            int[] result = preparedStatement.executeBatch();
+            return result.length == documentIds.size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        sql.append(")");
-
-        // Use the executeUpdate method from BaseDAO to execute the query
-        Integer rowsAffected = executeUpdate(sql.toString(), documentIds.toArray());
-
-        return rowsAffected != null && rowsAffected > 0;
     }
+    
 
     // Update document quantity
     public void updateDocumentQuantity(int documentId, int quantity) {
@@ -104,16 +105,23 @@ public class DocumentDAO extends BaseDAO<Document> {
     }
 
     // Retrieve list of document by keyword
-    public List<Document> getDocumentsByKeyword(String keyword) {
-        String query = "SELECT * FROM documents WHERE name LIKE ? OR isbn LIKE ?";
-        String keywordPattern = "%" + keyword + "%";
-        return executeQueryForList(query, keywordPattern, keywordPattern);
+    public List<Document> getDocumentsByTitle(String title) {
+        String query = "SELECT * FROM documents WHERE name LIKE ?";
+        String keywordPattern = "%" + title + "%";
+        return executeQueryForList(query, keywordPattern);
     }
 
     // Retrieve all documents
     public List<Document> getAllDocuments() {
         return executeQueryForList(SELECT_ALL_DOCUMENTS);
     }
+
+    // Lazy-retrieval of documents with pagination
+    public List<Document> getDocumentsWithPagination(int offset, int limit) {
+        String query = "SELECT * FROM documents LIMIT ? OFFSET ?";
+        return executeQueryForList(query, limit, offset);
+    }
+    
 
     // Count all documents
     public int countAllDocuments() {
@@ -124,68 +132,22 @@ public class DocumentDAO extends BaseDAO<Document> {
     // Convert ResultSet to Document object
     @Override
     protected Document mapToEntity(ResultSet rs) throws SQLException {
-        int documentId = rs.getInt("document_id");
-        String name = rs.getString("name");
-        if (rs.wasNull()) {
-            name = "Unknown Name";
-        }
-
-        List<Integer> authorIds = rs.getString("author_ids") != null ? stringToList(rs.getString("author_ids")) : Collections.emptyList();
-        List<Integer> categoryIds = rs.getString("category_ids") != null ? stringToList(rs.getString("category_ids")) : Collections.emptyList();
-        
-        int publisherId = rs.getInt("publisher_id");
-        if (rs.wasNull()) {
-            publisherId = -1; // Assuming -1 indicates an unknown publisher
-        }
-
-        String isbn = rs.getString("isbn");
-        if (rs.wasNull()) {
-            isbn = "Unknown ISBN";
-        }
-
-        LocalDate datePublished = rs.getDate("publication_date") != null ? rs.getDate("publication_date").toLocalDate() : LocalDate.now();
-        LocalDate dateAdded = rs.getDate("date_added") != null ? rs.getDate("date_added").toLocalDate() : LocalDate.now();
-
-        int quantityCurrent = rs.getInt("current_quantity");
-        if (rs.wasNull()) {
-            quantityCurrent = 0;
-        }
-
-        int quantityTotal = rs.getInt("total_quantity");
-        if (rs.wasNull()) {
-            quantityTotal = 0;
-        }
-
-        int languageId = rs.getInt("language_id");
-        if (rs.wasNull()) {
-            languageId = -1; // Assuming -1 indicates an unknown language
-        }
-
-        String imageUrl = rs.getString("image_url");
-        if (rs.wasNull()) {
-            imageUrl = "No Image Available";
-        }
-
-        String description = rs.getString("description");
-        if (rs.wasNull()) {
-            description = "No Description Available";
-        }
-
-        return new Document.Builder(name)
-            .documentId(documentId)
-            .authorIds(authorIds)
-            .categoryIds(categoryIds)
-            .publisherId(publisherId)
-            .isbn(isbn)
-            .publicationDate(datePublished)
-            .dateAddedToLibrary(dateAdded)
-            .currentQuantity(quantityCurrent)
-            .totalQuantity(quantityTotal)
-            .languageId(languageId) // Set language ID
-            .imageUrl(imageUrl) // Set image URL
-            .description(description)
+        return new Document.Builder(rs.getString("name"))
+            .documentId(rs.getInt("document_id"))
+            .authorIds(stringToList(rs.getString("author_ids")))
+            .categoryIds(stringToList(rs.getString("category_ids")))
+            .publisherId(rs.getInt("publisher_id"))
+            .isbn(rs.getString("isbn"))
+            .publicationDate(rs.getDate("publication_date") != null ? rs.getDate("publication_date").toLocalDate() : null)
+            .dateAddedToLibrary(rs.getDate("date_added") != null ? rs.getDate("date_added").toLocalDate() : null)
+            .currentQuantity(rs.getInt("current_quantity"))
+            .totalQuantity(rs.getInt("total_quantity"))
+            .languageId(rs.getInt("language_id"))
+            .imageUrl(rs.getString("image_url"))
+            .description(rs.getString("description"))
             .build();
-    }
+    }   
+
 
     // Helper method to convert List to CSV string
     private String listToString(List<Integer> list) {

@@ -125,6 +125,7 @@ public class GoogleBooksAPI {
 
                 BookDetails bookDetails = new BookDetails();
                 bookDetails.title = bookInfo.get("title").getAsString();
+                bookDetails.isbn = bookInfo.has("industryIdentifiers") ? bookInfo.getAsJsonArray("industryIdentifiers").get(0).getAsJsonObject().get("identifier").getAsString() : "No ISBN Available";
                 bookDetails.authors = bookInfo.has("authors") ? bookInfo.getAsJsonArray("authors").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};
                 bookDetails.publisher = bookInfo.has("publisher") ? bookInfo.get("publisher").getAsString() : "Unknown";
                 bookDetails.categories = bookInfo.has("categories") ? bookInfo.getAsJsonArray("categories").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};

@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -7,15 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.library.App;
 import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
 import com.library.model.Category;
 import com.library.model.Document;
+import com.library.model.Language;
 import com.library.model.Publisher;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
+import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
 
@@ -25,10 +29,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.stage.FileChooser;
 
 public class AddDocumentController {
 
@@ -43,14 +50,19 @@ public class AddDocumentController {
     @FXML private ListView<Category> categoryListView;
     @FXML private TextField categoryTextField;
 
+    @FXML private ImageView documentImageView;
+    @FXML private TextField languageTextField;
+    @FXML private TextArea descriptionTextArea;
+
     @FXML private Button saveButton;
     @FXML private Button fetchButton;
     @FXML private Button clearButton;
 
-    @FXML private Label statusLabel;
+    @FXML private Button selectImageButton;
     
     private ObservableList<Author> authorList;
     private ObservableList<Category> categoryList;
+    private String selectedImagePath;
 
     public AddDocumentController() {
         authorList = FXCollections.observableArrayList();
@@ -64,9 +76,9 @@ public class AddDocumentController {
         categoryListView.setItems(categoryList);
 
         // Initialize ComboBox for author search (auto-complete)
-        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()), authorList);
-        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()), categoryList);
-
+        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(languageTextField, LanguageDAO.getInstance().getAllLanguages().stream().map(Language::getName).collect(Collectors.toList()));
 
         authorTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -102,10 +114,12 @@ public class AddDocumentController {
         fetchButton.setOnAction(event -> fetchButtonAction());
 
         clearButton.setOnAction(event -> clearForm());
+
+        selectImageButton.setOnAction(event -> handleSelectImage());
     }
 
     // Initialize ComboBox with a listener for the text input to perform auto-completion
-    private void initializeAutoCompletionTextField(TextField textField, List<String> entries, ObservableList<?> list) {
+    private void initializeAutoCompletionTextField(TextField textField, List<String> entries) {
         AutoCompletionTextField autoCompleteTextField = new AutoCompletionTextField(textField, entries);
     }
 
@@ -126,6 +140,24 @@ public class AddDocumentController {
         publishedDatePicker.setValue(null);
         authorList.clear();
         categoryList.clear();
+        languageTextField.clear();
+        descriptionTextArea.clear();
+        documentImageView.setImage(null);
+    }
+
+    private void handleSelectImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Document Image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(selectImageButton.getScene().getWindow());
+        if (selectedFile != null) {
+            selectedImagePath = selectedFile.toURI().toString();
+            Image image = new Image(selectedImagePath);
+            documentImageView.setImage(image);
+        }
     }
 
     // Method to save the new book to the database
@@ -164,6 +196,13 @@ public class AddDocumentController {
             categoryIds.add(categoryId);
         }
 
+        String languageName = languageTextField.getText();
+        Language language = LanguageDAO.getInstance().getLanguageByName(languageName);
+        if (language == null) {
+            language = new Language(-1, languageName);
+            language.setId(LanguageDAO.getInstance().add(language));
+        }
+
         Document document = new Document.Builder(title)  // Only title is required
                 .authorIds(authorIds)                        // Optional
                 .categoryIds(categoryIds)                    // Optional
@@ -173,6 +212,9 @@ public class AddDocumentController {
                 .dateAddedToLibrary(LocalDate.now())         // Optional
                 .currentQuantity(1)                          // Optional
                 .totalQuantity(1)                            // Optional
+                .languageId(language.getId())
+                .description(descriptionTextArea.getText()) // Optional
+                .imageUrl(selectedImagePath)
                 .build();                                    // Final build step
 
 
@@ -216,8 +258,10 @@ public class AddDocumentController {
         if (bookDetails.getAuthors() != null) {
             for (String authorName : bookDetails.getAuthors()) {
                 AuthorDAO authorDAO = AuthorDAO.getInstance();
-                List<Author> authors = authorDAO.searchAuthorsByName(authorName);
-                Author author = authors.isEmpty() ? authorDAO.getAuthorById(authorDAO.add(new Author(-1, authorName, ""))) : authors.get(0);
+                Author author = authorDAO.getAuthorByName(authorName);
+                if (author == null) {
+                    author = authorDAO.getAuthorById(authorDAO.add(new Author(-1, authorName, "")));
+                }
                 authorList.add(author);
             }
         }
@@ -246,10 +290,23 @@ public class AddDocumentController {
                 publishedDatePicker.setValue(date);
             } catch (DateTimeParseException e) {
                 publishedDatePicker.setValue(null);
-                System.out.println("Invalid date format: " + publishedDate);
+                App.showErrorDialog(new RuntimeException("Invalid date format: " + publishedDate));
             }
         } else {
             publishedDatePicker.setValue(null);
+        }
+        
+        languageTextField.setText(bookDetails.getLanguage() != null ? bookDetails.getLanguage() : "N/A");
+        descriptionTextArea.setText(bookDetails.getDescription() != null ? bookDetails.getDescription() : "N/A");
+
+        if (bookDetails.getImageUrl() != null && !bookDetails.getImageUrl().isEmpty()) {
+            selectedImagePath = bookDetails.getImageUrl();
+            Image image = new Image(selectedImagePath);
+            documentImageView.setImage(image);
+            selectedImagePath = bookDetails.getImageUrl();
+        } else {
+            documentImageView.setImage(null);
+            selectedImagePath = null;
         }
     }
 

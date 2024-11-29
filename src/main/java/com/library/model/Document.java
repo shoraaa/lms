@@ -15,7 +15,8 @@ public class Document {
     private int currentQuantity;
     private int totalQuantity;
     private String isbn;
-    private int languageId;
+    private int languageId; // New field for language ID
+    private String imageUrl; // New field for image URL
     private String description;
 
     private final SimpleBooleanProperty isSelected; // For checkbox
@@ -32,8 +33,10 @@ public class Document {
         this.currentQuantity = builder.currentQuantity;
         this.totalQuantity = builder.totalQuantity;
         this.isbn = builder.isbn;
-        this.languageId = builder.languageId;
+        this.languageId = builder.languageId; // Initialize the new field
+        this.imageUrl = builder.imageUrl; // Initialize the new field
         this.description = builder.description;
+
         this.isSelected = new SimpleBooleanProperty(false); // Default to false (not selected)
     }
 
@@ -127,6 +130,14 @@ public class Document {
         this.languageId = languageId;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -147,7 +158,6 @@ public class Document {
         isSelected.set(selected);
     }
 
-
     // Static Builder class
     public static class Builder {
         private int documentId; // Optional, to be set by database
@@ -160,7 +170,8 @@ public class Document {
         private int currentQuantity = 1; // Default value
         private int totalQuantity = 1;   // Default value
         private String isbn;
-        private int languageId;
+        private int languageId; // New field for language ID
+        private String imageUrl; // New field for image URL
         private String description;
 
         // Required field constructor
@@ -217,6 +228,11 @@ public class Document {
 
         public Builder languageId(int languageId) {
             this.languageId = languageId;
+            return this;
+        }
+
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 

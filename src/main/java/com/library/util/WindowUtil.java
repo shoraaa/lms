@@ -1,10 +1,13 @@
 package com.library.util;
 
+import java.io.IOException;
+
+import com.library.App;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 public class WindowUtil {
 
@@ -16,7 +19,7 @@ public class WindowUtil {
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            App.showErrorDialog(e);
 
             return null;
 
@@ -34,8 +37,9 @@ public class WindowUtil {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
     }
+
 }
 

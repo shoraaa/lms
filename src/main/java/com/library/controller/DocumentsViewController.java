@@ -1,22 +1,20 @@
 package com.library.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.print.Doc;
-
-import com.library.api.GoogleBooksAPI;
-import com.library.api.GoogleBooksAPI.BookDetails;
+import com.library.App;
 import com.library.model.Document;
-import com.library.services.AuthorDAO;
 import com.library.services.DocumentDAO;
-import com.library.util.ISBNGenerator;
-import com.library.util.WindowUtil;
 import com.library.view.DocumentTableView;
 
+import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -24,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class DocumentsViewController {
 
@@ -47,27 +46,23 @@ public class DocumentsViewController {
 
         addButton.setOnAction(event -> handleAddNewDocument());
         deleteButton.setOnAction(event -> handleDeleteSelected());
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 0) {
-                loadDocumentsByKeyword(newValue);
-            } else {
-                loadAllDocuments();
-            }
+            pause.setOnFinished(event -> {
+                if (newValue.length() > 0) {
+                    loadDocumentsByKeyword(newValue);
+                } else {
+                    loadAllDocuments();
+                }
+            });
+            pause.playFromStart();
         });
+        
         filterButton.setOnAction(event -> handleFilterDocuments());
         importFromCSVButton.setOnAction(event -> documentTableView.importToCSV());
         exportToCSVButton.setOnAction(event -> documentTableView.exportToCSV());
 
-        // add random isbn
-        // List<String> isbns = ISBNGenerator.generateISBNs(100);
-        // for (String isbn : isbns) {
-        //     BookDetails bookDetails = GoogleBooksAPI.fetchBookDetails(isbn, "isbn");
-        //     Document document = new Document.Builder(bookDetails.getTitle())
-        //                                     .authorIds(AuthorDAO.getInstance().getbookDetails.getAuthors())
-        //                                     .build();
-
-        //     DocumentDAO.getInstance().add(document);
-        // }
     }
 
     private void updateTotalDocuments() {
@@ -83,10 +78,21 @@ public class DocumentsViewController {
     }
 
     private void handleAddNewDocument() {
-        Dialog<Void> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(mainLayout.getScene().getWindow());
-        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddDocumentWindow.fxml"));
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.setTitle("Add New Document");
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/com/library/views/AddDocumentWindow.fxml"));
+
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            App.showErrorDialog(e);
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.showAndWait();
 
         loadAllDocuments();
@@ -111,25 +117,29 @@ public class DocumentsViewController {
     }
 
     private void loadAllDocuments() {
-        Task<Void> task = new Task<>() {
+        Task<List<Document>> task = new Task<>() {
             @Override
-            protected Void call() {
-                documentTableView.loadAllDocuments();
-                return null;
+            protected List<Document> call() {
+                return DocumentDAO.getInstance().getAllDocuments();
             }
         };
+
+        task.setOnSucceeded(event -> documentTableView.setDocumentData(FXCollections.observableArrayList(task.getValue())));
+        task.setOnFailed(event -> task.getException().printStackTrace());
 
         executorService.submit(task);
     }
 
     private void loadDocumentsByKeyword(String keyword) {
-        Task<Void> task = new Task<>() {
+        Task<List<Document>> task = new Task<>() {
             @Override
-            protected Void call() {
-                documentTableView.loadDocumentsByKeyword(keyword);
-                return null;
+            protected List<Document> call() {
+                return DocumentDAO.getInstance().getDocumentsByKeyword(keyword);
             }
         };
+
+        task.setOnSucceeded(event -> documentTableView.setDocumentData(FXCollections.observableArrayList(task.getValue())));
+        task.setOnFailed(event -> task.getException().printStackTrace());
 
         executorService.submit(task);
     }

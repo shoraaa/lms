@@ -2,13 +2,15 @@ package com.library.util;
 
 import java.sql.*;
 
+import com.library.App;
+
 public class DatabaseInitializer {
 
     private static final String CREATE_AUTHORS_TABLE = 
         "CREATE TABLE IF NOT EXISTS authors (" +
         "author_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "name TEXT NOT NULL, " +
-        "email TEXT NOT NULL" +
+        "email TEXT" +
         ");";
 
     private static final String CREATE_CATEGORIES_TABLE = 
@@ -34,7 +36,10 @@ public class DatabaseInitializer {
         "publication_date DATE, " +
         "date_added DATE, " +
         "current_quantity INTEGER NOT NULL, " +
-        "total_quantity INTEGER NOT NULL" +
+        "total_quantity INTEGER NOT NULL, " +
+        "language_id INTEGER, " + // Add language_id column
+        "image_url TEXT," + // Add image_url column
+        "description TEXT " + // Add description column
         ");";
 
     private static String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS users (" +
@@ -52,10 +57,14 @@ public class DatabaseInitializer {
         "borrow_date DATE NOT NULL, " +
         "return_date DATE, " +
         "is_returned BOOLEAN DEFAULT 0, " +
-        "FOREIGN KEY(user_id) REFERENCES user(user_id), " +
-        "FOREIGN KEY(document_id) REFERENCES document(document_id)" +
+        "FOREIGN KEY(user_id) REFERENCES users(user_id), " +
+        "FOREIGN KEY(document_id) REFERENCES documents(document_id)" +
         ");";
-    
+
+    private static String CREATE_LANGUAGES_TABLE = "CREATE TABLE IF NOT EXISTS languages (" +
+        "language_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "name TEXT NOT NULL" +
+        ");";
 
     public static void initializeDatabase() {
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/com/library/database/library.db")) {
@@ -66,13 +75,13 @@ public class DatabaseInitializer {
             stmt.execute(CREATE_CATEGORIES_TABLE);
             stmt.execute(CREATE_PUBLISHERS_TABLE);
             stmt.execute(CREATE_DOCUMENTS_TABLE);
-
             stmt.execute(CREATE_USER_TABLE);
             stmt.execute(CREATE_TRANSACTION_TABLE);
+            stmt.execute(CREATE_LANGUAGES_TABLE); // Execute the languages table creation query
 
             System.out.println(" Database tables created or already exist.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
     }
 }

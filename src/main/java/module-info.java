@@ -10,6 +10,7 @@ module com.library {
     requires org.kordamp.ikonli.javafx;
     // add icon pack modules
     requires org.kordamp.ikonli.material2;
+    requires org.kordamp.ikonli.feather;
 
     opens com.library to javafx.fxml;
     opens com.library.controller to javafx.fxml;

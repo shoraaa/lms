@@ -16,9 +16,11 @@ import com.library.model.Publisher;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
+import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,6 +30,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -51,6 +55,8 @@ public class DocumentTableView {
 
         var selectAll = new CheckBox();
         var selectColumn = createSelectColumn(selectAll);
+
+        var imageColumn = createImageColumn();
         var nameColumn = createNameColumn();
         var authorsColumn = createAuthorsColumn();
         var categoriesColumn = createCategoriesColumn();
@@ -61,7 +67,7 @@ public class DocumentTableView {
         var dateAddedColumn = createDateAddedColumn();
         var actionColumn = createActionColumn();
 
-        documentTable.getColumns().setAll(selectColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn, actionColumn);
+        documentTable.getColumns().setAll(selectColumn, imageColumn, nameColumn, authorsColumn, categoriesColumn, publisherColumn, isbnColumn, publishedDateColumn, quantityColumn, dateAddedColumn, actionColumn);
         documentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         selectAll.setOnAction(event -> {
@@ -69,6 +75,19 @@ public class DocumentTableView {
         });
 
         loadAllDocuments();
+    }
+
+    private TableColumn<Document, ImageView> createImageColumn() {
+        TableColumn<Document, ImageView> imageColumn = new TableColumn<>("Image");
+        imageColumn.setCellValueFactory(cellData -> {
+            String imageUrl = cellData.getValue().getImageUrl();
+            Image image = imageUrl != null ? new Image(imageUrl) : null;
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(100);
+            imageView.setFitHeight(100);
+            return new SimpleObjectProperty<>(imageView);
+        });
+        return imageColumn;
     }
 
     private TableColumn<Document, Boolean> createSelectColumn(CheckBox selectAll) {
@@ -195,11 +214,6 @@ public class DocumentTableView {
         Platform.runLater(() -> documents.setAll(allDocuments));
     }
 
-    public void loadDocumentsByKeyword(String keyword) {
-        List<Document> filteredDocuments = documentDAO.getDocumentsByKeyword(keyword);
-        Platform.runLater(() -> documents.setAll(filteredDocuments));
-    }
-
     public void deleteSelectedDocuments() {
         List<Integer> selectedDocumentIds = documentTable.getItems().stream()
             .filter(Document::isSelected)
@@ -222,7 +236,7 @@ public class DocumentTableView {
         if (file != null) {
             String csvFile = file.getAbsolutePath();
             try (FileWriter writer = new FileWriter(csvFile)) {
-                writer.append("Name,Authors,Categories,Publisher,ISBN,Published Date,Quantity,Date Added\n");
+                writer.append("Name,Authors,Categories,Publisher,ISBN,Published Date,Quantity,Date Added,Language,Image URL,Description\n");
                 for (Document document : documents) {
                     String authors = document.getAuthorIds().stream()
                         .map(id -> AuthorDAO.getInstance().getAuthorById(id).getName())
@@ -231,7 +245,8 @@ public class DocumentTableView {
                         .map(id -> CategoryDAO.getInstance().getCategoryById(id).getName())
                         .collect(Collectors.joining(", "));
                     String publisher = PublisherDAO.getInstance().getPublisherById(document.getPublisherId()).getName();
-                    writer.append(String.format("%s,%s,%s,%s,%s,%s,%d/%d,%s\n",
+                    String language = LanguageDAO.getInstance().getLanguageById(document.getLanguageId()).getName();
+                    writer.append(String.format("%s,%s,%s,%s,%s,%s,%d/%d,%s,%s,%s,%s\n",
                         document.getTitle(),
                         authors,
                         categories,
@@ -240,7 +255,11 @@ public class DocumentTableView {
                         document.getPublicationDate() != null ? document.getPublicationDate().toString() : "N/A",
                         document.getCurrentQuantity(),
                         document.getTotalQuantity(),
-                        document.getDateAddedToLibrary().toString()));
+                        document.getDateAddedToLibrary().toString(),
+                        language,
+                        document.getImageUrl(),
+                        document.getDescription() != null ? document.getDescription() : "N/A"
+                    ));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

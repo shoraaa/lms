@@ -25,8 +25,8 @@ import javafx.beans.property.SimpleStringProperty;
 public class DocumentDAO extends BaseDAO<Document> {
 
     private static final String INSERT_DOCUMENT_QUERY = 
-        "INSERT INTO documents (name, author_ids, category_ids, publisher_id, isbn, publication_date, date_added, current_quantity, total_quantity) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO documents (name, author_ids, category_ids, publisher_id, isbn, publication_date, date_added, current_quantity, total_quantity, language_id, image_url, description) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     private static final String SELECT_DOCUMENT_BY_ID = "SELECT * FROM documents WHERE document_id = ?";
     private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
@@ -58,27 +58,11 @@ public class DocumentDAO extends BaseDAO<Document> {
             document.getPublicationDate() != null ? Date.valueOf(document.getPublicationDate()) : null, 
             document.getDateAddedToLibrary() != null ? Date.valueOf(document.getDateAddedToLibrary()) : null, 
             document.getCurrentQuantity(), 
-            document.getTotalQuantity()
+            document.getTotalQuantity(),
+            document.getLanguageId(), // Include language ID
+            document.getImageUrl(),
+            document.getDescription() // Include description
         );
-    }
-
-    public void importDocumentsFromJson(File file) {
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDate.class, new AdapterUtil.LocalDateAdapter())
-            .registerTypeAdapter(SimpleBooleanProperty.class, new AdapterUtil.SimpleBooleanPropertyAdapter())
-            .registerTypeAdapter(SimpleIntegerProperty.class, new AdapterUtil.SimpleIntegerPropertyAdapter())
-            .registerTypeAdapter(SimpleStringProperty.class, new AdapterUtil.SimpleStringPropertyAdapter())
-            .create();
-        try (FileReader reader = new FileReader(file)) {
-            Type documentListType = new TypeToken<List<Document>>() {}.getType();
-            List<Document> documents = gson.fromJson(reader, documentListType);
-            for (Document document : documents) {
-                System.out.println("Importing document: " + document.getTitle() + ", ISBN: " + document.getIsbn() + ", Quantity: " + document.getCurrentQuantity());
-                // add(document);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // Delete a document by ID
@@ -172,6 +156,21 @@ public class DocumentDAO extends BaseDAO<Document> {
             quantityTotal = 0;
         }
 
+        int languageId = rs.getInt("language_id");
+        if (rs.wasNull()) {
+            languageId = -1; // Assuming -1 indicates an unknown language
+        }
+
+        String imageUrl = rs.getString("image_url");
+        if (rs.wasNull()) {
+            imageUrl = "No Image Available";
+        }
+
+        String description = rs.getString("description");
+        if (rs.wasNull()) {
+            description = "No Description Available";
+        }
+
         return new Document.Builder(name)
             .documentId(documentId)
             .authorIds(authorIds)
@@ -182,6 +181,9 @@ public class DocumentDAO extends BaseDAO<Document> {
             .dateAddedToLibrary(dateAdded)
             .currentQuantity(quantityCurrent)
             .totalQuantity(quantityTotal)
+            .languageId(languageId) // Set language ID
+            .imageUrl(imageUrl) // Set image URL
+            .description(description)
             .build();
     }
 

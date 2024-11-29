@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import com.library.App;
 import com.library.util.LibraryDatabaseUtil;
 
 public abstract class BaseDAO<T> {
@@ -35,7 +36,7 @@ public abstract class BaseDAO<T> {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
         return null;
     }
@@ -51,7 +52,7 @@ public abstract class BaseDAO<T> {
                 return mapToEntity(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
         return null;
     }
@@ -66,7 +67,7 @@ public abstract class BaseDAO<T> {
             ResultSet rs = stmt.executeQuery();
             entities = processResultSet(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
         return entities;
     }
@@ -82,7 +83,7 @@ public abstract class BaseDAO<T> {
                 return resultSet.getInt(1);  // Returning the first column, which should be the count
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            App.showErrorDialog(e);
         }
         return 0;  // Default to 0 if no result found
     }

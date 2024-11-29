@@ -29,14 +29,21 @@ public class GoogleBooksAPI {
         private String[] categories;
         private String datePublished;
         private String isbn;
+        private String imageUrl;
+        private String language;
+        private String description;
+        
 
-        public BookDetails(String title, String[] authors, String publisher, String[] categories, String isbn, String datePublished) {
-            this.title = title;
-            this.authors = authors;
-            this.publisher = publisher;
-            this.categories = categories;
-            this.isbn = isbn;
-            this.datePublished = datePublished;
+        public BookDetails() {
+            this.title = "N/A";
+            this.authors = new String[0];
+            this.publisher = "N/A";
+            this.categories = new String[0];
+            this.isbn = "N/A";
+            this.datePublished = "N/A";
+            this.imageUrl = "N/A";
+            this.language = "N/A";
+            this.description = "N/A";
         }
 
         // Getters
@@ -64,6 +71,18 @@ public class GoogleBooksAPI {
             return datePublished;
         }
 
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
         // To String for easy display
         @Override
         public String toString() {
@@ -71,7 +90,9 @@ public class GoogleBooksAPI {
                    "Authors: " + String.join(", ", authors) + "\n" +
                    "Publisher: " + publisher + "\n" +
                    "Categories: " + String.join(", ", categories) + "\n" +
-                   "Date Published: " + datePublished;
+                   "Date Published: " + datePublished + "\n" +
+                   "ISBN: " + isbn + "\n" +
+                   "Image URL: " + imageUrl;
         }
     }
 
@@ -80,9 +101,7 @@ public class GoogleBooksAPI {
         String urlString;
 
         if (type.equals("isbn")) {
-            if (isbnOrTitle.contains("-")) {
-                isbnOrTitle.replace("-", "");
-            }
+            isbnOrTitle = isbnOrTitle.replace("-", "");
             urlString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbnOrTitle;
         } else if (type.equals("title")) {
             urlString = "https://www.googleapis.com/books/v1/volumes?q=intitle:" + isbnOrTitle;
@@ -103,33 +122,18 @@ public class GoogleBooksAPI {
             
             if (response.has("items")) {
                 JsonObject bookInfo = response.getAsJsonArray("items").get(0).getAsJsonObject().getAsJsonObject("volumeInfo");
-                
-                // Get book title
-                String title = bookInfo.get("title").getAsString();
-                
-                // Get authors
-                String[] authors = new String[bookInfo.getAsJsonArray("authors").size()];
-                for (int i = 0; i < authors.length; i++) {
-                    authors[i] = bookInfo.getAsJsonArray("authors").get(i).getAsString();
-                }
-                
-                // Get publisher
-                String publisher = bookInfo.has("publisher") ? bookInfo.get("publisher").getAsString() : "N/A";
-                
-                // Get categories
-                String[] categories = bookInfo.has("categories") ? new String[bookInfo.getAsJsonArray("categories").size()] : new String[0];
-                for (int i = 0; i < categories.length; i++) {
-                    categories[i] = bookInfo.getAsJsonArray("categories").get(i).getAsString();
-                }
 
-                // Get isbn
-                String isbn = bookInfo.has("industryIdentifiers") ? bookInfo.getAsJsonArray("industryIdentifiers").get(0).getAsJsonObject().get("identifier").getAsString() : "N/A";
+                BookDetails bookDetails = new BookDetails();
+                bookDetails.title = bookInfo.get("title").getAsString();
+                bookDetails.authors = bookInfo.has("authors") ? bookInfo.getAsJsonArray("authors").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};
+                bookDetails.publisher = bookInfo.has("publisher") ? bookInfo.get("publisher").getAsString() : "Unknown";
+                bookDetails.categories = bookInfo.has("categories") ? bookInfo.getAsJsonArray("categories").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};
+                bookDetails.datePublished = bookInfo.has("publishedDate") ? bookInfo.get("publishedDate").getAsString() : "Unknown";
+                bookDetails.imageUrl = bookInfo.has("imageLinks") ? bookInfo.getAsJsonObject("imageLinks").get("thumbnail").getAsString() : "No Image Available";
+                bookDetails.language = bookInfo.has("language") ? bookInfo.get("language").getAsString() : "Unknown";
+                bookDetails.description = bookInfo.has("description") ? bookInfo.get("description").getAsString() : "No Description Available";
                 
-                // Get date published
-                String datePublished = bookInfo.has("publishedDate") ? bookInfo.get("publishedDate").getAsString() : "N/A";
-                
-                // Return a BookDetails object
-                return new BookDetails(title, authors, publisher, categories, isbn, datePublished);
+                return bookDetails;
             } else {
                 System.out.println("No results found.");
                 return null;

@@ -40,7 +40,7 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     }
 
     // Create a new transaction
-    public int add(Transaction transaction) {
+    public Integer add(Transaction transaction) {
         String sql = "INSERT INTO transactions (user_id, document_id, borrow_date, is_returned) VALUES (?, ?, ?, ?)";
         return executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), transaction.getBorrowDate(), transaction.isReturned());
     }

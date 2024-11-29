@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.library.App;
 import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
@@ -22,7 +23,6 @@ import com.library.services.DocumentDAO;
 import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
-import com.library.util.ImageDownloader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,35 +38,31 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 
-public class AddDocumentController {
+public class EditDocumentController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;
     @FXML private TextField publisherTextField;
     @FXML private DatePicker publishedDatePicker;
-
     @FXML private ListView<Author> authorListView;
     @FXML private TextField authorTextField;
-
     @FXML private ListView<Category> categoryListView;
     @FXML private TextField categoryTextField;
-
     @FXML private ImageView documentImageView;
     @FXML private TextField languageTextField;
     @FXML private TextArea descriptionTextArea;
+    @FXML private Button saveButton, fetchButton, clearButton, selectImageButton;
 
-    @FXML private Button saveButton;
-    @FXML private Button fetchButton;
-    @FXML private Button clearButton;
-    @FXML private Button selectImageButton;
-
-    private ObservableList<Author> authorList;
-    private ObservableList<Category> categoryList;
+    private ObservableList<Author> authorList = FXCollections.observableArrayList();
+    private ObservableList<Category> categoryList = FXCollections.observableArrayList();
     private String selectedImagePath;
+    private Document document;
+    private boolean isEditing = false;
 
-    public AddDocumentController() {
+    public EditDocumentController(Document document) {
         authorList = FXCollections.observableArrayList();
         categoryList = FXCollections.observableArrayList();
+        this.document = document;
     }
 
     @FXML
@@ -84,6 +80,27 @@ public class AddDocumentController {
 
         // Initialize button actions
         setUpButtonActions();
+
+        // Populate form fields if editing an existing document
+        populateFormFields();
+        
+    }
+
+    private void populateFormFields() {
+        if (document == null) return;
+
+        titleTextField.setText(document.getTitle());
+        isbnTextField.setText(document.getIsbn());
+        Publisher publisher = PublisherDAO.getInstance().getPublisherById(document.getPublisherId());
+        publisherTextField.setText(publisher != null ? publisher.getName() : "No publisher available");
+        publishedDatePicker.setValue(document.getPublicationDate());
+        authorList.setAll(AuthorDAO.getInstance().getAuthorsByIds(document.getAuthorIds()));
+        categoryList.setAll(CategoryDAO.getInstance().getCategoriesByIds(document.getCategoryIds()));
+        Language language = LanguageDAO.getInstance().getLanguageById(document.getLanguageId());
+        languageTextField.setText(language != null ? language.getName() : "No language available");
+        descriptionTextArea.setText(document.getDescription());
+        selectedImagePath = document.getImageUrl();
+        documentImageView.setImage(new Image(selectedImagePath));
     }
 
     private void initializeAutoCompletionTextField(TextField textField, List<String> entries) {
@@ -115,7 +132,7 @@ public class AddDocumentController {
     }
 
     private void setUpButtonActions() {
-        saveButton.setOnAction(event -> saveNewDocument());
+        saveButton.setOnAction(event -> toggleEditAndSave());
         fetchButton.setOnAction(event -> fetchButtonAction());
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
@@ -155,7 +172,39 @@ public class AddDocumentController {
         }
     }
 
-    private void saveNewDocument() {
+    private void toggleEditAndSave() {
+        if (!isEditing) {
+            isEditing = true;
+            saveButton.textProperty().setValue("Save");
+
+            titleTextField.setDisable(false);
+            isbnTextField.setDisable(false);
+            publisherTextField.setDisable(false);
+            publishedDatePicker.setDisable(false);
+            authorTextField.setDisable(false);
+            categoryTextField.setDisable(false);
+            languageTextField.setDisable(false);
+            descriptionTextArea.setDisable(false);
+            fetchButton.setDisable(false);
+            clearButton.setDisable(false);
+            selectImageButton.setDisable(false);
+            titleTextField.setEditable(true);
+            isbnTextField.setEditable(true);
+            publisherTextField.setEditable(true);
+            publishedDatePicker.setEditable(true);
+            authorTextField.setEditable(true);
+            categoryTextField.setEditable(true);
+            languageTextField.setEditable(true);
+            descriptionTextArea.setEditable(true);
+        } else {
+            saveEditedDocument();
+        }
+    }
+
+    private void saveEditedDocument() {
+
+        DocumentDAO.getInstance().deleteDocument(document.getDocumentId());
+
         String title = titleTextField.getText();
         String isbn = isbnTextField.getText();
         String publisherName = publisherTextField.getText();
@@ -163,7 +212,7 @@ public class AddDocumentController {
 
         // Validate inputs
         if (title.isEmpty()) {
-            showAlert("Error", "At least title is required!", Alert.AlertType.ERROR);
+            App.showErrorDialog(new Exception("Title is required"));
             return;
         }
 
@@ -194,6 +243,7 @@ public class AddDocumentController {
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
+            clearForm();  // Clear the form after successful save
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }
@@ -262,10 +312,9 @@ public class AddDocumentController {
             publishedDatePicker.setValue(null);
         }
 
-        // Set image from cache
+        // Set image
         if (bookDetails.getImageUrl() != null) {
-            String imageUrl = ImageDownloader.setImageFromCache(bookDetails.getImageUrl(), documentImageView, bookDetails.getTitle());
-            selectedImagePath = imageUrl;
+            documentImageView.setImage(new Image(bookDetails.getImageUrl()));
         }
     }
 
@@ -288,3 +337,7 @@ public class AddDocumentController {
     }
 }
 
+@FunctionalInterface
+interface EntityCreator<T> {
+    T createEntity(int id, String name);
+}

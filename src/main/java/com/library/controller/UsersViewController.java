@@ -1,156 +1,117 @@
 package com.library.controller;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.library.model.Document;
+import com.library.App;
 import com.library.model.User;
 import com.library.services.UserDAO;
-import com.library.services.UserService;
-import com.library.util.WindowUtil;
+import com.library.view.UserTableView;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class UsersViewController {
 
     @FXML private TableView<User> userTable;
     @FXML private Label totalUsersLabel;
     @FXML private Button addButton;
-    @FXML private Button importButton;
-    @FXML private Button searchButton;
+    @FXML private Button filterButton;
+    @FXML private TextField searchTextField;
     @FXML private Button deleteButton;
     @FXML private VBox mainLayout;
 
-    private UserDAO userDAO;
-    private ObservableList<User> users;
+    private UserTableView userTableView;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);  // Using a fixed thread pool
 
     public void initialize() {
-        userDAO = UserDAO.getInstance();
-        users = FXCollections.observableList(userDAO.getAllUsers());
+        userTableView = new UserTableView(userTable);
 
-        initializeUserTable();
-        setUserData(users);
-        updateTotalUsers();
+        // Load initial data asynchronously
+        loadUsersAsync();
 
+        // Configure UI button actions
+        configureButtonActions();
+
+        // Add search field listener with debounce
+        configureSearchField();
+    }
+
+    private void configureButtonActions() {
         addButton.setOnAction(event -> handleAddNewUser());
         deleteButton.setOnAction(event -> handleDeleteSelected());
-        importButton.setOnAction(event -> handleImportUsers());
+        filterButton.setOnAction(event -> handleFilterUsers());
     }
 
-    private void updateTotalUsers() {
-        int totalUsers = userDAO.countAllUsers();
-        totalUsersLabel.setText("Total Users: " + totalUsers);
+    private void configureSearchField() {
+        // Debounce mechanism for search
+        PauseTransition pause = new PauseTransition(Duration.millis(300));
+        pause.setOnFinished(event -> performSearch(searchTextField.getText()));
+
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            pause.playFromStart();  // Restart the pause timer
+        });
     }
 
-    private void handleAddNewUser() {
-        Dialog<Void> dialog = new Dialog<>();
-        dialog.initOwner(mainLayout.getScene().getWindow());
-        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddUserWindow.fxml"));
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        dialog.showAndWait();
-
-        users.setAll(userDAO.getAllUsers());
-        updateTotalUsers();
-    }
-
-    private void handleDeleteSelected() {
-        List<Integer> selectedUserIds = userTable.getItems().stream()
-            .filter(User::isSelected)
-            .map(User::getUserId)
-            .collect(Collectors.toList());
-
-        if (!selectedUserIds.isEmpty()) {
-            userDAO.deleteUsers(selectedUserIds);
-            users.setAll(userDAO.getAllUsers());
-            updateTotalUsers();
+    private void performSearch(String query) {
+        if (query.isEmpty()) {
+            loadUsersAsync();  // Reload full list when the search text is empty
+        } else {
+            // Execute the search in a background thread
+            executorService.submit(() -> {
+                List<User> result = UserDAO.getInstance().getUsersByTitle(query);
+                Platform.runLater(() -> userTableView.setData(FXCollections.observableList(result)));
+            });
         }
     }
 
-    private void handleImportUsers() {
-        WindowUtil.openNewWindow("/com/library/views/ImportUsersWindow.fxml", "Import Users");
-    }
-
-    private void initializeUserTable() {
-        userTable.setEditable(true);
-
-        var selectAll = new CheckBox();
-        TableColumn<User, Boolean> selectColumn = createSelectColumn(selectAll);
-        TableColumn<User, String> nameColumn = createNameColumn();
-        TableColumn<User, String> emailColumn = createEmailColumn();
-        TableColumn<User, String> phoneNumberColumn = createPhoneNumberColumn();
-        TableColumn<User, String> timeRegisteredColumn = createTimeRegisteredColumn();
-
-        userTable.getColumns().addAll(selectColumn, nameColumn, emailColumn, phoneNumberColumn, timeRegisteredColumn);
-        userTable.setColumnResizePolicy(
-            TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN
-        );
-
-        selectAll.setOnAction(event -> {
-            userTable.getItems().forEach(
-                item -> item.isSelectedProperty().set(selectAll.isSelected())
-            );
-        });
-
-
-        userTable.setOnMouseClicked(event -> {
-            User selectedUser = userTable.getSelectionModel().getSelectedItem();
-            if (selectedUser != null) {
-                // Open an edit dialog
-                // openEditDialog(selectedUser);
+    private void loadUsersAsync() {
+        Task<List<User>> loadTask = new Task<>() {
+            @Override
+            protected List<User> call() {
+                return UserDAO.getInstance().getAllUsers();  // Database call in background
             }
-        });
+
+            @Override
+            protected void succeeded() {
+                List<User> users = getValue();
+                userTableView.setData(FXCollections.observableList(users));
+                updateTotalUsers(users.size());  // Update the total count
+            }
+
+            @Override
+            protected void failed() {
+                App.showErrorDialog(new Exception("Failed to load users"));
+            }
+        };
+
+        new Thread(loadTask).start();  // Run in a background thread
     }
 
-    private TableColumn<User, Boolean> createSelectColumn(CheckBox selectAll) {        
-        TableColumn<User, Boolean> selectColumn = new TableColumn<>();
-        selectColumn.setGraphic(selectAll);
-        selectColumn.setSortable(false);
-        selectColumn.setCellValueFactory(cellData -> cellData.getValue().isSelectedProperty());
-        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
-        selectColumn.setEditable(true);
-        return selectColumn;
+    private void updateTotalUsers(int count) {
+        totalUsersLabel.setText("Total Users: " + count);
     }
 
-    private TableColumn<User, String> createNameColumn() {
-        TableColumn<User, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        return nameColumn;
+    private void handleAddNewUser() {
+        App.openDialog("/com/library/views/AddUserWindow.fxml", null, this::loadUsersAsync);
     }
 
-    private TableColumn<User, String> createEmailColumn() {
-        TableColumn<User, String> nameColumn = new TableColumn<>("Email");
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-        return nameColumn;
+    private void handleDeleteSelected() {
+        userTableView.deleteSelectedItems();
+        loadUsersAsync();  // Reload data after deletion
     }
 
-    private TableColumn<User, String> createPhoneNumberColumn() {
-        TableColumn<User, String> nameColumn = new TableColumn<>("Phone Number");
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
-        return nameColumn;
-    }
-
-    private TableColumn<User, String> createTimeRegisteredColumn() {
-        TableColumn<User, String> dateAddedColumn = new TableColumn<>("Time Registered");
-        dateAddedColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeRegistered().toString()));
-        return dateAddedColumn;
-    }
-
-    public void setUserData(ObservableList<User> users) {
-        userTable.setItems(users);
+    private void handleFilterUsers() {
+        // Placeholder: Implement filter logic here
     }
 }

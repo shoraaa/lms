@@ -26,7 +26,7 @@ public class CategoryDAO extends BaseDAO<Category> {
     }
 
     // Add a new category if it doesn't already exist
-    public int add(Category category) {
+    public Integer add(Category category) {
         if (getCategoryByName(category.getName()) != null) {
             return getCategoryByName(category.getName()).getId();
         }

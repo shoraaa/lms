@@ -48,7 +48,7 @@ public class DocumentDAO extends BaseDAO<Document> {
         return instance;
     }
     // Add a new document
-    public int add(Document document) {
+    public Integer add(Document document) {
         return executeUpdate(INSERT_DOCUMENT_QUERY, 
             document.getTitle(), 
             listToString(document.getAuthorIds()), 

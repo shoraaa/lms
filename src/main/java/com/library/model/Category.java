@@ -27,6 +27,11 @@ public class Category {
         this.name = name;
     }
 
+    public Category(String name) {
+        this.id = -1;
+        this.name = name;
+    }
+
     /**
      * Get category ID
      * 

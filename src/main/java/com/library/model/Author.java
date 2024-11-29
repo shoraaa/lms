@@ -10,6 +10,18 @@ public class Author {
         this.email = email;
     }
 
+    public Author(int id, String name) {
+        this.id = id;
+        this.name = name;
+        this.email = "Not available";
+    }
+
+    public Author(String name) {
+        this.id = -1;
+        this.name = name;
+        this.email = "Not available";
+    }
+
     public int getId() {
         return id;
     }

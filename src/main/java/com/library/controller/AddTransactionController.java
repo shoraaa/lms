@@ -290,7 +290,7 @@ public class AddTransactionController {
 
         isbnTextField.setText(bookDetails.getIsbn() != null ? bookDetails.getIsbn() : "");
 
-        String publishedDate = bookDetails.getDatePublished();
+        String publishedDate = bookDetails.getPublishedDate();
         if (publishedDate != null) {
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

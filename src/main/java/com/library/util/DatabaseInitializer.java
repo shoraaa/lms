@@ -47,7 +47,7 @@ public class DatabaseInitializer {
         "name TEXT NOT NULL, " +
         "email TEXT NOT NULL UNIQUE, " +
         "phone_number TEXT NOT NULL, " +
-        "time_registered TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+        "registration_date DATE" +
         ");";
     
     private static String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS transactions (" +

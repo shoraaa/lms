@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.javafx.FontIcon;
-
 import com.library.util.DatabaseInitializer;
 
 import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
@@ -86,6 +86,29 @@ public class App extends Application {
         alert.getDialogPane().setExpandableContent(content);
         alert.initOwner(scene.getWindow());
         alert.show();
+    }
+
+    public static void openDialog(String fxmlPath, Object controller, Runnable onClose) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(scene.getWindow());
+        dialog.setDialogPane(new DialogPane() {
+            @Override
+            protected Node createButtonBar() {
+                return null;
+            }
+        });
+
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxmlPath));
+        if (controller != null) fxmlLoader.setController(controller);
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            App.showErrorDialog(e);
+            return;
+        }
+
+        dialog.showAndWait();
+        onClose.run();
     }
 
     public static void main(String[] args) {

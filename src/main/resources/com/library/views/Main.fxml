@@ -9,7 +9,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutY="128.0" prefHeight="954.0" prefWidth="176.0" spacing="32.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
+      <VBox alignment="TOP_CENTER" layoutY="128.0" prefHeight="954.0" prefWidth="199.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
          <children>
             <Button fx:id="dashboardButton" alignment="CENTER" mnemonicParsing="false" prefHeight="48.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Dashboard">
                <VBox.margin>
@@ -48,7 +48,7 @@
             <Insets top="80.0" />
          </padding>
       </VBox>
-      <AnchorPane fx:id="contentPane" layoutX="200.0" layoutY="106.0" prefHeight="956.0" prefWidth="1700.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0">
+      <AnchorPane fx:id="contentPane" layoutX="200.0" layoutY="106.0" prefHeight="956.0" prefWidth="1700.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0">
          <padding>
             <Insets right="20.0" />
          </padding></AnchorPane>

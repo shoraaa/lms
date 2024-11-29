@@ -27,7 +27,7 @@ public class GoogleBooksAPI {
         private String[] authors;
         private String publisher;
         private String[] categories;
-        private String datePublished;
+        private String publishedDate;
         private String isbn;
         private String imageUrl;
         private String language;
@@ -40,7 +40,7 @@ public class GoogleBooksAPI {
             this.publisher = "N/A";
             this.categories = new String[0];
             this.isbn = "N/A";
-            this.datePublished = "N/A";
+            this.publishedDate = "N/A";
             this.imageUrl = "N/A";
             this.language = "N/A";
             this.description = "N/A";
@@ -67,8 +67,8 @@ public class GoogleBooksAPI {
             return isbn;
         }
 
-        public String getDatePublished() {
-            return datePublished;
+        public String getPublishedDate() {
+            return publishedDate;
         }
 
         public String getImageUrl() {
@@ -90,7 +90,7 @@ public class GoogleBooksAPI {
                    "Authors: " + String.join(", ", authors) + "\n" +
                    "Publisher: " + publisher + "\n" +
                    "Categories: " + String.join(", ", categories) + "\n" +
-                   "Date Published: " + datePublished + "\n" +
+                   "Date Published: " + publishedDate + "\n" +
                    "ISBN: " + isbn + "\n" +
                    "Image URL: " + imageUrl;
         }
@@ -129,7 +129,7 @@ public class GoogleBooksAPI {
                 bookDetails.authors = bookInfo.has("authors") ? bookInfo.getAsJsonArray("authors").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};
                 bookDetails.publisher = bookInfo.has("publisher") ? bookInfo.get("publisher").getAsString() : "Unknown";
                 bookDetails.categories = bookInfo.has("categories") ? bookInfo.getAsJsonArray("categories").toString().replace("[", "").replace("]", "").replace("\"", "").split(",") : new String[]{};
-                bookDetails.datePublished = bookInfo.has("publishedDate") ? bookInfo.get("publishedDate").getAsString() : "Unknown";
+                bookDetails.publishedDate = bookInfo.has("publishedDate") ? bookInfo.get("publishedDate").getAsString() : "Unknown";
                 bookDetails.imageUrl = bookInfo.has("imageLinks") ? bookInfo.getAsJsonObject("imageLinks").get("thumbnail").getAsString() : "No Image Available";
                 bookDetails.language = bookInfo.has("language") ? bookInfo.get("language").getAsString() : "Unknown";
                 bookDetails.description = bookInfo.has("description") ? bookInfo.get("description").getAsString() : "No Description Available";

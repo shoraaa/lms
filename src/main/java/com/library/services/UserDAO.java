@@ -1,8 +1,8 @@
 package com.library.services;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.library.model.User;
@@ -35,21 +35,26 @@ public class UserDAO extends BaseDAO<User> {
                 rs.getString("phone_number")
         );
         user.setUserId(rs.getInt("user_id"));
-        user.setTimeRegistered(rs.getTimestamp("time_registered").toLocalDateTime());
+        user.setRegistrationDate(rs.getDate("registration_date").toLocalDate());
         return user;
     }
 
     // Method to add a new user
-    public int add(User user) {
-        String sql = "INSERT INTO users (name, email, phone_number, time_registered) VALUES (?, ?, ?, ?)";
+    public Integer add(User user) {
+        String sql = "INSERT INTO users (name, email, phone_number, registration_date) VALUES (?, ?, ?, ?)";
         System.out.println(user.getName() + ", " + user.getEmail() + ", " + user.getPhoneNumber());
-        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), Timestamp.valueOf(user.getTimeRegistered()));
+        return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), Date.valueOf(user.getRegistrationDate()));
     }
 
     // Method to retrieve a user by ID
     public User getUserById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         return executeQueryForSingleEntity(sql, id);
+    }
+
+    public List<User> getUsersByTitle(String title) {
+        String sql = "SELECT * FROM users WHERE title LIKE ?";
+        return executeQueryForList(sql, title);
     }
 
     // Method to update user details

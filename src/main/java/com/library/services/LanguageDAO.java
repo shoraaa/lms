@@ -34,7 +34,7 @@ public class LanguageDAO extends BaseDAO<Language> {
     }
 
     // Method to add a new language
-    public int add(Language language) {
+    public Integer add(Language language) {
         // Check if the language already exists
         if (getLanguageByName(language.getName()) != null) {
             return getLanguageByName(language.getName()).getId();

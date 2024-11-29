@@ -104,4 +104,6 @@ public abstract class BaseDAO<T> {
         }
         return entities;
     }
+
+    public abstract Integer add(T entity);
 }

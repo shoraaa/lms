@@ -1,173 +1,117 @@
 package com.library.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import com.library.App;
 import com.library.model.Transaction;
-import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
-import com.library.services.UserDAO;
-import com.library.util.WindowUtil;
+import com.library.view.TransactionTableView;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class TransactionsViewController {
 
     @FXML private TableView<Transaction> transactionTable;
     @FXML private Label totalTransactionsLabel;
     @FXML private Button addButton;
-    @FXML private Button importButton;
-    @FXML private Button searchButton;
+    @FXML private Button filterButton;
+    @FXML private TextField searchTextField;
     @FXML private Button deleteButton;
     @FXML private VBox mainLayout;
 
-    private TransactionDAO transactionDAO;
-    private ObservableList<Transaction> transactions;
+    private TransactionTableView transactionTableView;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);  // Using a fixed thread pool
 
     public void initialize() {
-        transactionDAO = TransactionDAO.getInstance();
-        transactions = FXCollections.observableList(transactionDAO.getAllTransactions());
+        transactionTableView = new TransactionTableView(transactionTable);
 
-        initializeTransactionTable();
-        setTransactionData(transactions);
-        updateTotalTransactions();
+        // Load initial data asynchronously
+        loadTransactionsAsync();
 
-        addButton.setOnAction(event -> handleAddNewTransaction());
-        deleteButton.setOnAction(event -> handleDeleteSelected());
-        importButton.setOnAction(event -> handleImportTransactions());
+        // Configure UI button actions
+        configureButtonActions();
+
+        // Add search field listener with debounce
+        configureSearchField();
     }
 
-    private void updateTotalTransactions() {
-        int totalTransactions = transactionDAO.countAllTransactions();
-        totalTransactionsLabel.setText("Total Transactions: " + totalTransactions);
+    private void configureButtonActions() {
+        addButton.setOnAction(event -> handleAddNewTransaction());
+        deleteButton.setOnAction(event -> handleDeleteSelected());
+        filterButton.setOnAction(event -> handleFilterTransactions());
+    }
+
+    private void configureSearchField() {
+        // Debounce mechanism for search
+        PauseTransition pause = new PauseTransition(Duration.millis(300));
+        pause.setOnFinished(event -> performSearch(searchTextField.getText()));
+
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            pause.playFromStart();  // Restart the pause timer
+        });
+    }
+
+    private void performSearch(String query) {
+        // if (query.isEmpty()) {
+        //     loadTransactionsAsync();  // Reload full list when the search text is empty
+        // } else {
+        //     // Execute the search in a background thread
+        //     executorService.submit(() -> {
+        //         List<Transaction> result = TransactionDAO.getInstance().getTransactionsByTitle(query);
+        //         Platform.runLater(() -> transactionTableView.setData(FXCollections.observableList(result)));
+        //     });
+        // }
+    }
+
+    private void loadTransactionsAsync() {
+        Task<List<Transaction>> loadTask = new Task<>() {
+            @Override
+            protected List<Transaction> call() {
+                return TransactionDAO.getInstance().getAllTransactions();  // Database call in background
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Transaction> transactions = getValue();
+                transactionTableView.setData(FXCollections.observableList(transactions));
+                updateTotalTransactions(transactions.size());  // Update the total count
+            }
+
+            @Override
+            protected void failed() {
+                App.showErrorDialog(new Exception("Failed to load transactions"));
+            }
+        };
+
+        new Thread(loadTask).start();  // Run in a background thread
+    }
+
+    private void updateTotalTransactions(int count) {
+        totalTransactionsLabel.setText("Total Transactions: " + count);
     }
 
     private void handleAddNewTransaction() {
-        Dialog<Void> dialog = new Dialog<>();
-        dialog.initOwner(mainLayout.getScene().getWindow());
-        dialog.getDialogPane().setContent(WindowUtil.loadFXML("/com/library/views/AddTransactionWindow.fxml"));
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        dialog.showAndWait();
-
-        transactions.setAll(transactionDAO.getAllTransactions());
-        updateTotalTransactions();
+        App.openDialog("/com/library/views/AddTransactionWindow.fxml", null, this::loadTransactionsAsync);
     }
 
     private void handleDeleteSelected() {
-        List<Integer> selectedTransactionIds = transactionTable.getItems().stream()
-            .filter(Transaction::isSelected)
-            .map(Transaction::getTransactionId)
-            .collect(Collectors.toList());
-
-        if (!selectedTransactionIds.isEmpty()) {
-            transactionDAO.deleteTransactions(selectedTransactionIds);
-            transactions.setAll(transactionDAO.getAllTransactions());
-            updateTotalTransactions();
-        }
+        transactionTableView.deleteSelectedItems();
+        loadTransactionsAsync();  // Reload data after deletion
     }
 
-    private void handleImportTransactions() {
-        
-    }
-
-    private void initializeTransactionTable() {
-        transactionTable.setEditable(true);
-        var selectAll = new CheckBox();
-
-        var selectColumn = createSelectColumn(selectAll);
-        var idColumn = createIdColumn();
-        var userColumn = createUserColumn();
-        var documentColumn = createDocumentColumn();
-        var borrowDate = createBorrowDateColumn();
-        var returnDate = createReturnDateColumn();
-        var isReturnedColumn = createIsReturnedColumn();
-        
-
-        transactionTable.getColumns().addAll(selectColumn, idColumn, userColumn, documentColumn, borrowDate, returnDate, isReturnedColumn);
-        transactionTable.setColumnResizePolicy(
-            TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN
-        );
-
-        selectAll.setOnAction(event -> {
-            transactionTable.getItems().forEach(
-                item -> item.isSelectedProperty().set(selectAll.isSelected())
-            );
-        });
-
-        transactionTable.setOnMouseClicked(event -> {
-            Transaction selectedTransaction = transactionTable.getSelectionModel().getSelectedItem();
-            if (selectedTransaction != null) {
-                // Open an edit dialog
-                // openEditDialog(selectedTransaction);
-            }
-        });
-    }
-
-    private TableColumn<Transaction, Boolean> createSelectColumn(CheckBox selectAll) {
-        
-        TableColumn<Transaction, Boolean> selectColumn = new TableColumn<>();
-        selectColumn.setGraphic(selectAll);
-        selectColumn.setSortable(false);
-        selectColumn.setCellValueFactory(cellData -> cellData.getValue().isSelectedProperty());
-        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
-        selectColumn.setEditable(true);
-        return selectColumn;
-    }
-
-    private TableColumn<Transaction, Integer> createIdColumn() {
-        TableColumn<Transaction, Integer> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getTransactionId()).asObject());
-        return idColumn;
-    }
-
-    private TableColumn<Transaction, String> createUserColumn() {
-        TableColumn<Transaction, String> userColumn = new TableColumn<>("User");
-        UserDAO userDAO = UserDAO.getInstance();
-        userColumn.setCellValueFactory(cellData -> new SimpleStringProperty(userDAO.getUserById(cellData.getValue().getUserId()).getName()));
-        return userColumn;
-    }
-
-    private TableColumn<Transaction, String> createDocumentColumn() {
-        TableColumn<Transaction, String> userColumn = new TableColumn<>("Document");
-        DocumentDAO userDAO = DocumentDAO.getInstance();
-        userColumn.setCellValueFactory(cellData -> new SimpleStringProperty(userDAO.getDocumentById(cellData.getValue().getDocumentId()).getTitle()));
-        return userColumn;
-    }
-
-    private TableColumn<Transaction, String> createBorrowDateColumn() {
-        TableColumn<Transaction, String> returnDateColumn = new TableColumn<>("Borrow Date");
-        returnDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBorrowDate().toString()));
-        return returnDateColumn;
-    }
-
-    private TableColumn<Transaction, String> createReturnDateColumn() {
-        TableColumn<Transaction, String> borrowDateColumn = new TableColumn<>("Return Date");
-        borrowDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBorrowDate().toString()));
-        return borrowDateColumn;
-    }
-
-    private TableColumn<Transaction, Boolean> createIsReturnedColumn() {
-        TableColumn<Transaction, Boolean> isReturnedColumn = new TableColumn<>("Is Returned?");
-        isReturnedColumn.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isReturned()));
-        return isReturnedColumn;
-    }
-
-
-    public void setTransactionData(ObservableList<Transaction> transactions) {
-        transactionTable.setItems(transactions);
+    private void handleFilterTransactions() {
+        // Placeholder: Implement filter logic here
     }
 }

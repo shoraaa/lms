@@ -1,5 +1,6 @@
 package com.library.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -9,7 +10,8 @@ public class User {
     private String name;
     private String email;
     private String phoneNumber;
-    private LocalDateTime timeRegistered;
+    private LocalDate registrationDate;
+    private String imageUrl;
 
     private final SimpleBooleanProperty selected; // For checkbox
 
@@ -17,7 +19,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.timeRegistered = LocalDateTime.now(); // Automatically set to current time
+        this.registrationDate = LocalDate.now(); // Automatically set to current time
 
         this.selected = new SimpleBooleanProperty(false);
     }
@@ -55,12 +57,20 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getTimeRegistered() {
-        return timeRegistered;
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
     }
 
-    public void setTimeRegistered(LocalDateTime timeRegistered) {
-        this.timeRegistered = timeRegistered;
+    public void setRegistrationDate(LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
         /**
@@ -91,7 +101,7 @@ public class User {
                ", name='" + name + '\'' +
                ", email='" + email + '\'' +
                ", phoneNumber='" + phoneNumber + '\'' +
-               ", timeRegistered=" + timeRegistered +
+               ", registrationDate=" + registrationDate +
                '}';
     }
 }

@@ -85,4 +85,9 @@ public class TransactionDAO extends BaseDAO<Transaction> {
                 .collect(Collectors.joining(", ")) + ")";
         executeUpdate(sql, transactionIds.toArray());
     }
+
+    public List<Transaction> getMostBorrowedTransaction(int count) {
+        String sql = "SELECT * FROM transactions GROUP BY document_id ORDER BY COUNT(*) DESC LIMIT ?";
+        return executeQueryForList(sql, count);
+    }
 }

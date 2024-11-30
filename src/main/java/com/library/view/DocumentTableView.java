@@ -65,6 +65,7 @@ public class DocumentTableView extends BaseTableView<Document> {
         List<java.util.function.Supplier<TableColumn<Document, ?>>> columnTasks = List.of(
             this::createSelectColumn,
             this::createImageColumn,
+            () -> createTextColumn("ID", doc -> new SimpleStringProperty(String.valueOf(doc.getDocumentId()))),
             () -> createTextColumn("Name", doc -> new SimpleStringProperty(doc.getTitle())),
             this::createAuthorsColumn,
             this::createCategoriesColumn,

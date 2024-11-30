@@ -48,7 +48,7 @@ public class UserDAO extends BaseDAO<User> {
 
     // Method to retrieve a user by ID
     public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE user_id = ?";
         return executeQueryForSingleEntity(sql, id);
     }
 

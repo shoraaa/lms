@@ -32,7 +32,7 @@ public class TransactionsViewController extends BaseViewController {
 
     private TransactionTableView transactionTableView;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(2);  // Using a fixed thread pool
+    private final ExecutorService executorService = Executors.newCachedThreadPool();  // Using a fixed thread pool
 
     public void initialize() {
         transactionTableView = new TransactionTableView(transactionTable);

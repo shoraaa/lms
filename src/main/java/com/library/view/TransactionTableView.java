@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.library.model.Document;
 // import com.library.controller.EditTransactionController;
 import com.library.model.Transaction;
+import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
+import com.library.services.UserDAO;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
@@ -41,16 +44,22 @@ public class TransactionTableView extends BaseTableView<Transaction> {
 
     @Override
     protected List<TableColumn<Transaction, ?>> createColumns() {
-        return List.of(
-            createSelectColumn(),
-            // createImageColumn(),
-            createTextColumn("User ID", transaction -> new SimpleStringProperty(String.valueOf(transaction.getUserId()))),
-            createTextColumn("Document ID", transaction -> new SimpleStringProperty(String.valueOf(transaction.getDocumentId()))),
-            createDateColumn("Borrow Date", transaction -> transaction.getBorrowDate()),
-            createDateColumn("Return Date", transaction -> transaction.getReturnDate()),
-            createTextColumn("Is Returned", transaction -> new SimpleStringProperty(transaction.isReturned() ? "Yes" : "No")),
-            createActionColumn()
+        List<java.util.function.Supplier<TableColumn<Transaction, ?>>> columnTasks = List.of(
+            this::createSelectColumn,
+            () -> createTextColumn("ID", user -> new SimpleStringProperty(String.valueOf(user.getUserId()))),
+            () -> createTextColumn("User", transaction -> new SimpleStringProperty(transaction.getUserName())),
+            () -> createTextColumn("Document", transaction -> new SimpleStringProperty(transaction.getDocumentTitle())),
+            () -> createDateColumn("Borrow Date", transaction -> transaction.getBorrowDate()),
+            () -> createDateColumn("Due Date", transaction -> transaction.getDueDate()),
+            () -> createDateColumn("Return Date", transaction -> transaction.getReturnDate()),
+            () -> createTextColumn("Status", transaction -> new SimpleStringProperty(transaction.getStatus())),
+            this::createActionColumn
         );
+
+        // Use parallel stream to execute tasks and collect results
+        return columnTasks.parallelStream()
+            .map(java.util.function.Supplier::get)
+            .collect(Collectors.toList());
     }
 
     @Override

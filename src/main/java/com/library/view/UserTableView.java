@@ -11,6 +11,7 @@ import com.library.App;
 // import com.library.controller.EditUserController;
 import com.library.model.User;
 import com.library.model.Publisher;
+import com.library.model.Transaction;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.UserDAO;
@@ -50,15 +51,20 @@ public class UserTableView extends BaseTableView<User> {
 
     @Override
     protected List<TableColumn<User, ?>> createColumns() {
-        return List.of(
-            createSelectColumn(),
-            // createImageColumn(),
-            createTextColumn("Name", user -> new SimpleStringProperty(user.getName())),
-            createTextColumn("E-mail", user -> new SimpleStringProperty(user.getEmail())),
-            createTextColumn("Phone Number", user -> new SimpleStringProperty(user.getPhoneNumber())),
-            createDateColumn("Registration Date", User::getRegistrationDate),
-            createActionColumn()
+        List<java.util.function.Supplier<TableColumn<User, ?>>> columnTasks = List.of(
+            this::createSelectColumn,
+            () -> createTextColumn("ID", user -> new SimpleStringProperty(String.valueOf(user.getUserId()))),
+            () -> createTextColumn("Name", user -> new SimpleStringProperty(user.getName())),
+            () -> createTextColumn("E-mail", user -> new SimpleStringProperty(user.getEmail())),
+            () -> createTextColumn("Phone Number", user -> new SimpleStringProperty(user.getPhoneNumber())),
+            () -> createDateColumn("Registration Date", User::getRegistrationDate),
+            this::createActionColumn
         );
+
+        // Use parallel stream to execute tasks and collect results
+        return columnTasks.parallelStream()
+            .map(java.util.function.Supplier::get)
+            .collect(Collectors.toList());
     }
 
     @Override

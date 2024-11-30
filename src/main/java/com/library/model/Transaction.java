@@ -2,6 +2,9 @@ package com.library.model;
 
 import java.time.LocalDate;
 
+import com.library.services.DocumentDAO;
+import com.library.services.UserDAO;
+
 import javafx.beans.property.SimpleBooleanProperty;
 
 
@@ -69,6 +72,31 @@ public class Transaction {
 
     public void setReturned(boolean returned) {
         isReturned = returned;
+    }
+
+    public String getStatus() {
+        if (isReturned) {
+            return "Returned";
+        } else if (LocalDate.now().isAfter(dueDate)) {
+            return "Overdue";
+        } else {
+            return "Borrowing";
+        }
+    }
+
+    public String getUserName() {
+        User user = UserDAO.getInstance().getUserById(userId);
+        if (user == null) {
+            return "Unknown User";
+        }
+        return user.getName();
+    }
+
+    public String getDocumentTitle() {
+        if (DocumentDAO.getInstance().getDocumentById(documentId) == null) {
+            return "Unknown Document";
+        }
+        return DocumentDAO.getInstance().getDocumentById(documentId).getTitle();
     }
 
     /**

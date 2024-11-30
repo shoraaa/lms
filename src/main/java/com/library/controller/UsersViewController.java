@@ -20,7 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-public class UsersViewController {
+public class UsersViewController extends BaseViewController {
 
     @FXML private TableView<User> userTable;
     @FXML private Label totalUsersLabel;

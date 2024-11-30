@@ -110,6 +110,7 @@ public class App extends Application {
         dialog.showAndWait();
         onClose.run();
     }
+    
 
     public static void main(String[] args) {
         launch();

@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-public class TransactionsViewController {
+public class TransactionsViewController extends BaseViewController {
 
     @FXML private TableView<Transaction> transactionTable;
     @FXML private Label totalTransactionsLabel;

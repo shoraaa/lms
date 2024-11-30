@@ -281,10 +281,5 @@ public class AddDocumentController {
         }
     }
 
-    @FXML
-    public void closeWindow() {
-        clearForm();
-        saveButton.getScene().getWindow().hide();
-    }
 }
 

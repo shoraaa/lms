@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.library.App;
+import com.library.controller.BaseViewController;
 import com.library.controller.EditDocumentController;
 import com.library.model.Document;
 import com.library.model.Publisher;
@@ -36,6 +37,8 @@ public class DocumentTableView extends BaseTableView<Document> {
     private final Map<Integer, String> categoriesCache = new HashMap<>();
     private final Map<Integer, String> publishersCache = new HashMap<>();
 
+    private BaseViewController parentController;
+
     public DocumentTableView(TableView<Document> tableView) {
         super(tableView);
         // loadData();
@@ -50,6 +53,10 @@ public class DocumentTableView extends BaseTableView<Document> {
             });
             return row;
         });
+    }
+
+    public void setParentController(BaseViewController parentController) {
+        this.parentController = parentController;
     }
 
     @Override
@@ -94,7 +101,8 @@ public class DocumentTableView extends BaseTableView<Document> {
 
     @Override
     protected void editItem(Document document) {
-        App.openDialog("/com/library/views/EditDocumentWindow.fxml", new EditDocumentController(document), this::loadData);
+        // App.openDialog("/com/library/views/EditDocumentWindow.fxml", new EditDocumentController(document), this::loadData);
+        parentController.getMainController().showDialog("/com/library/views/EditDocumentWindow.fxml", this::loadData, new EditDocumentController(document));
     }
 
     private TableColumn<Document, Boolean> createSelectColumn() {

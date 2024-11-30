@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.library.App;
 
+import atlantafx.base.controls.ModalPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,6 +37,17 @@ public class WindowUtil {
             stage.setTitle(title);
             stage.setScene(new Scene(root));
             stage.show();
+        } catch (IOException e) {
+            App.showErrorDialog(e);
+        }
+    }
+
+    public static void showDialog(String fxmlPath, ModalPane modalPane, Runnable onClose) {
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowUtil.class.getResource(fxmlPath));
+            Parent root = loader.load();
+            modalPane.show(root);
+            onClose.run();
         } catch (IOException e) {
             App.showErrorDialog(e);
         }

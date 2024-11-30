@@ -8,8 +8,10 @@ import java.util.concurrent.Executors;
 import com.library.App;
 import com.library.model.Document;
 import com.library.services.DocumentDAO;
+import com.library.util.WindowUtil;
 import com.library.view.DocumentTableView;
 
+import atlantafx.base.controls.ModalPane;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,7 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-public class DocumentsViewController {
+public class DocumentsViewController extends BaseViewController {
 
     @FXML private TableView<Document> documentTable;
     @FXML private Label totalDocumentsLabel;
@@ -36,6 +38,7 @@ public class DocumentsViewController {
 
     public void initialize() {
         documentTableView = new DocumentTableView(documentTable);
+        documentTableView.setParentController(this);
 
         // Load initial data asynchronously
         loadDocumentsAsync();
@@ -103,7 +106,15 @@ public class DocumentsViewController {
     }
 
     private void handleAddNewDocument() {
-        App.openDialog("/com/library/views/AddDocumentWindow.fxml", null, this::loadDocumentsAsync);
+        // App.openDialog("/com/library/views/AddDocumentWindow.fxml", null, this::loadDocumentsAsync);
+        // WindowUtil.showDialog("/com/library/views/AddDocumentWindow.fxml", modalPane, this::loadDocumentsAsync);
+        // how to open a dialog window in a modalPane in the mainController
+        if (mainController == null) {
+            App.showErrorDialog(new Exception("MainController not set"));
+            return;
+        }
+
+        mainController.showDialog("/com/library/views/AddDocumentWindow.fxml", this::loadDocumentsAsync, null);
     }
 
     private void handleDeleteSelected() {

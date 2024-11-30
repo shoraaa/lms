@@ -14,7 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 
 
-public class DashboardController {
+public class DashboardController extends BaseViewController {
 
     @FXML private Label helloLabel;
     @FXML private Label dateTimeLabel;
@@ -42,12 +42,14 @@ public class DashboardController {
         setCardValue(returnedBookCard, "Returned Books", "2", Material2MZ.PERSON);
 
         documentTableView = new DocumentTableView(documentsList);
+        documentTableView.setParentController(this);
         documentTableView.removeColumn("Categories");
         documentTableView.removeColumn("Publisher");
         documentTableView.removeColumn("Publication Date");
         documentTableView.removeColumn("Registration Date");
         documentTableView.removeColumn("");
         documentTableView.removeColumn("Image");
+        documentTableView.removeColumn("ISBN");
         documentTableView.loadData();
     }
 

@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="1063.0" prefWidth="1774.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="685.0" prefWidth="1163.0">
+      <HBox alignment="CENTER" prefHeight="685.0">
          <children>
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="575.0" prefHeight="913.0" prefWidth="575.0" spacing="20.0">
                <children>
@@ -121,12 +121,12 @@
          </children>
       </HBox>
       <Separator prefWidth="200.0" />
-      <HBox alignment="CENTER" prefHeight="158.0" prefWidth="1163.0" spacing="20.0">
+      <HBox alignment="CENTER" prefHeight="158.0" spacing="20.0">
          <children>
-            <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" styleClass="sidebar-button" text="Clear" />
-            <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" styleClass="sidebar-button" text="Fetch" />
-            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" styleClass="sidebar-button" text="Edit" />
-            <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" styleClass="sidebar-button" text="Cancel" />
+            <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="Clear" />
+            <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="Fetch" />
+            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="Edit" />
+            <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" text="Cancel" />
          </children>
       </HBox>
    </children>

@@ -55,7 +55,7 @@ public class UserTableView extends BaseTableView<User> {
             // createImageColumn(),
             createTextColumn("Name", user -> new SimpleStringProperty(user.getName())),
             createTextColumn("E-mail", user -> new SimpleStringProperty(user.getEmail())),
-            createTextColumn("E-mail", user -> new SimpleStringProperty(user.getPhoneNumber())),
+            createTextColumn("Phone Number", user -> new SimpleStringProperty(user.getPhoneNumber())),
             createDateColumn("Registration Date", User::getRegistrationDate),
             createActionColumn()
         );

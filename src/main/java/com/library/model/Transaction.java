@@ -11,14 +11,16 @@ public class Transaction {
     private int documentId;
     private LocalDate borrowDate;
     private LocalDate returnDate;
+    private LocalDate dueDate;
     private boolean isReturned;
 
      private final SimpleBooleanProperty selected; // For checkbox
 
-    public Transaction(int userId, int documentId, LocalDate borrowDate) {
+    public Transaction(int userId, int documentId, LocalDate borrowDate, LocalDate dueDate) {
         this.userId = userId;
         this.documentId = documentId;
         this.borrowDate = borrowDate;
+        this.dueDate = dueDate;
         this.returnDate = null;
         this.isReturned = false;
 
@@ -47,6 +49,14 @@ public class Transaction {
 
     public LocalDate getReturnDate() {
         return returnDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public void setReturnDate(LocalDate returnDate) {

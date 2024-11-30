@@ -32,7 +32,7 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     @Override
     protected Transaction mapToEntity(ResultSet rs) throws SQLException {
         Transaction transaction = new Transaction(rs.getInt("user_id"),
-                rs.getInt("document_id"), rs.getDate("borrow_date").toLocalDate());
+                rs.getInt("document_id"), rs.getDate("borrow_date").toLocalDate(), rs.getDate("borrow_date").toLocalDate());
         transaction.setTransactionId(rs.getInt("transaction_id"));
         transaction.setReturnDate(rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null);
         transaction.setReturned(rs.getBoolean("is_returned"));
@@ -41,8 +41,8 @@ public class TransactionDAO extends BaseDAO<Transaction> {
 
     // Create a new transaction
     public Integer add(Transaction transaction) {
-        String sql = "INSERT INTO transactions (user_id, document_id, borrow_date, is_returned) VALUES (?, ?, ?, ?)";
-        return executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), transaction.getBorrowDate(), transaction.isReturned());
+        String sql = "INSERT INTO transactions (user_id, document_id, borrow_date, due_date) VALUES (?, ?, ?, ?)";
+        return executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), Date.valueOf(transaction.getBorrowDate()), Date.valueOf(transaction.getDueDate()));
     }
 
     // Mark a transaction as returned

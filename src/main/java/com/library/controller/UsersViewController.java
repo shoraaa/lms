@@ -103,7 +103,12 @@ public class UsersViewController extends BaseViewController {
     }
 
     private void handleAddNewUser() {
-        App.openDialog("/com/library/views/AddUserWindow.fxml", null, this::loadUsersAsync);
+        if (mainController == null) {
+            App.showErrorDialog(new Exception("MainController not set"));
+            return;
+        }
+
+        mainController.showDialog("/com/library/views/AddUserWindow.fxml", this::loadUsersAsync, null);
     }
 
     private void handleDeleteSelected() {

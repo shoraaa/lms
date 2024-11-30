@@ -104,6 +104,7 @@ public class GoogleBooksAPI {
             isbnOrTitle = isbnOrTitle.replace("-", "");
             urlString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbnOrTitle;
         } else if (type.equals("title")) {
+            isbnOrTitle.replace(" ", "%20");
             urlString = "https://www.googleapis.com/books/v1/volumes?q=intitle:" + isbnOrTitle;
         } else {
             return null;

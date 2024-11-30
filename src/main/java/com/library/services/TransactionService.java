@@ -14,10 +14,10 @@ public class TransactionService {
         this.transactionDAO = TransactionDAO.getInstance();
     }
 
-    public boolean borrowDocument(int userId, int documentId) {
+    public boolean borrowDocument(int userId, int documentId, LocalDate borrowDate, LocalDate dueDate) {
         Document document = documentDAO.getDocumentById(documentId);
         if (document.getCurrentQuantity() > 0) {
-            Transaction transaction = new Transaction(userId, documentId, LocalDate.now());
+            Transaction transaction = new Transaction(userId, documentId, borrowDate, dueDate);
             transactionDAO.add(transaction);
             documentDAO.updateDocumentQuantity(documentId, document.getCurrentQuantity() - 1);
             return true;

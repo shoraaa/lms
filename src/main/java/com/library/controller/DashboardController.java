@@ -5,6 +5,7 @@ import org.kordamp.ikonli.material2.Material2MZ;
 import com.library.model.Document;
 import com.library.model.User;
 import com.library.view.DocumentTableView;
+import com.library.view.UserTableView;
 
 import atlantafx.base.controls.Card;
 import atlantafx.base.theme.Styles;
@@ -27,6 +28,7 @@ public class DashboardController extends BaseViewController {
     @FXML private TableView<Document> documentsList;
 
     private DocumentTableView documentTableView;
+    private UserTableView userTableView;
 
     public void initialize() {
         helloLabel.setText("Hello, Admin");
@@ -51,6 +53,10 @@ public class DashboardController extends BaseViewController {
         documentTableView.removeColumn("Image");
         documentTableView.removeColumn("ISBN");
         documentTableView.loadData();
+
+        userTableView = new UserTableView(usersList);
+        userTableView.removeColumn("Registration Date");
+        userTableView.removeColumn("");
     }
 
     private void setCardValue(Card card, String body, String header, Material2MZ icon) {

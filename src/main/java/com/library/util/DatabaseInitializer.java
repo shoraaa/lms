@@ -1,6 +1,8 @@
 package com.library.util;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.Random;
 
 import com.library.App;
 
@@ -55,6 +57,7 @@ public class DatabaseInitializer {
         "user_id INTEGER NOT NULL, " +
         "document_id INTEGER NOT NULL, " +
         "borrow_date DATE NOT NULL, " +
+        "due_date DATE, " +
         "return_date DATE, " +
         "is_returned BOOLEAN DEFAULT 0, " +
         "FOREIGN KEY(user_id) REFERENCES users(user_id), " +
@@ -79,9 +82,28 @@ public class DatabaseInitializer {
             stmt.execute(CREATE_TRANSACTION_TABLE);
             stmt.execute(CREATE_LANGUAGES_TABLE); // Execute the languages table creation query
 
+            // insertSampleTransactions(connection);
+
             System.out.println(" Database tables created or already exist.");
         } catch (SQLException e) {
             App.showErrorDialog(e);
+        }
+    }
+
+     private static void insertSampleTransactions(Connection connection) throws SQLException {
+        String insertTransactionSQL = "INSERT OR IGNORE INTO transactions (user_id, document_id, borrow_date, due_date, return_date, is_returned) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertTransactionSQL)) {
+            Random random = new Random();
+            for (int i = 1; i <= 30; i++) {
+                pstmt.setInt(1, random.nextInt(10) + 1); // Random user_id between 1 and 10
+                pstmt.setInt(2, random.nextInt(10) + 1); // Random document_id between 1 and 10
+                pstmt.setDate(3, Date.valueOf(LocalDate.now().minusDays(random.nextInt(30)))); // Random borrow date within the last 30 days
+                pstmt.setDate(4, Date.valueOf(LocalDate.now().plusDays(14))); // 2-week due date
+                pstmt.setDate(5, null); // No return date initially
+                pstmt.setBoolean(6, false); // Initially not returned
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
         }
     }
 }

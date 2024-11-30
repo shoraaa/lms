@@ -103,7 +103,12 @@ public class TransactionsViewController extends BaseViewController {
     }
 
     private void handleAddNewTransaction() {
-        App.openDialog("/com/library/views/AddTransactionWindow.fxml", null, this::loadTransactionsAsync);
+        if (mainController == null) {
+            App.showErrorDialog(new Exception("MainController not set"));
+            return;
+        }
+
+        mainController.showDialog("/com/library/views/AddTransactionWindow.fxml", this::loadTransactionsAsync, null);
     }
 
     private void handleDeleteSelected() {

@@ -1,40 +1,29 @@
 package com.library.services;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.library.model.Document;
-import com.library.util.AdapterUtil;
-
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 
 public class DocumentDAO extends BaseDAO<Document> {
 
-    private static final String INSERT_DOCUMENT_QUERY = 
+    private static final String INSERT_DOCUMENT_QUERY =
         "INSERT INTO documents (name, author_ids, category_ids, publisher_id, isbn, publication_date, date_added, current_quantity, total_quantity, language_id, image_url, description) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    private static final String SELECT_DOCUMENT_BY_ID = "SELECT * FROM documents WHERE document_id = ?";
     private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
-    
+
     private static DocumentDAO instance;
 
+    private List<Document> documentCache; // Cache for documents
+    private boolean cacheValid; // Cache validity flag
+
     private DocumentDAO() {
-        // Private constructor to prevent instantiation
+        documentCache = new ArrayList<>();
+        cacheValid = false; // Cache starts as invalid
     }
 
     public static DocumentDAO getInstance() {
@@ -47,89 +36,47 @@ public class DocumentDAO extends BaseDAO<Document> {
         }
         return instance;
     }
-    // Add a new document
+
+    @Override
     public Integer add(Document document) {
-        return executeUpdate(INSERT_DOCUMENT_QUERY, 
-            document.getTitle(), 
-            listToString(document.getAuthorIds()), 
-            listToString(document.getCategoryIds()), 
-            document.getPublisherId() != 0 ? document.getPublisherId() : null, 
-            document.getIsbn(), 
-            document.getPublicationDate() != null ? Date.valueOf(document.getPublicationDate()) : null, 
-            document.getDateAddedToLibrary() != null ? Date.valueOf(document.getDateAddedToLibrary()) : null, 
-            document.getCurrentQuantity(), 
+        Integer result = executeUpdate(INSERT_DOCUMENT_QUERY,
+            document.getTitle(),
+            listToString(document.getAuthorIds()),
+            listToString(document.getCategoryIds()),
+            document.getPublisherId() != 0 ? document.getPublisherId() : null,
+            document.getIsbn(),
+            document.getPublicationDate() != null ? Date.valueOf(document.getPublicationDate()) : null,
+            document.getDateAddedToLibrary() != null ? Date.valueOf(document.getDateAddedToLibrary()) : null,
+            document.getCurrentQuantity(),
             document.getTotalQuantity(),
-            document.getLanguageId(), // Include language ID
+            document.getLanguageId(),
             document.getImageUrl(),
-            document.getDescription() // Include description
+            document.getDescription()
         );
-    }
-
-    // Delete a document by ID
-    public boolean deleteDocument(int documentId) {
-        String query = "DELETE FROM documents WHERE document_id = ?";
-        return executeUpdate(query, documentId) > 0;
-    }
-
-    public boolean deleteDocuments(List<Integer> documentIds) {
-        if (documentIds == null || documentIds.isEmpty()) {
-            return false;
+        if (result != null) {
+            invalidateCache();
         }
-    
-        String query = "DELETE FROM documents WHERE document_id = ?";
-        try (var connection = getConnection();
-             var preparedStatement = connection.prepareStatement(query)) {
-    
-            for (int documentId : documentIds) {
-                preparedStatement.setInt(1, documentId);
-                preparedStatement.addBatch();
-            }
-            int[] result = preparedStatement.executeBatch();
-            return result.length == documentIds.size();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-
-    // Update document quantity
-    public void updateDocumentQuantity(int documentId, int quantity) {
-        String query = "UPDATE documents SET current_quantity = ? WHERE document_id = ?";
-        executeUpdate(query, quantity, documentId);
+        return result;
     }
 
-    // Retrieve a document by ID
-    public Document getDocumentById(int documentId) {
-        return executeQueryForSingleEntity(SELECT_DOCUMENT_BY_ID, documentId);
-    }
-
-    // Retrieve list of document by keyword
-    public List<Document> getDocumentsByTitle(String title) {
-        String query = "SELECT * FROM documents WHERE name LIKE ?";
-        String keywordPattern = "%" + title + "%";
-        return executeQueryForList(query, keywordPattern);
-    }
-
-    // Retrieve all documents
     public List<Document> getAllDocuments() {
-        return executeQueryForList(SELECT_ALL_DOCUMENTS);
+        if (!cacheValid) {
+            refreshCache();
+        }
+        return Collections.unmodifiableList(documentCache);
     }
 
-    // Lazy-retrieval of documents with pagination
-    public List<Document> getDocumentsWithPagination(int offset, int limit) {
-        String query = "SELECT * FROM documents LIMIT ? OFFSET ?";
-        return executeQueryForList(query, limit, offset);
-    }
-    
-
-    // Count all documents
-    public int countAllDocuments() {
-        String query = "SELECT COUNT(*) FROM documents";
-        return executeQueryForSingleInt(query);
+    // Refresh the cache
+    private synchronized void refreshCache() {
+        documentCache = executeQueryForList(SELECT_ALL_DOCUMENTS);
+        cacheValid = true;
     }
 
-    // Convert ResultSet to Document object
+    // Invalidate the cache
+    private synchronized void invalidateCache() {
+        cacheValid = false;
+    }
+
     @Override
     protected Document mapToEntity(ResultSet rs) throws SQLException {
         return new Document.Builder(rs.getString("name"))
@@ -146,29 +93,113 @@ public class DocumentDAO extends BaseDAO<Document> {
             .imageUrl(rs.getString("image_url"))
             .description(rs.getString("description"))
             .build();
-    }   
-
-
-    // Helper method to convert List to CSV string
-    private String listToString(List<Integer> list) {
-        if (list == null || list.isEmpty()) return "";
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i));
-            if (i < list.size() - 1) sb.append(",");
-        }
-        return sb.toString();
     }
 
-    // Helper method to convert CSV string back to List
+    // Convert list to CSV
+    private String listToString(List<Integer> list) {
+        if (list == null || list.isEmpty()) return "";
+        return String.join(",", list.stream().map(String::valueOf).toList());
+    }
+
+    // Convert CSV to list
     private List<Integer> stringToList(String str) {
+        if (str == null || str.isEmpty()) return new ArrayList<>();
+        String[] items = str.split(",");
         List<Integer> list = new ArrayList<>();
-        if (str != null && !str.isEmpty()) {
-            String[] items = str.split(",");
-            for (String item : items) {
-                list.add(Integer.parseInt(item));
-            }
+        for (String item : items) {
+            list.add(Integer.parseInt(item));
         }
         return list;
     }
+
+    // Retrieve a document by ID
+    public Document getDocumentById(int documentId) {
+        // Check cache first if valid
+        if (cacheValid) {
+            for (Document document : documentCache) {
+                if (document.getDocumentId() == documentId) {
+                    return document; // Return the document from cache
+                }
+            }
+        }
+
+        // Fallback to database query if not found in cache
+        String query = "SELECT * FROM documents WHERE document_id = ?";
+        Document document = executeQueryForSingleEntity(query, documentId);
+
+        // Optionally add to cache (to avoid stale data, prefer reloading full cache)
+        if (document != null && cacheValid) {
+            documentCache.add(document);
+        }
+
+        return document;
+    }
+
+    // Update document quantity
+    public void updateDocumentQuantity(int documentId, int newQuantity) {
+        String query = "UPDATE documents SET current_quantity = ? WHERE document_id = ?";
+        
+        // Update the database
+        executeUpdate(query, newQuantity, documentId);
+
+        // Update the cache if valid
+        if (cacheValid) {
+            for (Document document : documentCache) {
+                if (document.getDocumentId() == documentId) {
+                    document.setCurrentQuantity(newQuantity); // Update the cached document's quantity
+                    break;
+                }
+            }
+        }
+    }
+
+    // Retrieve list of documents by title
+    public List<Document> getDocumentsByTitle(String title) {
+        String keywordPattern = "%" + title + "%";
+
+        // Use the cache if it's valid
+        if (cacheValid) {
+            List<Document> filteredDocuments = new ArrayList<>();
+            for (Document document : documentCache) {
+                if (document.getTitle() != null && document.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                    filteredDocuments.add(document);
+                }
+            }
+            return filteredDocuments;
+        }
+
+        // Fallback to database query if cache is invalid
+        String query = "SELECT * FROM documents WHERE name LIKE ?";
+        return executeQueryForList(query, keywordPattern);
+    }
+
+    // Count all documents
+    public int countAllDocuments() {
+        // Use cache if valid
+        if (cacheValid) {
+            return documentCache.size();
+        }
+
+        // Fallback to database query if cache is invalid
+        String query = "SELECT COUNT(*) FROM documents";
+        return executeQueryForSingleInt(query);
+    }
+
+    // Delete a single document by ID
+    public boolean deleteDocument(int documentId) {
+        String query = "DELETE FROM documents WHERE document_id = ?";
+        boolean deleted = executeUpdate(query, documentId) > 0;
+
+        // Update the cache if valid and deletion was successful
+        if (deleted && cacheValid) {
+            documentCache.removeIf(document -> document.getDocumentId() == documentId);
+        }
+
+        return deleted;
+    }
+
+
+
+
+
 }

@@ -1,16 +1,18 @@
 package com.library.view;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
+import java.util.List;
+
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class BaseTableView<T> {
 
@@ -52,11 +54,21 @@ public abstract class BaseTableView<T> {
     protected TableColumn<T, Void> createActionColumn() {
         TableColumn<T, Void> actionColumn = new TableColumn<>("Actions");
         actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button editButton = new Button("Edit");
-            private final Button deleteButton = new Button("Delete");
+            private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
+            private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
+            private final Button editButton = new Button();
+            private final Button deleteButton = new Button();
             private final HBox pane = new HBox(editButton, deleteButton);
 
             {
+                pane.setAlignment(javafx.geometry.Pos.CENTER);
+                
+                editButton.setGraphic(editIcon);
+                deleteButton.setGraphic(deleteIcon);
+
+                editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+
                 editButton.setOnAction(event -> editItem(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
             }

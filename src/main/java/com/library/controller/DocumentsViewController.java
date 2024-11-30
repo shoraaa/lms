@@ -19,6 +19,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -29,8 +30,8 @@ public class DocumentsViewController extends BaseViewController {
     @FXML private Button addButton;
     @FXML private Button filterButton;
     @FXML private TextField searchTextField;
-    @FXML private Button deleteButton;
-    @FXML private VBox mainLayout;
+    @FXML private Button deleteButton, gridButton;
+    @FXML private GridPane documentGrid;
 
     private DocumentTableView documentTableView;
 

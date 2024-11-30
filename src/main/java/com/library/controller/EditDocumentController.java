@@ -16,6 +16,7 @@ import com.library.model.Category;
 import com.library.model.Document;
 import com.library.model.Language;
 import com.library.model.Publisher;
+import com.library.model.Transaction;
 import com.library.services.AuthorDAO;
 import com.library.services.BaseDAO;
 import com.library.services.CategoryDAO;
@@ -23,6 +24,7 @@ import com.library.services.DocumentDAO;
 import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
+import com.library.view.TransactionTableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +33,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -52,6 +55,7 @@ public class EditDocumentController extends BaseViewController {
     @FXML private TextField languageTextField;
     @FXML private TextArea descriptionTextArea;
     @FXML private Button saveButton, fetchButton, clearButton, selectImageButton;
+    @FXML private TableView<Transaction> transactionTable;
 
     private ObservableList<Author> authorList = FXCollections.observableArrayList();
     private ObservableList<Category> categoryList = FXCollections.observableArrayList();
@@ -59,21 +63,19 @@ public class EditDocumentController extends BaseViewController {
     private Document document;
     private boolean isEditing = false;
 
+    private TransactionTableView transactionTableView;
+
     public EditDocumentController(Document document) {
         authorList = FXCollections.observableArrayList();
         categoryList = FXCollections.observableArrayList();
         this.document = document;
+
     }
 
     @FXML
     public void initialize() {
         authorListView.setItems(authorList);
         categoryListView.setItems(categoryList);
-
-        // Initialize auto-completion for fields
-        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
-        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));
-        initializeAutoCompletionTextField(languageTextField, LanguageDAO.getInstance().getAllLanguages().stream().map(Language::getName).collect(Collectors.toList()));
 
         // Set up event listeners for adding authors and categories
         setUpAuthorCategoryListeners();
@@ -83,6 +85,16 @@ public class EditDocumentController extends BaseViewController {
 
         // Populate form fields if editing an existing document
         populateFormFields();
+
+        transactionTableView = new TransactionTableView(transactionTable);
+        transactionTableView.setDocumentId(document.getDocumentId());
+        transactionTableView.removeColumn("User");
+        transactionTableView.removeColumn("Due Date");
+
+        // Initialize auto-completion for fields
+        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(languageTextField, LanguageDAO.getInstance().getAllLanguages().stream().map(Language::getName).collect(Collectors.toList()));
         
     }
 

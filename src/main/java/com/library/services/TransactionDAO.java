@@ -47,7 +47,7 @@ public class TransactionDAO extends BaseDAO<Transaction> {
 
     // Mark a transaction as returned
     public void markAsReturned(int transactionId) {
-        String sql = "UPDATE transactions SET return_date = ?, is_returned = ? WHERE id = ?";
+        String sql = "UPDATE transactions SET return_date = ?, is_returned = ? WHERE transaction_id = ?";
         executeUpdate(sql, Date.valueOf(LocalDate.now()), true, transactionId);
     }
 

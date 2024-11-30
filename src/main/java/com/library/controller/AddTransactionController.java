@@ -4,10 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.library.model.Document;
-import com.library.model.Transaction;
 import com.library.model.User;
 import com.library.services.DocumentDAO;
-import com.library.services.TransactionDAO;
+import com.library.services.TransactionService;
 import com.library.services.UserDAO;
 import com.library.util.AutoCompletionTextField;
 
@@ -17,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class AddTransactionController extends BaseViewController {
@@ -49,6 +49,10 @@ public class AddTransactionController extends BaseViewController {
                 documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
                 isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
                 isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+
+                if (document.getImageUrl() != null) {
+                    documentImageView.setImage(new Image(document.getImageUrl()));
+                }
             } else {
                 isbnTextField.clear();
                 documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
@@ -66,6 +70,10 @@ public class AddTransactionController extends BaseViewController {
                 documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
                 isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
                 isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+
+                if (document.getImageUrl() != null) {
+                    documentImageView.setImage(new Image(document.getImageUrl()));
+                }
             } else {
                 documentTitleTextFIeld.clear();
                 documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
@@ -135,15 +143,14 @@ public class AddTransactionController extends BaseViewController {
         }
 
         // Save the transaction to the database
-        TransactionDAO transactionDAO = TransactionDAO.getInstance();
         int documentId = DocumentDAO.getInstance().getDocumentsByTitle(documentTitle).get(0).getDocumentId();
-        int transactionId = transactionDAO.add(new Transaction(Integer.parseInt(userId), documentId, borrowDate, dueDate));
+        boolean success = TransactionService.getInstance().borrowDocument(documentId, documentId, borrowDate, dueDate);
 
-        if (transactionId > -1) {
+        if (success) {
             showAlert("Success", "Transaction has been created successfully!", Alert.AlertType.INFORMATION);
             clearForm();  // Clear the form after successful save
         } else {
-            showAlert("Error", "There was an issue adding the transaction.", Alert.AlertType.ERROR);
+            showAlert("Error", "The book is not availible!", Alert.AlertType.ERROR);
         }
     }
 

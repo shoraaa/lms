@@ -8,6 +8,14 @@ import java.time.LocalDate;
 public class TransactionService {
     private final DocumentDAO documentDAO;
     private final TransactionDAO transactionDAO;
+    private static TransactionService instance;
+
+    public static TransactionService getInstance() {
+        if (instance == null) {
+            instance = new TransactionService();
+        }
+        return instance;
+    }
 
     public TransactionService() {
         this.documentDAO = DocumentDAO.getInstance();
@@ -27,8 +35,8 @@ public class TransactionService {
         }
     }
 
-    public void returnDocument(int transactionId, int documentId) {
-        transactionDAO.markAsReturned(transactionId);
-        documentDAO.updateDocumentQuantity(documentId, documentDAO.getDocumentById(documentId).getCurrentQuantity() + 1);
+    public void returnDocument(Transaction transaction) {
+        transactionDAO.markAsReturned(transaction.getTransactionId());
+        documentDAO.updateDocumentQuantity(transaction.getDocumentId(), documentDAO.getDocumentById(transaction.getDocumentId()).getCurrentQuantity() + 1);
     }
 }

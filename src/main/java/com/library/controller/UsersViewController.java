@@ -69,7 +69,7 @@ public class UsersViewController extends BaseViewController {
         } else {
             // Execute the search in a background thread
             executorService.submit(() -> {
-                List<User> result = UserDAO.getInstance().getUsersByTitle(query);
+                List<User> result = UserDAO.getInstance().getUsersByName(query);
                 Platform.runLater(() -> userTableView.setData(FXCollections.observableList(result)));
             });
         }

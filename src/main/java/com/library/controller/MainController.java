@@ -2,27 +2,17 @@ package com.library.controller;
 
 import java.io.IOException;
 
-import com.library.App;
-import com.library.util.WindowUtil;
+import com.library.model.User;
 
 import atlantafx.base.controls.ModalPane;
-import atlantafx.base.controls.Tile;
-import atlantafx.base.layout.ModalBox;
 import atlantafx.base.util.Animations;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.util.Duration;
 
 // https://github.com/mkpaz/atlantafx/releases
@@ -33,11 +23,17 @@ public class MainController {
     @FXML private Button documentButton;
     @FXML private Button userButton;
     @FXML private Button transactionButton;
+    @FXML private Button logoutButton;
 
     @FXML private Label currentTabLabel;
 
     @FXML private ModalPane modalPane;
 
+    private User currentUser;
+
+    public MainController(User user) {
+        this.currentUser = user;
+    }
 
     @FXML
     public void initialize() {

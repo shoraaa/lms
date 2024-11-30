@@ -36,7 +36,7 @@ public class App extends Application {
         initializeDatabase();
         Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
 
-        scene = new Scene(loadFXML("/com/library/views/Main"));
+        scene = new Scene(loadFXML("/com/library/views/Login", null));
         stage.setTitle("Library Management System");
         stage.setScene(scene);
         stage.show();
@@ -46,13 +46,16 @@ public class App extends Application {
         DatabaseInitializer.initializeDatabase();
     }
 
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
+    public static void setRoot(String fxml, Object controller) {
+        scene.setRoot(loadFXML(fxml, controller));
+        scene.getWindow().sizeToScene();
+        scene.getWindow().centerOnScreen();
     }
 
-    public static Parent loadFXML(String fxml) {
+    public static Parent loadFXML(String fxml, Object controller) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+            if (controller != null) fxmlLoader.setController(controller);
             return fxmlLoader.load();
         } catch (IOException e) {
             showErrorDialog(e);

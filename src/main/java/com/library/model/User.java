@@ -3,6 +3,8 @@ package com.library.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.library.util.PasswordUtil;
+
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class User {
@@ -12,6 +14,8 @@ public class User {
     private String phoneNumber;
     private LocalDate registrationDate;
     private String imageUrl;
+    private String passwordHash;
+    private String role = "USER"; // Default role
 
     private final SimpleBooleanProperty selected; // For checkbox
 
@@ -31,6 +35,14 @@ public class User {
     
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getName() {
@@ -71,6 +83,16 @@ public class User {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    // Store the hashed password instead of plain text
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    // Hash the password before setting it
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
         /**

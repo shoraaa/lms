@@ -5,6 +5,8 @@ module com.library {
     requires com.google.gson;
     requires atlantafx.base;
     requires spring.jdbc;
+    requires spring.security.crypto;
+
     requires transitive javafx.graphics;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;

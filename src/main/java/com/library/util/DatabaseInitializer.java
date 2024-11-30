@@ -46,10 +46,12 @@ public class DatabaseInitializer {
 
     private static String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS users (" +
         "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "password TEXT NOT NULL, " +
         "name TEXT NOT NULL, " +
-        "email TEXT NOT NULL UNIQUE, " +
+        "email TEXT NOT NULL, " +
         "phone_number TEXT NOT NULL, " +
         "registration_date DATE" +
+        "role TEXT DEFAULT 'USER'" +
         ");";
     
     private static String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS transactions (" +
@@ -72,6 +74,9 @@ public class DatabaseInitializer {
     public static void initializeDatabase() {
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/com/library/database/library.db")) {
             Statement stmt = connection.createStatement();
+
+            stmt.execute("DROP TABLE IF EXISTS users;");
+            // stmt.execute("DROP TABLE IF EXISTS transactions;");
 
             // Execute the table creation queries
             stmt.execute(CREATE_AUTHORS_TABLE);

@@ -70,29 +70,29 @@ public class MainController {
     private void handleDashboardButton() {
         selectSidebarButton(dashboardButton);
         currentTabLabel.setText("Dashboard");
-        loadContent("/com/library/views/Dashboard.fxml");
+        loadContent("/com/library/views/Dashboard.fxml", null);
     }
 
     private void handleDocumentButton() {
         selectSidebarButton(documentButton);
         currentTabLabel.setText("Documents");
-        loadContent("/com/library/views/DocumentsView.fxml");
+        loadContent("/com/library/views/DocumentsView.fxml", null);
     }
 
     private void handleUserButton() {
         selectSidebarButton(userButton);
         currentTabLabel.setText("Users");
-        loadContent("/com/library/views/UsersView.fxml");
+        loadContent("/com/library/views/UsersView.fxml", null);
     }
 
     private void handleTransactionButton() {
         selectSidebarButton(transactionButton);
         currentTabLabel.setText("Transactions");
-        loadContent("/com/library/views/TransactionsView.fxml");
+        loadContent("/com/library/views/TransactionsView.fxml", null);
     }
 
         // Helper method to load the content dynamically
-    private void loadContent(String fxmlFile) {
+    private void loadContent(String fxmlFile, Object controller) {
         try {
             
             // Start fade-out animation immediately
@@ -103,11 +103,11 @@ public class MainController {
                 // Set up the fade-in animation to play once fade-out completes and the content is loaded
                 fadeOutAnimation.setOnFinished(event -> {
                     contentPane.getChildren().clear();
-                    loadAndFadeInNewContent(fxmlFile);
+                    loadAndFadeInNewContent(fxmlFile, controller);
                 });
             } else {
                 // If no content exists, directly load and fade in the new content
-                loadAndFadeInNewContent(fxmlFile);
+                loadAndFadeInNewContent(fxmlFile, controller);
             }
         } catch (Exception e) {
             // Log the exception and show an error message to the user
@@ -117,18 +117,24 @@ public class MainController {
     }
 
     // Helper method to load new content and fade it in
-    private void loadAndFadeInNewContent(String fxmlFile) {
+    private void loadAndFadeInNewContent(String fxmlFile, Object controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            if (controller != null) {
+                loader.setController(controller);
+            }
             Region loadedPane = loader.load();
             loadedPane.prefWidthProperty().bind(contentPane.widthProperty());
             loadedPane.prefHeightProperty().bind(contentPane.heightProperty());
-            // loadedPane.opacityProperty().set(0); // Start with 0 opacity
+            AnchorPane.setTopAnchor(loadedPane, 0.0);
+            AnchorPane.setBottomAnchor(loadedPane, 0.0);
+            AnchorPane.setLeftAnchor(loadedPane, 0.0);
+            AnchorPane.setRightAnchor(loadedPane, 0.0);
 
             contentPane.getChildren().add(loadedPane);
 
-            BaseViewController controller = loader.getController();
-            controller.setMainController(this);
+            BaseViewController loaderController = loader.getController();
+            loaderController.setMainController(this);
 
             // Fade in the new content
             // Animations.fadeIn(loadedPane, Duration.seconds(0.25)).playFromStart();
@@ -140,25 +146,8 @@ public class MainController {
     }
 
     public void showDialog(String fxmlPath, Runnable onClose, Object controller) {
-        try {
-            FXMLLoader loader = new FXMLLoader(WindowUtil.class.getResource(fxmlPath));
-            if (controller != null) loader.setController(controller);
-            Parent content = loader.load();
-
-            // Automatically size modalPane to fit content
-            modalPane.setPrefWidth(Region.USE_COMPUTED_SIZE);
-            modalPane.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
-            System.out.println(modalPane.getPrefWidth() + " " + modalPane.getPrefHeight());
-
-            ModalBox dialog = new ModalBox(modalPane);
-            dialog.addContent(content);
-
-            modalPane.show(dialog);
-            onClose.run();
-        } catch (IOException e) {
-            App.showErrorDialog(e);
-        }
+        loadContent(fxmlPath, controller);
+        onClose.run();
     }
 
 }

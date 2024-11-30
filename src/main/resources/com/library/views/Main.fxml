@@ -6,73 +6,68 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
    <children>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0">
+      <ModalPane fx:id="modalPane" />
+      <VBox alignment="TOP_CENTER" layoutY="95.0" prefHeight="954.0" prefWidth="120.0" spacing="40.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
          <children>
-            <VBox alignment="TOP_CENTER" layoutY="95.0" prefHeight="954.0" prefWidth="120.0" spacing="40.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
-               <children>
-                  <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Dashboard">
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                     <graphic>
-                        <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-dashboard" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-                  <Button fx:id="documentButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Books">
-                     <graphic>
-                        <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-book" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-                  <Button fx:id="userButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Users">
-                     <graphic>
-                        <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-person" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-                  <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Transactions">
-                     <graphic>
-                        <FontIcon iconLiteral="mdmz-payment" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-                  <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Setting">
-                     <graphic>
-                        <FontIcon iconLiteral="mdmz-settings" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-                  <Button alignment="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" styleClass="sidebar-button">
-                     <VBox.margin>
-                        <Insets top="120.0" />
-                     </VBox.margin>
-                     <graphic>
-                        <FontIcon iconLiteral="mdal-log_out" styleClass="sidebar-icon" />
-                     </graphic>
-                  </Button>
-               </children>
-               <padding>
+            <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Dashboard">
+               <VBox.margin>
                   <Insets top="20.0" />
-               </padding>
-            </VBox>
-            <AnchorPane fx:id="contentPane" layoutX="133.0" layoutY="106.0" prefHeight="954.0" prefWidth="1767.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0">
-               <padding>
-                  <Insets right="20.0" />
-               </padding>
-            </AnchorPane>
-            <AnchorPane prefHeight="114.0" prefWidth="1920.0" styleClass="sidebar" stylesheets="@../css/style.css">
-               <children>
-                  <TextField layoutX="716.0" layoutY="25.0" maxWidth="1200.0" prefHeight="49.0" prefWidth="600.0" promptText="Search ..." styleClass="anchor-pane" AnchorPane.leftAnchor="716.0" AnchorPane.topAnchor="25.0" />
-                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="22.0" layoutY="97.0" styleClass="sidebar-big-icon" />
-                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-menu" iconSize="80" layoutX="197.0" layoutY="72.0" styleClass="sidebar-icon" />
-                  <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="Dashboard" />
-               </children>
-            </AnchorPane>
+               </VBox.margin>
+               <graphic>
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-dashboard" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+            <Button fx:id="documentButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Books">
+               <graphic>
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-book" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+            <Button fx:id="userButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Users">
+               <graphic>
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-person" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+            <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Transactions">
+               <graphic>
+                  <FontIcon iconLiteral="mdmz-payment" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Setting">
+               <graphic>
+                  <FontIcon iconLiteral="mdmz-settings" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" styleClass="sidebar-button">
+               <VBox.margin>
+                  <Insets top="120.0" />
+               </VBox.margin>
+               <graphic>
+                  <FontIcon iconLiteral="mdal-log_out" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
+         </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </VBox>
+      <AnchorPane fx:id="contentPane" layoutX="133.0" layoutY="106.0" prefHeight="954.0" prefWidth="1767.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0">
+         <padding>
+            <Insets right="20.0" />
+         </padding>
+      </AnchorPane>
+      <AnchorPane prefHeight="114.0" prefWidth="1920.0" styleClass="sidebar" stylesheets="@../css/style.css">
+         <children>
+            <TextField layoutX="716.0" layoutY="25.0" maxWidth="1200.0" prefHeight="49.0" prefWidth="600.0" promptText="Search ..." styleClass="anchor-pane" AnchorPane.leftAnchor="716.0" AnchorPane.topAnchor="25.0" />
+            <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="22.0" layoutY="97.0" styleClass="sidebar-big-icon" />
+            <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-menu" iconSize="80" layoutX="197.0" layoutY="72.0" styleClass="sidebar-icon" />
+            <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="Dashboard" />
          </children>
       </AnchorPane>
-      <ModalPane fx:id="modalPane" />
    </children>
-</StackPane>
+</AnchorPane>

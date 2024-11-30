@@ -30,7 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.util.StringConverter;
 
-public class AddTransactionController {
+public class AddTransactionController extends BaseViewController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;

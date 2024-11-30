@@ -38,7 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 
-public class EditDocumentController {
+public class EditDocumentController extends BaseViewController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;

@@ -20,7 +20,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class AddTransactionController extends BaseViewController {
+public class AddTransactionController extends BaseController {
 
     @FXML ImageView documentImageView;
     @FXML CustomTextField documentTitleTextFIeld;
@@ -45,7 +45,7 @@ public class AddTransactionController extends BaseViewController {
         borrowDatePicker.setValue(LocalDate.now());
         dueDatePicker.setValue(LocalDate.now().plusDays(7));
 
-        documents = DocumentDAO.getInstance().getAllDocuments();
+        documents = DocumentDAO.getInstance().getAllEntries();
         users = UserDAO.getInstance().getAllUsers();
     }
 

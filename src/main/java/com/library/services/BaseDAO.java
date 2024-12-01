@@ -5,12 +5,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.library.model.Document;
 import com.library.util.ErrorHandler;
 import com.library.util.LibraryDatabaseUtil;
 
 public abstract class BaseDAO<T> {
+
+    protected List<T> entriesCache; // Cache 
+    protected boolean cacheValid; // Cache validity flag
+    private static final String SELECT_ALL_ENTRIES = "SELECT * FROM %s";
+
+    public BaseDAO() {
+        cacheValid = false;
+    }
 
     // Abstract method to map a ResultSet to a specific entity
     protected abstract T mapToEntity(ResultSet rs) throws SQLException;
@@ -105,5 +116,50 @@ public abstract class BaseDAO<T> {
         return entities;
     }
 
+    public List<T> getAllEntries() {
+        if (!cacheValid) {
+            refreshCache();
+        }
+        return Collections.unmodifiableList(entriesCache);
+    }
+
+    // Refresh the cache
+    protected synchronized void refreshCache() {
+        entriesCache = executeQueryForList(String.format(SELECT_ALL_ENTRIES, getTableName()));
+        cacheValid = true;
+    }
+
+    // Invalidate the cache
+    protected synchronized void invalidateCache() {
+        cacheValid = false;
+    }
+
+    // Functional interface for extracting a field value from an entity of type T
+    protected interface FieldRetriever<T> {
+        String getFieldValue(T entity);
+    }
+    // Generalized method to filter entities by a field value using a FieldRetriever
+    protected List<T> getEntitiesByField(String field, String value, FieldRetriever<T> fieldRetriever) {
+        if (!cacheValid) {
+            refreshCache();
+        }
+
+        List<T> filteredEntities = new ArrayList<>();
+        for (T entity : entriesCache) {
+            String fieldValue = fieldRetriever.getFieldValue(entity);
+            if (fieldValue != null && fieldValue.toLowerCase().contains(value.toLowerCase())) {
+                filteredEntities.add(entity);
+            }
+        }
+        return filteredEntities;
+    }
+
+    protected List<T> getEntitiesByField(String field, String value) {
+        String sql = "SELECT * FROM " + getTableName() + " WHERE " + field + " LIKE ?";
+        return executeQueryForList(sql, "%" + value + "%");
+    }
+
+
     public abstract Integer add(T entity);
+    protected abstract String getTableName();
 }

@@ -1,18 +1,14 @@
 package com.library.view;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.library.App;
-import com.library.controller.BaseViewController;
+import com.library.controller.BaseController;
 import com.library.controller.EditDocumentController;
 import com.library.model.Document;
 import com.library.model.Publisher;
@@ -37,7 +33,7 @@ public class DocumentTableView extends BaseTableView<Document> {
     private final Map<Integer, String> categoriesCache = new HashMap<>();
     private final Map<Integer, String> publishersCache = new HashMap<>();
 
-    private BaseViewController parentController;
+    private BaseController parentController;
 
     public DocumentTableView(TableView<Document> tableView) {
         super(tableView);
@@ -55,14 +51,14 @@ public class DocumentTableView extends BaseTableView<Document> {
         });
     }
 
-    public void setParentController(BaseViewController parentController) {
+    public void setParentController(BaseController parentController) {
         this.parentController = parentController;
     }
 
     @Override
     protected List<TableColumn<Document, ?>> createColumns() {
         // Define the column creation tasks
-        List<java.util.function.Supplier<TableColumn<Document, ?>>> columnTasks = List.of(
+        List<Supplier<TableColumn<Document, ?>>> columnTasks = List.of(
             this::createSelectColumn,
             this::createImageColumn,
             () -> createTextColumn("ID", doc -> new SimpleStringProperty(String.valueOf(doc.getDocumentId()))),
@@ -91,7 +87,7 @@ public class DocumentTableView extends BaseTableView<Document> {
 
     @Override
     public void loadData() {
-        List<Document> allDocuments = DocumentDAO.getInstance().getAllDocuments();
+        List<Document> allDocuments = DocumentDAO.getInstance().getAllEntries();
         // Clear caches before reloading data
         authorsCache.clear();
         categoriesCache.clear();
@@ -102,7 +98,6 @@ public class DocumentTableView extends BaseTableView<Document> {
 
     @Override
     protected void editItem(Document document) {
-        // App.openDialog("/com/library/views/EditDocumentWindow.fxml", new EditDocumentController(document), this::loadData);
         parentController.getMainController().showDialog("/com/library/views/EditDocumentWindow.fxml", this::loadData, new EditDocumentController(document));
     }
 

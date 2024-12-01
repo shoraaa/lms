@@ -9,9 +9,14 @@ import com.library.model.Category;
 public class CategoryDAO extends BaseDAO<Category> {
 
     private static CategoryDAO instance;
+    
+    @Override
+    protected String getTableName() {
+        return "categories";
+    }
 
     private CategoryDAO() {
-        // private constructor to prevent instantiation
+        entriesCache = getAllCategories();
     }
 
     public static CategoryDAO getInstance() {

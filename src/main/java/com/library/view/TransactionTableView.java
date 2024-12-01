@@ -89,7 +89,7 @@ public class TransactionTableView extends BaseTableView<Transaction> {
             private final Button deleteButton = new Button();
             private final HBox pane = new HBox(editButton, deleteButton);
             {
-                pane.setAlignment(javafx.geometry.Pos.CENTER);
+                pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 
                 editButton.setGraphic(editIcon);
                 deleteButton.setGraphic(deleteIcon);

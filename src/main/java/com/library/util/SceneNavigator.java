@@ -46,10 +46,10 @@ public class SceneNavigator {
     // Load FXML and optionally set the controller
     public static Parent loadFXML(String fxml, Optional<Object> controller) {
         // Check if the FXML is already cached
-        Parent cachedParent = FXMLCache.getFXML(fxml);
-        if (cachedParent != null) {
-            return cachedParent; // Return cached FXML
-        }
+        // Parent cachedParent = FXMLCache.getFXML(fxml);
+        // if (cachedParent != null) {
+        //     return cachedParent; // Return cached FXML
+        // }
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));

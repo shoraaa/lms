@@ -91,3 +91,8 @@
     -fx-border-width: 0 0 1px 0; /* Remove vertical borders, keep horizontal lines */
     -fx-border-color: transparent; /* Make vertical borders invisible */
 }
+
+.table-view .column-header {
+    -fx-alignment: CENTER; /* Options: CENTER, CENTER-LEFT, CENTER-RIGHT */
+    -fx-padding: 5px; /* Optional padding */
+}

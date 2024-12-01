@@ -4,17 +4,26 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.library.model.Document;
+import com.library.model.Publisher;
 import com.library.model.Transaction;
+import com.library.model.User;
 
 public class TransactionDAO extends BaseDAO<Transaction> {
 
     private static TransactionDAO instance;
 
+    @Override
+    protected String getTableName() {
+        return "transactions";
+    }
+
     private TransactionDAO() {
-        // Private constructor to prevent instantiation
+        entriesCache = getAllTransactions();
     }
 
     public static TransactionDAO getInstance() {
@@ -89,5 +98,36 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     public List<Transaction> getMostBorrowedTransaction(int count) {
         String sql = "SELECT * FROM transactions GROUP BY document_id ORDER BY COUNT(*) DESC LIMIT ?";
         return executeQueryForList(sql, count);
+    }
+
+    public List<Transaction> getTransactionsById(String transactionId) {
+        return getEntitiesByField("transaction_id", transactionId);
+    }
+
+    public List<Transaction> getTransactionsByUser(String userName) {
+        return getEntitiesByField("user_id", userName, transaction -> {
+            User user = UserDAO.getInstance().getUserById(transaction.getUserId());
+            return user != null ? user.getName() : "";
+        });
+    }
+
+    public List<Transaction> getTransactionsByDocument(String documentName) {
+        return getEntitiesByField("document_id", documentName, transaction -> {
+            Document document = DocumentDAO.getInstance().getDocumentById(transaction.getDocumentId());
+            return document != null ? document.getTitle() : "";
+        });
+    }
+
+    public List<Transaction> getTransactionsByKeyword(String keyword, String type) {
+        switch (type) {
+            case "ID":
+                return getTransactionsById(keyword);
+            case "User":
+                return getTransactionsByUser(keyword);
+            case "Document":
+                return getTransactionsByDocument(keyword);
+            default:
+                return Collections.emptyList();
+        }
     }
 }

@@ -26,7 +26,7 @@ public abstract class BaseTableView<T> {
 
     protected void initializeTable() {
         tableView.setEditable(true);
-        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         tableView.getColumns().setAll(createColumns());
     }
 
@@ -61,7 +61,7 @@ public abstract class BaseTableView<T> {
             private final HBox pane = new HBox(editButton, deleteButton);
 
             {
-                pane.setAlignment(javafx.geometry.Pos.CENTER);
+                pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 
                 editButton.setGraphic(editIcon);
                 deleteButton.setGraphic(deleteIcon);

@@ -1,6 +1,7 @@
 package com.library.controller;
 
 import java.io.IOException;
+import java.lang.ModuleLayer.Controller;
 import java.util.Optional;
 
 import com.library.util.Localization;
@@ -156,7 +157,7 @@ public class MainController {
 
             contentPane.getChildren().add(loadedPane);
 
-            BaseViewController loaderController = loader.getController();
+            BaseController loaderController = loader.getController();
             loaderController.setMainController(this);
 
             // Fade in the new content

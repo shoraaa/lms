@@ -34,7 +34,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class DashboardController extends BaseViewController {
+public class DashboardController extends BaseController {
 
     @FXML private Label helloLabel;
     @FXML private Label dateTimeLabel;
@@ -63,7 +63,6 @@ public class DashboardController extends BaseViewController {
 
     private void setupGreeting() {
         helloLabel.setText(helloLabel.getText().replace("{0}", UserSession.getUser().getName()));
-        // helloLabel.setText(String.format(helloLabel.getText(), UserSession.getUser().getName()));
     }
 
     private void setupDateTime() {

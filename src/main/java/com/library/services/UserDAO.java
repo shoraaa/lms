@@ -3,17 +3,27 @@ package com.library.services;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.library.model.Author;
+import com.library.model.Category;
 import com.library.model.User;
+import com.library.model.Publisher;
 import com.library.util.PasswordUtil;
 
 public class UserDAO extends BaseDAO<User> {
 
     private static UserDAO instance;
 
+    @Override
+    protected String getTableName() {
+        return "users";
+    }
+
     private UserDAO() {
-        // Private constructor to prevent instantiation
+        entriesCache = getAllUsers();
     }
 
     public static UserDAO getInstance() {
@@ -76,8 +86,19 @@ public class UserDAO extends BaseDAO<User> {
     }
 
     public List<User> getUsersByName(String name) {
-        String sql = "SELECT * FROM users WHERE name LIKE ?";
-        return executeQueryForList(sql, name);
+        return getEntitiesByField("name", name);
+    }
+
+    public List<User> getUsersByEmail(String email) {
+        return getEntitiesByField("email", email);
+    }
+
+    public List<User> getUsersByPhoneNumber(String phoneNumber) {
+        return getEntitiesByField("phone_number", phoneNumber);
+    }
+
+    public List<User> getUsersById(String id) {
+        return getEntitiesByField("user_id", id);
     }
 
     // Method to update user details
@@ -113,5 +134,20 @@ public class UserDAO extends BaseDAO<User> {
     public int countAllUsers() {
         String sql = "SELECT COUNT(*) FROM users";
         return executeQueryForSingleInt(sql);  // Reuse count method from BaseDAO
+    }
+
+    public List<User> getUsersByKeyword(String keyword, String type) {
+        switch (type) {
+            case "Name":
+                return getUsersByName(keyword);
+            case "E-mail":
+                return getUsersByEmail(keyword);
+            case "Phone Number":
+                return getUsersByPhoneNumber(keyword);
+            case "ID":
+                return getUsersById(keyword);
+            default:
+                return Collections.emptyList();
+        }
     }
 }

@@ -9,6 +9,14 @@ import javafx.scene.control.Alert;
 
 public abstract class BaseController {
 
+    protected MainController mainController;
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+    public MainController getMainController() {
+        return mainController;
+    }
+
     protected void setRoot(String fxml, Optional<Object> controller) {
         SceneNavigator.setRoot(fxml, controller);
     }

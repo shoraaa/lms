@@ -8,9 +8,14 @@ import com.library.model.Author;
 public class AuthorDAO extends BaseDAO<Author> {
 
     private static AuthorDAO instance;
+    
+    @Override
+    protected String getTableName() {
+        return "authors";
+    }
 
     private AuthorDAO() {
-        // Private constructor to prevent instantiation
+        entriesCache = getAllEntries();
     }
 
     public static AuthorDAO getInstance() {

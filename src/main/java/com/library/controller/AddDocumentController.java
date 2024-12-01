@@ -1,15 +1,7 @@
 package com.library.controller;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.google.gson.JsonObject;
 import com.library.api.GoogleBooksAPI;
-import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
 import com.library.model.Category;
 import com.library.model.Document;
@@ -23,7 +15,6 @@ import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
 import com.library.util.ImageDownloader;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -38,7 +29,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 
-public class AddDocumentController extends BaseViewController {
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class AddDocumentController extends BaseController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;
@@ -56,7 +54,7 @@ public class AddDocumentController extends BaseViewController {
     @FXML private TextArea descriptionTextArea;
 
     @FXML private Button saveButton;
-    @FXML private Button fetchButton;
+    @FXML private Button fetchTitleButton, fetchISBNButton;
     @FXML private Button clearButton;
     @FXML private Button selectImageButton;
 
@@ -75,9 +73,12 @@ public class AddDocumentController extends BaseViewController {
         categoryListView.setItems(categoryList);
 
         // Initialize auto-completion for fields
-        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
-        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));
-        initializeAutoCompletionTextField(languageTextField, LanguageDAO.getInstance().getAllLanguages().stream().map(Language::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream()
+                .map(Author::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream()
+                .map(Category::getName).collect(Collectors.toList()));
+        initializeAutoCompletionTextField(languageTextField, LanguageDAO.getInstance().getAllLanguages().stream()
+                .map(Language::getName).collect(Collectors.toList()));
 
         // Set up event listeners for adding authors and categories
         setUpAuthorCategoryListeners();
@@ -116,7 +117,8 @@ public class AddDocumentController extends BaseViewController {
 
     private void setUpButtonActions() {
         saveButton.setOnAction(event -> saveNewDocument());
-        fetchButton.setOnAction(event -> fetchButtonAction());
+        fetchTitleButton.setOnAction(event -> fetchButtonAction("title"));
+        fetchISBNButton.setOnAction(event -> fetchButtonAction("isbn"));
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
     }
@@ -137,7 +139,7 @@ public class AddDocumentController extends BaseViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Document Image");
         fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
         );
 
         File selectedFile = fileChooser.showOpenDialog(selectImageButton.getScene().getWindow());
@@ -218,60 +220,78 @@ public class AddDocumentController extends BaseViewController {
         return ids;
     }
 
-    private void fetchButtonAction() {
+    private void fetchButtonAction(String type) {
         String isbn = isbnTextField.getText();
         String title = titleTextField.getText();
 
-        if (!isbn.isEmpty()) {
-            fillBookDetails(GoogleBooksAPI.fetchBookDetails(isbn, "isbn"));
-        } else if (!title.isEmpty()) {
-            fillBookDetails(GoogleBooksAPI.fetchBookDetails(title, "title"));
+        if (type.equals("isbn") && !isbn.isEmpty()) {
+            fillDocument(GoogleBooksAPI.fetchDocumentJson(isbn, type));
+        } else if (type.equals("title") && !title.isEmpty()) {
+            fillDocument(GoogleBooksAPI.fetchDocumentJson(title, type));
         }
     }
 
-    private void fillBookDetails(BookDetails bookDetails) {
+    private void fillDocument(JsonObject bookDetails) {
         if (bookDetails == null) {
             clearForm();
-            showAlert("Error", "No details found", Alert.AlertType.ERROR);
+            showAlert("Error", "No books found", Alert.AlertType.ERROR);
             return;
         }
 
-        titleTextField.setText(bookDetails.getTitle());
+        // Set title
+        titleTextField.setText(bookDetails.has("title") ? bookDetails.get("title").getAsString() : "Unknown");
+
+        // Set authors
         authorList.clear();
-        populateAuthors(bookDetails);
-        publisherTextField.setText(bookDetails.getPublisher() != null ? bookDetails.getPublisher() : "No publisher available");
+        if (bookDetails.has("authors")) {
+            for (var author : bookDetails.getAsJsonArray("authors")) {
+                authorList.add(new Author(author.getAsString()));
+            }
+        }
+
+        // Set publisher
+        publisherTextField.setText(
+                bookDetails.has("publisher") ? bookDetails.get("publisher").getAsString() : "No publisher available"
+        );
+
+        // Set categories
         categoryList.clear();
-        populateCategories(bookDetails);
-        isbnTextField.setText(bookDetails.getIsbn());
-        languageTextField.setText(bookDetails.getLanguage() != null ? bookDetails.getLanguage() : "No language available");
-        descriptionTextArea.setText(bookDetails.getDescription() != null ? bookDetails.getDescription() : "No description available");
+        if (bookDetails.has("categories")) {
+            for (var category : bookDetails.getAsJsonArray("categories")) {
+                categoryList.add(new Category(category.getAsString()));
+            }
+        }
+
+        // Set ISBN
+        isbnTextField.setText(bookDetails.has("industryIdentifiers")
+                ? bookDetails.getAsJsonArray("industryIdentifiers").get(0).getAsJsonObject().get("identifier").getAsString()
+                : "No ISBN available");
+
+        // Set language
+        languageTextField.setText(bookDetails.has("language") ? bookDetails.get("language").getAsString() : "No language available");
+
+        // Set description
+        descriptionTextArea.setText(
+                bookDetails.has("description") ? bookDetails.get("description").getAsString() : "No description available"
+        );
 
         // Set published date
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            publishedDatePicker.setValue(LocalDate.parse(bookDetails.getPublishedDate(), formatter));
-        } catch (DateTimeParseException e) {
+            String date = bookDetails.has("publishedDate") ? bookDetails.get("publishedDate").getAsString() : null;
+            if (date != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                publishedDatePicker.setValue(LocalDate.parse(date, formatter));
+            } else {
+                publishedDatePicker.setValue(null);
+            }
+        } catch (Exception e) {
             publishedDatePicker.setValue(null);
         }
 
-        // Set image from cache
-        if (bookDetails.getImageUrl() != null) {
-            String imageUrl = ImageDownloader.setImageFromCache(bookDetails.getImageUrl(), documentImageView, bookDetails.getTitle());
-            selectedImagePath = imageUrl;
+        // Set image
+        if (bookDetails.has("imageLinks")) {
+            String imageUrl = bookDetails.getAsJsonObject("imageLinks").get("thumbnail").getAsString();
+            selectedImagePath = ImageDownloader.setImageFromCache(imageUrl, documentImageView, titleTextField.getText());
         }
     }
-
-    private void populateAuthors(BookDetails bookDetails) {
-        for (String authorName : bookDetails.getAuthors()) {
-            authorList.add(new Author(authorName));
-        }
-    }
-
-    private void populateCategories(BookDetails bookDetails) {
-        for (String category : bookDetails.getCategories()) {
-            categoryList.add(new Category(category));
-        }
-    }
-
 }
-

@@ -22,8 +22,15 @@ public class LanguageDAO extends BaseDAO<Language> {
     // Singleton instance
     private static LanguageDAO instance;
 
+    @Override
+    protected String getTableName() {
+        return "languages";
+    }
+
     // Private constructor to prevent instantiation
-    private LanguageDAO() {}
+    private LanguageDAO() {
+        entriesCache = getAllLanguages();
+    }
 
     // Method to get the singleton instance
     public static synchronized LanguageDAO getInstance() {

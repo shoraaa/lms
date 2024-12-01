@@ -8,23 +8,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.library.model.Author;
+import com.library.model.Category;
 import com.library.model.Document;
+import com.library.model.Publisher;
 
 public class DocumentDAO extends BaseDAO<Document> {
 
     private static final String INSERT_DOCUMENT_QUERY =
         "INSERT INTO documents (name, author_ids, category_ids, publisher_id, isbn, publication_date, date_added, current_quantity, total_quantity, language_id, image_url, description) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_DOCUMENTS = "SELECT * FROM documents";
 
     private static DocumentDAO instance;
 
-    private List<Document> documentCache; // Cache for documents
-    private boolean cacheValid; // Cache validity flag
+    @Override
+    protected String getTableName() {
+        return "documents";
+    }
 
     private DocumentDAO() {
-        documentCache = new ArrayList<>();
-        cacheValid = false; // Cache starts as invalid
+        entriesCache = getAllEntries();
     }
 
     public static DocumentDAO getInstance() {
@@ -60,24 +63,6 @@ public class DocumentDAO extends BaseDAO<Document> {
         return result;
     }
 
-    public List<Document> getAllDocuments() {
-        if (!cacheValid) {
-            refreshCache();
-        }
-        return Collections.unmodifiableList(documentCache);
-    }
-
-    // Refresh the cache
-    private synchronized void refreshCache() {
-        documentCache = executeQueryForList(SELECT_ALL_DOCUMENTS);
-        cacheValid = true;
-    }
-
-    // Invalidate the cache
-    private synchronized void invalidateCache() {
-        cacheValid = false;
-    }
-
     @Override
     protected Document mapToEntity(ResultSet rs) throws SQLException {
         return new Document.Builder(rs.getString("name"))
@@ -111,72 +96,75 @@ public class DocumentDAO extends BaseDAO<Document> {
         return list;
     }
 
-    // Retrieve a document by ID
-    public Document getDocumentById(int documentId) {
-        // Check cache first if valid
-        if (cacheValid) {
-            for (Document document : documentCache) {
-                if (document.getDocumentId() == documentId) {
-                    return document; // Return the document from cache
-                }
-            }
-        }
-
-        // Fallback to database query if not found in cache
-        String query = "SELECT * FROM documents WHERE document_id = ?";
-        Document document = executeQueryForSingleEntity(query, documentId);
-
-        // Optionally add to cache (to avoid stale data, prefer reloading full cache)
-        if (document != null && cacheValid) {
-            documentCache.add(document);
-        }
-
-        return document;
-    }
-
-    // Update document quantity
-    public void updateDocumentQuantity(int documentId, int newQuantity) {
-        String query = "UPDATE documents SET current_quantity = ? WHERE document_id = ?";
-        
-        // Update the database
-        executeUpdate(query, newQuantity, documentId);
-
-        // Update the cache if valid
-        if (cacheValid) {
-            for (Document document : documentCache) {
-                if (document.getDocumentId() == documentId) {
-                    document.setCurrentQuantity(newQuantity); // Update the cached document's quantity
-                    break;
-                }
-            }
-        }
-    }
-
-    // Retrieve list of documents by title
     public List<Document> getDocumentsByTitle(String title) {
-        String keywordPattern = "%" + title + "%";
+        return getEntitiesByField("name", title);
+    }
 
-        // Use the cache if it's valid
-        if (cacheValid) {
-            List<Document> filteredDocuments = new ArrayList<>();
-            for (Document document : documentCache) {
-                if (document.getTitle() != null && document.getTitle().toLowerCase().contains(title.toLowerCase())) {
-                    filteredDocuments.add(document);
-                }
-            }
-            return filteredDocuments;
+    public List<Document> getDocumentsByAuthor(String authorName) {
+        if (!cacheValid) {
+            refreshCache();
         }
+        List<Document> filteredDocuments = new ArrayList<>();
+        for (Document document : entriesCache) {
+            List<Integer> authorIds = document.getAuthorIds();
+            List<Author> authors = authorIds != null ? AuthorDAO.getInstance().getAuthorsByIds(authorIds) : null;
+            if (authors != null && authors.stream().anyMatch(author -> author.getName().toLowerCase().contains(authorName.toLowerCase()))) {
+                filteredDocuments.add(document);
+            }
+        }
+        return filteredDocuments;
+    }
 
-        // Fallback to database query if cache is invalid
-        String query = "SELECT * FROM documents WHERE name LIKE ?";
-        return executeQueryForList(query, keywordPattern);
+    public List<Document> getDocumentsByCategory(String categoryName) {
+        return getEntitiesByField("category", categoryName, document -> {
+            List<Integer> categoryIds = document.getCategoryIds();
+            List<Category> categories = categoryIds != null ? CategoryDAO.getInstance().getCategoriesByIds(categoryIds) : null;
+            return categories != null ? categories.stream()
+                    .filter(category -> category.getName().toLowerCase().contains(categoryName.toLowerCase()))
+                    .map(Category::getName)
+                    .findFirst().orElse("") : "";
+        });
+    }
+
+    public List<Document> getDocumentsByISBN(String isbn) {
+        return getEntitiesByField("isbn", isbn);
+    }
+
+    public List<Document> getDocumentsById(String id) {
+        return getEntitiesByField("document_id", id);
+    }
+
+    public List<Document> getDocumentsByPublisher(String publisher) {
+        return getEntitiesByField("publisher", publisher, document -> {
+            Publisher documentPublisher = PublisherDAO.getInstance().getPublisherById(document.getPublisherId());
+            return documentPublisher != null ? documentPublisher.getName() : "";
+        });
+    }
+
+    public List<Document> getDocumentsByKeyword(String keyword, String type) {
+        switch (type) {
+            case "Title":
+                return getDocumentsByTitle(keyword);
+            case "Author":
+                return getDocumentsByAuthor(keyword);
+            case "ISBN":
+                return getDocumentsByISBN(keyword);
+            case "Category":
+                return getDocumentsByCategory(keyword);
+            case "Publisher":
+                return getDocumentsByPublisher(keyword);
+            case "ID":
+                return getDocumentsById(keyword);
+            default:
+                return Collections.emptyList();
+        }
     }
 
     // Count all documents
     public int countAllDocuments() {
         // Use cache if valid
         if (cacheValid) {
-            return documentCache.size();
+            return entriesCache.size();
         }
 
         // Fallback to database query if cache is invalid
@@ -191,14 +179,50 @@ public class DocumentDAO extends BaseDAO<Document> {
 
         // Update the cache if valid and deletion was successful
         if (deleted && cacheValid) {
-            documentCache.removeIf(document -> document.getDocumentId() == documentId);
+            entriesCache.removeIf(document -> document.getDocumentId() == documentId);
         }
 
         return deleted;
     }
 
+    // Retrieve a document by ID
+    public Document getDocumentById(int documentId) {
+        // Check cache first if valid
+        if (cacheValid) {
+            for (Document document : entriesCache) {
+                if (document.getDocumentId() == documentId) {
+                    return document; // Return the document from cache
+                }
+            }
+        }
 
+        // Fallback to database query if not found in cache
+        String query = "SELECT * FROM documents WHERE document_id = ?";
+        Document document = executeQueryForSingleEntity(query, documentId);
 
+        // Optionally add to cache (to avoid stale data, prefer reloading full cache)
+        if (document != null && cacheValid) {
+            entriesCache.add(document);
+        }
 
+        return document;
+    }
 
+    // Update document quantity
+    public void updateDocumentQuantity(int documentId, int newQuantity) {
+        String query = "UPDATE documents SET current_quantity = ? WHERE document_id = ?";
+        
+        // Update the database
+        executeUpdate(query, newQuantity, documentId);
+
+        // Update the cache if valid
+        if (cacheValid) {
+            for (Document document : entriesCache) {
+                if (document.getDocumentId() == documentId) {
+                    document.setCurrentQuantity(newQuantity); // Update the cached document's quantity
+                    break;
+                }
+            }
+        }
+    }
 }

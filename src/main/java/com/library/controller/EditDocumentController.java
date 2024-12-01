@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonObject;
 import com.library.api.GoogleBooksAPI;
-import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
 import com.library.model.Category;
 import com.library.model.Document;
@@ -41,7 +41,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 
-public class EditDocumentController extends BaseViewController {
+public class EditDocumentController extends BaseController {
 
     @FXML private TextField titleTextField;
     @FXML private TextField isbnTextField;
@@ -285,54 +285,76 @@ public class EditDocumentController extends BaseViewController {
         String title = titleTextField.getText();
 
         if (!isbn.isEmpty()) {
-            fillBookDetails(GoogleBooksAPI.fetchBookDetails(isbn, "isbn"));
+            fillDocument(GoogleBooksAPI.fetchDocumentJson(isbn, "isbn"));
         } else if (!title.isEmpty()) {
-            fillBookDetails(GoogleBooksAPI.fetchBookDetails(title, "title"));
+            fillDocument(GoogleBooksAPI.fetchDocumentJson(title, "title"));
         }
     }
 
-    private void fillBookDetails(BookDetails bookDetails) {
+    private void fillDocument(JsonObject bookDetails) {
         if (bookDetails == null) {
             clearForm();
-            showAlert("Error", "No details found", Alert.AlertType.ERROR);
+            showAlert("Error", "No document found", Alert.AlertType.ERROR);
             return;
         }
-
-        titleTextField.setText(bookDetails.getTitle());
+    
+        // Set title
+        titleTextField.setText(bookDetails.has("title") ? bookDetails.get("title").getAsString() : "Unknown");
+    
+        // Set authors
         authorList.clear();
-        populateAuthors(bookDetails);
-        publisherTextField.setText(bookDetails.getPublisher() != null ? bookDetails.getPublisher() : "No publisher available");
+        if (bookDetails.has("authors")) {
+            for (var author : bookDetails.getAsJsonArray("authors")) {
+                authorList.add(new Author(author.getAsString()));
+            }
+        }
+    
+        // Set publisher
+        publisherTextField.setText(
+            bookDetails.has("publisher") ? bookDetails.get("publisher").getAsString() : "No publisher available"
+        );
+    
+        // Set categories
         categoryList.clear();
-        populateCategories(bookDetails);
-        isbnTextField.setText(bookDetails.getIsbn());
-        languageTextField.setText(bookDetails.getLanguage() != null ? bookDetails.getLanguage() : "No language available");
-        descriptionTextArea.setText(bookDetails.getDescription() != null ? bookDetails.getDescription() : "No description available");
-
+        if (bookDetails.has("categories")) {
+            for (var category : bookDetails.getAsJsonArray("categories")) {
+                categoryList.add(new Category(category.getAsString()));
+            }
+        }
+    
+        // Set ISBN
+        isbnTextField.setText(bookDetails.has("industryIdentifiers")
+            ? bookDetails.getAsJsonArray("industryIdentifiers").get(0).getAsJsonObject().get("identifier").getAsString()
+            : "No ISBN available");
+    
+        // Set language
+        languageTextField.setText(bookDetails.has("language") ? bookDetails.get("language").getAsString() : "No language available");
+    
+        // Set description
+        descriptionTextArea.setText(
+            bookDetails.has("description") ? bookDetails.get("description").getAsString() : "No description available"
+        );
+    
         // Set published date
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            publishedDatePicker.setValue(LocalDate.parse(bookDetails.getPublishedDate(), formatter));
-        } catch (DateTimeParseException e) {
+            String date = bookDetails.has("publishedDate") ? bookDetails.get("publishedDate").getAsString() : null;
+            if (date != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                publishedDatePicker.setValue(LocalDate.parse(date, formatter));
+            } else {
+                publishedDatePicker.setValue(null);
+            }
+        } catch (Exception e) {
             publishedDatePicker.setValue(null);
         }
-
+    
         // Set image
-        if (bookDetails.getImageUrl() != null) {
-            documentImageView.setImage(new Image(bookDetails.getImageUrl()));
+        if (bookDetails.has("imageLinks")) {
+            String imageUrl = bookDetails.getAsJsonObject("imageLinks").get("thumbnail").getAsString();
+            documentImageView.setImage(new Image(imageUrl));
         }
     }
-
-    private void populateAuthors(BookDetails bookDetails) {
-        for (String authorName : bookDetails.getAuthors()) {
-            authorList.add(new Author(authorName));
-        }
-    }
-
-    private void populateCategories(BookDetails bookDetails) {
-        for (String category : bookDetails.getCategories()) {
-            categoryList.add(new Category(category));
-        }
-    }
+    
 
     @FXML
     public void closeWindow() {

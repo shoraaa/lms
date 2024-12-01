@@ -11,8 +11,13 @@ public class PublisherDAO extends BaseDAO<Publisher> {
 
     private static PublisherDAO instance;
 
+    @Override
+    protected String getTableName() {
+        return "publishers";
+    }
+
     private PublisherDAO() {
-        // Private constructor to prevent instantiation
+        entriesCache = getAllEntries();
     }
 
     public static PublisherDAO getInstance() {

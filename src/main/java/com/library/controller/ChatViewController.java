@@ -15,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class ChatViewController extends BaseViewController {
+public class ChatViewController extends BaseController {
     @FXML private Button addButton, sendButton;
     @FXML private TextField chatTextField;
     @FXML private ListView<Tile> chatListView;
@@ -50,7 +50,7 @@ public class ChatViewController extends BaseViewController {
             Task<String> task = new Task<String>() {
                 @Override
                 protected String call() throws Exception {
-                    return GoogleChatAPI.getAIResponse(messageHistory);
+                    return GoogleChatAPI.getAiResponse(messageHistory);
                 }
             };
 

@@ -8,7 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class AddUserController extends BaseViewController {
+public class AddUserController extends BaseController {
 
     @FXML private TextField userNameTextField;
     @FXML private TextField userPhoneNumberTextField;

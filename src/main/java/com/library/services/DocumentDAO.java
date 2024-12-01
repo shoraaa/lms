@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.library.model.Document;
 
@@ -95,13 +96,11 @@ public class DocumentDAO extends BaseDAO<Document> {
             .build();
     }
 
-    // Convert list to CSV
     private String listToString(List<Integer> list) {
         if (list == null || list.isEmpty()) return "";
-        return String.join(",", list.stream().map(String::valueOf).toList());
+        return list.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
-    // Convert CSV to list
     private List<Integer> stringToList(String str) {
         if (str == null || str.isEmpty()) return new ArrayList<>();
         String[] items = str.split(",");

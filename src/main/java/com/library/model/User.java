@@ -15,7 +15,7 @@ public class User {
     private LocalDate registrationDate;
     private String imageUrl;
     private String passwordHash;
-    private String role = "USER"; // Default role
+    private String role = "Member"; // Default role
 
     private final SimpleBooleanProperty selected; // For checkbox
 

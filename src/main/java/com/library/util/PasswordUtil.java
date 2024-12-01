@@ -25,7 +25,7 @@ public class PasswordUtil {
 
     // Method to check if a password matches a hashed password
     public static boolean verifyPassword(String password, String storedHash) {
-        System.out.println("Password: " + hashPassword(password) + ", Stored Hash: " + storedHash);
+        // System.out.println("Password: " + hashPassword(password) + ", Stored Hash: " + storedHash);
         // Hash the input password and compare with the stored hash
         return storedHash.equals(hashPassword(password));
     }

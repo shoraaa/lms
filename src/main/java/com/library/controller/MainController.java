@@ -3,14 +3,16 @@ package com.library.controller;
 import java.io.IOException;
 
 import com.library.model.User;
+import com.library.util.UserSession;
 
-import atlantafx.base.controls.ModalPane;
+import atlantafx.base.controls.Tile;
 import atlantafx.base.util.Animations;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
@@ -24,25 +26,21 @@ public class MainController {
     @FXML private Button userButton;
     @FXML private Button transactionButton;
     @FXML private Button logoutButton;
+    @FXML private Button notificationButton;
+    @FXML private Tile accountTile;
 
     @FXML private Label currentTabLabel;
 
-    @FXML private ModalPane modalPane;
-
-    private User currentUser;
-
-    public MainController(User user) {
-        this.currentUser = user;
-    }
-
     @FXML
     public void initialize() {
-        modalPane.displayProperty().addListener((obs, old, val) -> {
-            if (!val) {
-                modalPane.setAlignment(Pos.CENTER);
-                modalPane.usePredefinedTransitionFactories(null);
-            }
-        });
+        accountTile.setTitle(UserSession.getUser().getName());
+        accountTile.setDescription(UserSession.getUser().getRole());
+
+        
+        ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/library/assets/user.png")));
+        img.setFitWidth(50);
+        img.setFitHeight(50);
+        accountTile.setGraphic(img);
 
         dashboardButton.setOnAction(event -> handleDashboardButton());
         documentButton.setOnAction(event -> handleDocumentButton());

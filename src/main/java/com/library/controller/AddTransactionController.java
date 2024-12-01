@@ -144,7 +144,8 @@ public class AddTransactionController extends BaseViewController {
 
         // Save the transaction to the database
         int documentId = DocumentDAO.getInstance().getDocumentsByTitle(documentTitle).get(0).getDocumentId();
-        boolean success = TransactionService.getInstance().borrowDocument(documentId, documentId, borrowDate, dueDate);
+        int userIdInt = Integer.parseInt(userId);
+        boolean success = TransactionService.getInstance().borrowDocument(userIdInt, documentId, borrowDate, dueDate);
 
         if (success) {
             showAlert("Success", "Transaction has been created successfully!", Alert.AlertType.INFORMATION);

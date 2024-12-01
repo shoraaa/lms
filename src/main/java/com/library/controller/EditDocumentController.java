@@ -88,7 +88,7 @@ public class EditDocumentController extends BaseViewController {
 
         transactionTableView = new TransactionTableView(transactionTable);
         transactionTableView.setDocumentId(document.getDocumentId());
-        transactionTableView.removeColumn("User");
+        transactionTableView.removeColumn("Document");
         transactionTableView.removeColumn("Due Date");
 
         // Initialize auto-completion for fields

@@ -29,7 +29,9 @@ public class ImageDownloader {
             // Create a file to store the image locally in the cache directory
             Path cacheDir = Paths.get("./cache/images");
             Files.createDirectories(cacheDir);  // Create the cache directory if it doesn't exist
-            Path outputPath = cacheDir.resolve(fileName);
+            // Normalize the file name to remove special characters
+            String normalizedFileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            Path outputPath = cacheDir.resolve(normalizedFileName);
 
             // Save the image to the local file
             Files.copy(inputStream, outputPath, StandardCopyOption.REPLACE_EXISTING);

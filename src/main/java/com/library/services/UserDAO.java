@@ -71,6 +71,11 @@ public class UserDAO extends BaseDAO<User> {
         return executeQueryForSingleEntity(sql, id);
     }
 
+    public User getUserByEmailOrPhone(String string) {
+        String sql = "SELECT * FROM users WHERE email = ? OR phone_number = ?";
+        return executeQueryForSingleEntity(sql, string, string);
+    }
+
     public List<User> getUsersByName(String name) {
         String sql = "SELECT * FROM users WHERE name LIKE ?";
         return executeQueryForList(sql, name);

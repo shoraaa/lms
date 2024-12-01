@@ -37,6 +37,11 @@
                   <FontIcon iconLiteral="mdmz-payment" styleClass="sidebar-icon" />
                </graphic>
             </Button>
+            <Button fx:id="chatButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.chat">
+               <graphic>
+                  <FontIcon iconLiteral="mdoal-chat" styleClass="sidebar-icon" />
+               </graphic>
+            </Button>
             <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.setting">
                <graphic>
                   <FontIcon iconLiteral="mdmz-settings" styleClass="sidebar-icon" />

@@ -28,6 +28,7 @@ public class MainController {
     @FXML private Button documentButton;
     @FXML private Button userButton;
     @FXML private Button transactionButton;
+    @FXML private Button chatButton;
     @FXML private Button logoutButton;
     @FXML private Button notificationButton;
     @FXML private Tile accountTile;
@@ -61,6 +62,7 @@ public class MainController {
         documentButton.setOnAction(event -> handleDocumentButton());
         userButton.setOnAction(event -> handleUserButton());
         transactionButton.setOnAction(event -> handleTransactionButton());
+        chatButton.setOnAction(event -> handleChatButton());
 
         logoutButton.setOnAction(event -> {
             UserSession.clearSession();
@@ -70,13 +72,23 @@ public class MainController {
 
     private void selectSidebarButton(Button selectedButton) {
         // Clear the 'selected' style class from all buttons
-        dashboardButton.getStyleClass().remove("selected");
-        userButton.getStyleClass().remove("selected");
-        documentButton.getStyleClass().remove("selected");
-        transactionButton.getStyleClass().remove("selected");
+        removeSelectedStyleFromButtons();
 
         // Add the 'selected' style class to the clicked button
         selectedButton.getStyleClass().add("selected");
+    }
+
+    private void removeSelectedStyleFromButtons() {
+        dashboardButton.getStyleClass().remove("selected");
+        documentButton.getStyleClass().remove("selected");
+        userButton.getStyleClass().remove("selected");
+        transactionButton.getStyleClass().remove("selected");
+        chatButton.getStyleClass().remove("selected");
+    }
+
+    private void handleChatButton() {
+        handleTabSelection(chatButton);
+        loadContent("/com/library/views/ChatView.fxml", null);
     }
 
     private void handleDashboardButton() {

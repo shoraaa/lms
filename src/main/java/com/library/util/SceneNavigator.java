@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import com.library.App;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
-import javafx.application.Platform;
 
 public class SceneNavigator {
 

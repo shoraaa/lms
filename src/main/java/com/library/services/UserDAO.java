@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.library.App;
 import com.library.model.User;
 import com.library.util.PasswordUtil;
 

@@ -11,16 +11,16 @@
 
 <VBox alignment="CENTER" prefHeight="441.0" prefWidth="365.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.LoginController">
    <children>
-      <Label fx:id="titleLabel" text="Login">
+      <Label text="%login.title">
          <font>
             <Font name="System Bold" size="45.0" />
          </font>
       </Label>
-      <CustomTextField fx:id="usernameTextField" prefHeight="52.0" prefWidth="325.0" promptText="Email address or phone number" />
-      <PasswordTextField fx:id="passwordTextField" prefHeight="55.0" prefWidth="325.0" promptText="Password" revealPassword="true" />
-      <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="325.0" text="Log in" />
+      <CustomTextField fx:id="usernameTextField" prefHeight="52.0" prefWidth="325.0" promptText="%login.usernamePrompt" />
+      <PasswordTextField fx:id="passwordTextField" prefHeight="55.0" prefWidth="325.0" promptText="%login.passwordPrompt" revealPassword="true" />
+      <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="325.0" text="%login.loginButton" />
       <Separator prefWidth="200.0" />
-      <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="325.0" text="Create new account" />
+      <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="325.0" text="%login.registerButton" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

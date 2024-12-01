@@ -5,22 +5,54 @@ import java.util.ResourceBundle;
 
 public class Localization {
 
-    private static ResourceBundle resourceBundle;
+    // Singleton instance
+    private static Localization instance;
+
+    // Current locale
+    private Locale locale;
+
+    // Resource bundle
+    private ResourceBundle resourceBundle;
 
     // Private constructor to prevent instantiation
-    private Localization() {}
+    private Localization() {
+        // Default locale is set to English (can be customized)
+        this.locale = new Locale("en", "US");
+        loadResourceBundle();
+    }
 
-    // Public method to get the resource bundle
-    public static ResourceBundle getResourceBundle() {
-        if (resourceBundle == null) {
-            // Load the resource bundle for the desired locale
-            resourceBundle = ResourceBundle.getBundle("com.library.i18n.labels", new Locale("en", "US"));
+    // Method to get the singleton instance
+    public static Localization getInstance() {
+        if (instance == null) {
+            instance = new Localization();
         }
+        return instance;
+    }
+
+    // Method to get the current resource bundle
+    public ResourceBundle getResourceBundle() {
         return resourceBundle;
     }
 
-    // Optionally, you can have a method to update the locale if needed
-    public static void setLocale(java.util.Locale locale) {
-        resourceBundle = ResourceBundle.getBundle("messages", locale);
+    // Method to get a specific localized string from the resource bundle
+    public String getString(String key) {
+        return resourceBundle.getString(key);
+    }
+
+    // Method to set a new locale
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        loadResourceBundle();
+    }
+
+    // Method to get the current locale
+    public Locale getLocale() {
+        return locale;
+    }
+
+    // Load the resource bundle based on the current locale
+    private void loadResourceBundle() {
+        // Assuming the resource bundle is named 'labels' and is in the 'com.library.i18n' package
+        resourceBundle = ResourceBundle.getBundle("com.library.i18n.labels", locale);
     }
 }

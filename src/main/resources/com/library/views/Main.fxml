@@ -14,7 +14,7 @@
    <children>
       <VBox alignment="TOP_CENTER" layoutY="95.0" spacing="40.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
          <children>
-            <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Dashboard">
+            <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.dashboard">
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin>
@@ -22,22 +22,22 @@
                   <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-dashboard" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Button fx:id="documentButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Books">
+            <Button fx:id="documentButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.books">
                <graphic>
                   <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-book" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Button fx:id="userButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Users">
+            <Button fx:id="userButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.users">
                <graphic>
                   <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-person" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Transactions">
+            <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.transactions">
                <graphic>
                   <FontIcon iconLiteral="mdmz-payment" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Setting">
+            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.setting">
                <graphic>
                   <FontIcon iconLiteral="mdmz-settings" styleClass="sidebar-icon" />
                </graphic>
@@ -62,20 +62,20 @@
       </AnchorPane>
       <AnchorPane styleClass="sidebar" stylesheets="@../css/style.css">
          <children>
-            <TextField layoutX="716.0" layoutY="25.0" maxWidth="1200.0" prefHeight="49.0" prefWidth="600.0" promptText="Search ..." styleClass="anchor-pane" AnchorPane.leftAnchor="716.0" AnchorPane.topAnchor="25.0" />
+            <TextField layoutX="716.0" layoutY="25.0" maxWidth="1200.0" prefHeight="49.0" prefWidth="600.0" promptText="%sidebar.searchPrompt" styleClass="anchor-pane" AnchorPane.leftAnchor="716.0" AnchorPane.topAnchor="25.0" />
             <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="22.0" layoutY="97.0" styleClass="sidebar-big-icon" />
             <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-menu" iconSize="80" layoutX="197.0" layoutY="72.0" styleClass="sidebar-icon" />
-            <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="Dashboard" />
+            <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="%sidebar.dashboard" />
          </children>
       </AnchorPane>
       <HBox alignment="CENTER" layoutX="1644.0" layoutY="1.0">
          <children>
-            <Button fx:id="notificationButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Notification">
+            <Button fx:id="notificationButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.notification">
                <graphic>
                   <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-notifications" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Tile fx:id="accountTile" description="Member" nodeOrientation="RIGHT_TO_LEFT" title="John, Smith" />
+            <Tile fx:id="accountTile" description="%sidebar.member" nodeOrientation="RIGHT_TO_LEFT" title="%sidebar.userName" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

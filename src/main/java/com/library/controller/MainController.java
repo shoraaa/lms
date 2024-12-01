@@ -2,7 +2,8 @@ package com.library.controller;
 
 import java.io.IOException;
 
-import com.library.model.User;
+import com.library.App;
+import com.library.util.Localization;
 import com.library.util.UserSession;
 
 import atlantafx.base.controls.Tile;
@@ -36,7 +37,9 @@ public class MainController {
         accountTile.setTitle(UserSession.getUser().getName());
         accountTile.setDescription(UserSession.getUser().getRole());
 
-        
+        boolean isAdmin = UserSession.getUser().getRole().equals("Admin");
+        userButton.setDisable(!isAdmin);
+
         ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/library/assets/user.png")));
         img.setFitWidth(50);
         img.setFitHeight(50);
@@ -46,6 +49,11 @@ public class MainController {
         documentButton.setOnAction(event -> handleDocumentButton());
         userButton.setOnAction(event -> handleUserButton());
         transactionButton.setOnAction(event -> handleTransactionButton());
+
+        logoutButton.setOnAction(event -> {
+            UserSession.clearSession();
+            App.setRoot("/com/library/views/Login", null);
+        });
 
         handleDashboardButton();
     }
@@ -63,25 +71,25 @@ public class MainController {
 
     private void handleDashboardButton() {
         selectSidebarButton(dashboardButton);
-        currentTabLabel.setText("Dashboard");
+        currentTabLabel.setText(dashboardButton.getText());
         loadContent("/com/library/views/Dashboard.fxml", null);
     }
 
     private void handleDocumentButton() {
         selectSidebarButton(documentButton);
-        currentTabLabel.setText("Documents");
+        currentTabLabel.setText(documentButton.getText());
         loadContent("/com/library/views/DocumentsView.fxml", null);
     }
 
     private void handleUserButton() {
         selectSidebarButton(userButton);
-        currentTabLabel.setText("Users");
+        currentTabLabel.setText(userButton.getText());
         loadContent("/com/library/views/UsersView.fxml", null);
     }
 
     private void handleTransactionButton() {
         selectSidebarButton(transactionButton);
-        currentTabLabel.setText("Transactions");
+        currentTabLabel.setText(transactionButton.getText());
         loadContent("/com/library/views/TransactionsView.fxml", null);
     }
 
@@ -117,6 +125,7 @@ public class MainController {
             if (controller != null) {
                 loader.setController(controller);
             }
+            loader.setResources(Localization.getInstance().getResourceBundle());
             Region loadedPane = loader.load();
             loadedPane.prefWidthProperty().bind(contentPane.widthProperty());
             loadedPane.prefHeightProperty().bind(contentPane.heightProperty());

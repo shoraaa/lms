@@ -22,12 +22,12 @@
                      <children>
                         <VBox alignment="CENTER_LEFT" prefHeight="129.0" prefWidth="385.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
                            <children>
-                              <Label fx:id="helloLabel" styleClass="title-1" text="Hello, Shora!">
+                              <Label fx:id="helloLabel" styleClass="title-1" text="%helloLabel">
                                  <font>
                                     <Font size="41.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="dateTimeLabel" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Nov 11, 2024 | Thursday, 3:34 AM" />
+                              <Label fx:id="dateTimeLabel" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="%dateTimeLabel" />
                            </children>
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -56,12 +56,12 @@
                            <children>
                               <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0" VBox.vgrow="NEVER">
                                  <children>
-                                    <Label styleClass="title-3" text="Users List" />
-                                    <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Add New User" />
+                                    <Label styleClass="title-3" text="%usersList" />
+                                    <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="%addUserButton" />
                                  </children>
                               </HBox>
                               <TableView fx:id="usersList" minHeight="300.0" />
-                              <Button alignment="CENTER" mnemonicParsing="false" text="See All" textFill="RED" />
+                              <Button alignment="CENTER" mnemonicParsing="false" text="%seeAllUsersButton" textFill="RED" />
                            </children>
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -71,12 +71,12 @@
                            <children>
                               <HBox alignment="CENTER" fillHeight="false" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="400.0" VBox.vgrow="NEVER">
                                  <children>
-                                    <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Documents List" />
-                                    <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="Add New Document" />
+                                    <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="%documentsList" />
+                                    <Button mnemonicParsing="false" styleClass="title-4" stylesheets="@../css/cupertino-light.css" text="%addDocumentButton" />
                                  </children>
                               </HBox>
                               <TableView fx:id="documentsList" minHeight="300.0" />
-                              <Button mnemonicParsing="false" text="See All" textFill="RED" />
+                              <Button mnemonicParsing="false" text="%seeAllDocumentsButton" textFill="RED" />
                            </children>
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -87,7 +87,7 @@
                         <Insets left="40.0" right="40.0" />
                      </padding>
                   </HBox>
-                  <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Popular">
+                  <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="%popularLabel">
                      <VBox.margin>
                         <Insets left="60.0" top="20.0" />
                      </VBox.margin>

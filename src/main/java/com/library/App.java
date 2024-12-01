@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import com.library.util.DatabaseInitializer;
+import com.library.util.Localization;
 
 import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
@@ -56,6 +57,7 @@ public class App extends Application {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
             if (controller != null) fxmlLoader.setController(controller);
+            fxmlLoader.setResources(Localization.getInstance().getResourceBundle());
             return fxmlLoader.load();
         } catch (IOException e) {
             showErrorDialog(e);

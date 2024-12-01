@@ -3,7 +3,7 @@ package com.library.controller;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.kordamp.ikonli.Ikon;
@@ -18,12 +18,12 @@ import com.library.services.AuthorDAO;
 import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
 import com.library.services.UserDAO;
+import com.library.util.Localization;
 import com.library.util.UserSession;
 import com.library.view.DocumentTableView;
 import com.library.view.UserTableView;
 
 import atlantafx.base.controls.Card;
-import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -62,22 +62,24 @@ public class DashboardController extends BaseViewController {
     }
 
     private void setupGreeting() {
-        helloLabel.setText("Hello, " + UserSession.getUser().getName() + "!");
+        helloLabel.setText(helloLabel.getText().replace("{0}", UserSession.getUser().getName()));
+        // helloLabel.setText(String.format(helloLabel.getText(), UserSession.getUser().getName()));
     }
 
     private void setupDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN, Locale.US);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN, Localization.getInstance().getLocale());
         String formattedDateTime = LocalDateTime.now().format(formatter);
         dateTimeLabel.setText(formattedDateTime);
     }
 
     private void setupDashboardCards() {
-        setCardValue(newBookCard, "Total Books", DocumentDAO.getInstance().countAllDocuments(), Material2AL.BOOK);
-        setCardValue(newUserCard, "Total Users", UserDAO.getInstance().countAllUsers(), Material2MZ.PERSON);
+        ResourceBundle bundle = Localization.getInstance().getResourceBundle();
+        setCardValue(newBookCard, bundle.getString("totalBooks"), DocumentDAO.getInstance().countAllDocuments(), Material2AL.BOOK);
+        setCardValue(newUserCard, bundle.getString("totalUsers"), UserDAO.getInstance().countAllUsers(), Material2MZ.PERSON);
         
         List<Transaction> transactions = TransactionDAO.getInstance().getAllTransactions();
-        setCardValue(borrowedBookCard, "Borrowed Books", transactions.size(), Material2AL.BOOKMARK);
-        setCardValue(returnedBookCard, "Returned Books", 
+        setCardValue(borrowedBookCard, bundle.getString("borrowedBooks"), transactions.size(), Material2AL.BOOKMARK);
+        setCardValue(returnedBookCard, bundle.getString("returnedBooks"), 
             (int) transactions.stream().filter(Transaction::isReturned).count(), Material2AL.CHECK_CIRCLE);
     }
 

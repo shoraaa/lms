@@ -11,7 +11,7 @@
 
 <VBox alignment="CENTER" prefHeight="441.0" prefWidth="365.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.LoginController">
    <children>
-      <Label text="Login">
+      <Label fx:id="titleLabel" text="Login">
          <font>
             <Font name="System Bold" size="45.0" />
          </font>

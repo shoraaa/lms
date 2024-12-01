@@ -1,8 +1,11 @@
 package com.library.controller;
 
+import java.util.ResourceBundle;
+
 import com.library.App;
 import com.library.model.User;
 import com.library.services.UserDAO;
+import com.library.util.Localization;
 import com.library.util.PasswordUtil; // Assuming PasswordUtil is a utility class for password hashing
 import com.library.util.UserSession;
 
@@ -12,18 +15,33 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class LoginController {
 
+    @FXML private Label titleLabel;
     @FXML private CustomTextField usernameTextField;
     @FXML private PasswordTextField passwordTextField;
     @FXML private Button loginButton;
     @FXML private Button registerButton;
 
     @FXML public void initialize() {
-        
+        setupLocalizations();
+
         loginButton.setOnAction(event -> handleLogin());
         registerButton.setOnAction(event -> handleRegister());
+    }
+
+    void setupLocalizations() {
+        // Load the resource bundle based on system locale
+        ResourceBundle bundle = Localization.getResourceBundle();
+
+        // Apply the resource bundle values to UI elements
+        titleLabel.setText(bundle.getString("login.title"));
+        usernameTextField.setPromptText(bundle.getString("login.usernamePrompt"));
+        passwordTextField.setPromptText(bundle.getString("login.passwordPrompt"));
+        loginButton.setText(bundle.getString("login.loginButton"));
+        registerButton.setText(bundle.getString("login.registerButton"));
     }
 
     // Handle login action

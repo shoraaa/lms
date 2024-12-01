@@ -34,8 +34,6 @@ public class DocumentTableView extends BaseTableView<Document> {
     private final Map<Integer, String> categoriesCache = new HashMap<>();
     private final Map<Integer, String> publishersCache = new HashMap<>();
 
-    private BaseController parentController;
-
     public DocumentTableView(TableView<Document> tableView) {
         super(tableView);
 
@@ -49,10 +47,6 @@ public class DocumentTableView extends BaseTableView<Document> {
             });
             return row;
         });
-    }
-
-    public void setParentController(BaseController parentController) {
-        this.parentController = parentController;
     }
 
     @Override

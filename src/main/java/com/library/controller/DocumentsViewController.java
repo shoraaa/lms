@@ -17,6 +17,7 @@ public class DocumentsViewController extends BaseViewController<Document> {
     @Override
     protected void initializeItemTableView() {
         itemTableView = new DocumentTableView(tableView);
+        itemTableView.setParentController(this);
     }
 
     @Override

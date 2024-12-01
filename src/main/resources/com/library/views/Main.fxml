@@ -29,7 +29,7 @@
             </Button>
             <Button fx:id="userButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.users">
                <graphic>
-                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-person" styleClass="sidebar-icon" />
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdrmz-supervisor_account" styleClass="sidebar-icon" />
                </graphic>
             </Button>
             <Button fx:id="transactionButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.transactions">
@@ -42,7 +42,7 @@
                   <FontIcon iconLiteral="mdoal-chat" styleClass="sidebar-icon" />
                </graphic>
             </Button>
-            <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.setting">
+            <Button fx:id="settingButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="64.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.setting">
                <graphic>
                   <FontIcon iconLiteral="mdmz-settings" styleClass="sidebar-icon" />
                </graphic>
@@ -73,7 +73,7 @@
             <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="%sidebar.dashboard" />
          </children>
       </AnchorPane>
-      <HBox alignment="CENTER" layoutX="1644.0" layoutY="1.0">
+      <HBox alignment="CENTER" layoutX="1508.0" layoutY="1.0" AnchorPane.rightAnchor="40.0">
          <children>
             <Button fx:id="notificationButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.notification">
                <graphic>
@@ -81,6 +81,11 @@
                </graphic>
             </Button>
             <Tile fx:id="accountTile" description="%sidebar.member" nodeOrientation="RIGHT_TO_LEFT" title="%sidebar.userName" />
+            <Button fx:id="accountButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.users" HBox.hgrow="ALWAYS">
+               <graphic>
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdsmz-person" styleClass="sidebar-medium-con" />
+               </graphic>
+            </Button>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

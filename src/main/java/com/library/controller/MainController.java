@@ -1,7 +1,6 @@
 package com.library.controller;
 
 import java.io.IOException;
-import java.lang.ModuleLayer.Controller;
 import java.util.Optional;
 
 import com.library.util.Localization;
@@ -10,13 +9,13 @@ import com.library.util.SceneNavigator;
 import com.library.util.UserSession;
 
 import atlantafx.base.controls.Tile;
+import atlantafx.base.theme.CupertinoLight;
 import atlantafx.base.util.Animations;
+import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
@@ -30,7 +29,9 @@ public class MainController {
     @FXML private Button userButton;
     @FXML private Button transactionButton;
     @FXML private Button chatButton;
+    @FXML private Button accountButton;
     @FXML private Button logoutButton;
+    @FXML private Button settingButton;
     @FXML private Button notificationButton;
     @FXML private Tile accountTile;
 
@@ -52,10 +53,11 @@ public class MainController {
         boolean isAdmin = UserSession.getUser().getRole().equals("Admin");
         userButton.setDisable(!isAdmin);
 
-        ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/library/assets/user.png")));
-        img.setFitWidth(50);
-        img.setFitHeight(50);
-        accountTile.setGraphic(img);
+        // TODO: add user avatar
+        // ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/library/assets/user.png")));
+        // img.setFitWidth(50);
+        // img.setFitHeight(50);
+        // accountTile.setGraphic(img);
     }
 
     private void initializeButtonActions() {
@@ -64,6 +66,8 @@ public class MainController {
         userButton.setOnAction(event -> handleUserButton());
         transactionButton.setOnAction(event -> handleTransactionButton());
         chatButton.setOnAction(event -> handleChatButton());
+        settingButton.setOnAction(event -> handleSettingButton());
+        
 
         logoutButton.setOnAction(event -> {
             UserSession.clearSession();
@@ -85,6 +89,7 @@ public class MainController {
         userButton.getStyleClass().remove("selected");
         transactionButton.getStyleClass().remove("selected");
         chatButton.getStyleClass().remove("selected");
+        settingButton.getStyleClass().remove("selected");
     }
 
     private void handleChatButton() {
@@ -110,6 +115,11 @@ public class MainController {
     private void handleTransactionButton() {
         handleTabSelection(transactionButton);
         loadContent("/com/library/views/TransactionsView.fxml", null);
+    }
+
+    private void handleSettingButton() {
+        handleTabSelection(settingButton);
+        loadContent("/com/library/views/Setting.fxml", null);
     }
 
     private void handleTabSelection(Button button) {

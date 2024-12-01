@@ -5,6 +5,9 @@ import java.util.List;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
 
+import com.library.controller.BaseController;
+import com.library.controller.BaseViewController;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +21,8 @@ public abstract class BaseTableView<T> {
 
     protected final TableView<T> tableView;
     protected final ObservableList<T> data = FXCollections.observableArrayList();
+
+    protected BaseController parentController;
 
     public BaseTableView(TableView<T> tableView) {
         this.tableView = tableView;
@@ -34,6 +39,10 @@ public abstract class BaseTableView<T> {
 
     protected void loadData() {
         // Abstract method to load data for the specific table view (e.g., DocumentTableView)
+    }
+
+    public void setParentController(BaseController parentController) {
+        this.parentController = parentController;
     }
 
     public void setData(ObservableList<T> data) {

@@ -1,8 +1,10 @@
 package com.library.controller;
 
-import com.library.App;
+import java.util.Optional;
+
 import com.library.model.User;
 import com.library.services.UserDAO;
+import com.library.util.SceneNavigator;
 import com.library.util.PasswordUtil; // Assuming PasswordUtil is a utility class for password hashing
 
 import atlantafx.base.controls.CustomTextField;
@@ -34,7 +36,7 @@ public class RegisterController {
     }
 
     private void handleBack() {
-        App.setRoot("/com/library/views/Login", null);
+        SceneNavigator.setRoot("/com/library/views/Login", Optional.empty());
     }
 
     // Handle registration action

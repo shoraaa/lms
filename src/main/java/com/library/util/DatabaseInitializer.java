@@ -1,10 +1,13 @@
 package com.library.util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Random;
-
-import com.library.App;
 
 public class DatabaseInitializer {
 
@@ -91,7 +94,7 @@ public class DatabaseInitializer {
 
             System.out.println(" Database tables created or already exist.");
         } catch (SQLException e) {
-            App.showErrorDialog(e);
+            ErrorHandler.showErrorDialog(e);
         }
     }
 

@@ -10,7 +10,6 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.material2.Material2MZ;
 
-import com.library.App;
 import com.library.model.Document;
 import com.library.model.Transaction;
 import com.library.model.User;
@@ -18,6 +17,7 @@ import com.library.services.AuthorDAO;
 import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
 import com.library.services.UserDAO;
+import com.library.util.ErrorHandler;
 import com.library.util.Localization;
 import com.library.util.UserSession;
 import com.library.view.DocumentTableView;
@@ -133,7 +133,7 @@ public class DashboardController extends BaseViewController {
         });
 
         loadTask.setOnFailed(event -> {
-            App.showErrorDialog(new Exception("Failed to load popular documents", loadTask.getException()));
+            ErrorHandler.showErrorDialog(new Exception("Failed to load popular documents", loadTask.getException()));
         });
 
         new Thread(loadTask).start();
@@ -189,7 +189,7 @@ public class DashboardController extends BaseViewController {
 
     private void handleAddNewDocument() {
         if (mainController == null) {
-            App.showErrorDialog(new Exception("MainController not set"));
+            ErrorHandler.showErrorDialog(new Exception("MainController not set"));
             return;
         }
 

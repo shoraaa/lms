@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.library.App;
 import com.library.api.GoogleBooksAPI;
 import com.library.api.GoogleBooksAPI.BookDetails;
 import com.library.model.Author;
@@ -24,6 +23,7 @@ import com.library.services.DocumentDAO;
 import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
+import com.library.util.ErrorHandler;
 import com.library.view.TransactionTableView;
 
 import javafx.collections.FXCollections;
@@ -150,14 +150,6 @@ public class EditDocumentController extends BaseViewController {
         selectImageButton.setOnAction(event -> handleSelectImage());
     }
 
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void clearForm() {
         titleTextField.clear();
         isbnTextField.clear();
@@ -224,7 +216,7 @@ public class EditDocumentController extends BaseViewController {
 
         // Validate inputs
         if (title.isEmpty()) {
-            App.showErrorDialog(new Exception("Title is required"));
+            ErrorHandler.showErrorDialog(new Exception("Title is required"));
             return;
         }
 

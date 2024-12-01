@@ -1,6 +1,6 @@
 package com.library.controller;
 
-public class BaseViewController {
+public class BaseViewController extends BaseController {
     protected MainController mainController;
     public void setMainController(MainController mainController) {
         this.mainController = mainController;

@@ -1,26 +1,24 @@
 package com.library.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.library.App;
 import com.library.model.Document;
 import com.library.services.DocumentDAO;
-import com.library.util.WindowUtil;
+import com.library.util.ErrorHandler;
 import com.library.view.DocumentTableView;
 
-import atlantafx.base.controls.ModalPane;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class DocumentsViewController extends BaseViewController {
@@ -95,7 +93,7 @@ public class DocumentsViewController extends BaseViewController {
 
             @Override
             protected void failed() {
-                App.showErrorDialog(new Exception("Failed to load documents"));
+                ErrorHandler.showErrorDialog(new Exception("Failed to load documents"));
             }
         };
 
@@ -107,11 +105,11 @@ public class DocumentsViewController extends BaseViewController {
     }
 
     private void handleAddNewDocument() {
-        // App.openDialog("/com/library/views/AddDocumentWindow.fxml", null, this::loadDocumentsAsync);
+        // ErrorHandler.openDialog("/com/library/views/AddDocumentWindow.fxml", null, this::loadDocumentsAsync);
         // WindowUtil.showDialog("/com/library/views/AddDocumentWindow.fxml", modalPane, this::loadDocumentsAsync);
         // how to open a dialog window in a modalPane in the mainController
         if (mainController == null) {
-            App.showErrorDialog(new Exception("MainController not set"));
+            ErrorHandler.showErrorDialog(new Exception("MainController not set"));
             return;
         }
 

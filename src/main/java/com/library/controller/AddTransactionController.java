@@ -2,6 +2,7 @@ package com.library.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.library.model.Document;
 import com.library.model.User;
@@ -20,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class AddTransactionController extends BaseViewController {
+
     @FXML ImageView documentImageView;
     @FXML CustomTextField documentTitleTextFIeld;
     @FXML CustomTextField isbnTextField;
@@ -29,106 +31,126 @@ public class AddTransactionController extends BaseViewController {
     @FXML DatePicker dueDatePicker;
     @FXML Button saveButton, cancelButton;
 
+    private List<Document> documents;
+    private List<User> users;
+
     @FXML
     public void initialize() {
+        initializeForm();
+        initializeAutoCompletionFields();
+        setUpEventListeners();
+    }
 
+    private void initializeForm() {
         borrowDatePicker.setValue(LocalDate.now());
         dueDatePicker.setValue(LocalDate.now().plusDays(7));
 
-        List<Document> documents = DocumentDAO.getInstance().getAllDocuments();
-        List<String> documentName = documents.stream().map(Document::getTitle).collect(java.util.stream.Collectors.toList());
-        List<String> documentISBNs = documents.stream().map(Document::getIsbn).collect(java.util.stream.Collectors.toList());
-        new AutoCompletionTextField(documentTitleTextFIeld, documentName);
+        documents = DocumentDAO.getInstance().getAllDocuments();
+        users = UserDAO.getInstance().getAllUsers();
+    }
+
+    private void initializeAutoCompletionFields() {
+        List<String> documentNames = documents.stream().map(Document::getTitle).collect(Collectors.toList());
+        List<String> documentISBNs = documents.stream().map(Document::getIsbn).collect(Collectors.toList());
+        new AutoCompletionTextField(documentTitleTextFIeld, documentNames);
         new AutoCompletionTextField(isbnTextField, documentISBNs);
 
-        documentTitleTextFIeld.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (documentName.contains(newValue)) {
-                Document document = documents.stream().filter(d -> d.getTitle().equals(newValue)).findFirst().get();
-                isbnTextField.setText(document.getIsbn());
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+        List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
+        List<String> userIds = users.stream().map(user -> String.valueOf(user.getUserId())).collect(Collectors.toList());
+        new AutoCompletionTextField(userNameTextField, userNames);
+        new AutoCompletionTextField(userIdTextField, userIds);
+    }
 
-                if (document.getImageUrl() != null) {
-                    documentImageView.setImage(new Image(document.getImageUrl()));
-                }
-            } else {
-                isbnTextField.clear();
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-            }
+    private void setUpEventListeners() {
+        setUpDocumentFieldsListeners();
+        setUpUserFieldsListeners();
+        saveButton.setOnAction(event -> saveNewTransaction());
+    }
+
+    private void setUpDocumentFieldsListeners() {
+        documentTitleTextFIeld.textProperty().addListener((observable, oldValue, newValue) -> {
+            handleDocumentFieldChange(newValue, documentTitleTextFIeld, isbnTextField);
         });
 
         isbnTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (documentISBNs.contains(newValue)) {
-                Document document = documents.stream().filter(d -> d.getIsbn().equals(newValue)).findFirst().get();
-                documentTitleTextFIeld.setText(document.getTitle());
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-
-                if (document.getImageUrl() != null) {
-                    documentImageView.setImage(new Image(document.getImageUrl()));
-                }
-            } else {
-                documentTitleTextFIeld.clear();
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                documentTitleTextFIeld.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                isbnTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-            }
+            handleDocumentFieldChange(newValue, isbnTextField, documentTitleTextFIeld);
         });
+    }
 
-        List<User> users = UserDAO.getInstance().getAllUsers();
-        List<String> userName = users.stream().map(User::getName).collect(java.util.stream.Collectors.toList());
-        List<String> userId = users.stream().map(user -> String.valueOf(user.getUserId())).collect(java.util.stream.Collectors.toList());
-        new AutoCompletionTextField(userNameTextField, userName);
-        new AutoCompletionTextField(userIdTextField, userId);
+    private void handleDocumentFieldChange(String newValue, CustomTextField activeField, CustomTextField otherField) {
+        Document document = findDocumentByField(newValue);
+        if (document != null) {
+            updateDocumentFields(document, activeField, otherField);
+        } else {
+            clearDocumentFields(activeField, otherField);
+        }
+    }
 
+    private Document findDocumentByField(String value) {
+        return documents.stream()
+                .filter(d -> d.getTitle().equals(value) || d.getIsbn().equals(value))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void updateDocumentFields(Document document, CustomTextField activeField, CustomTextField otherField) {
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+        otherField.setText(document.getIsbn());
+        updateDocumentImage(document);
+    }
+
+    private void clearDocumentFields(CustomTextField activeField, CustomTextField otherField) {
+        activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+        otherField.clear();
+    }
+
+    private void updateDocumentImage(Document document) {
+        if (document.getImageUrl() != null) {
+            documentImageView.setImage(new Image(document.getImageUrl()));
+        }
+    }
+
+    private void setUpUserFieldsListeners() {
         userNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (userName.contains(newValue)) {
-                User user = users.stream().filter(d -> d.getName().equals(newValue)).findFirst().get();
-                userIdTextField.setText(String.valueOf(user.getUserId()));
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-            } else {
-                userIdTextField.clear();
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-            }
+            handleUserFieldChange(newValue, userNameTextField, userIdTextField);
         });
 
         userIdTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (userId.contains(newValue)) {
-                User user = users.stream().filter(d -> d.getUserId() == Integer.parseInt(newValue)).findFirst().get();
-                userNameTextField.setText(user.getName());
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
-            } else {
-                userNameTextField.clear();
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                userNameTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-                userIdTextField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-            }
+            handleUserFieldChange(newValue, userIdTextField, userNameTextField);
         });
+    }
 
-        saveButton.setOnAction(event -> saveNewTransaction());
-        // cancelButton.setOnAction(event -> closeWindow());
+    private void handleUserFieldChange(String newValue, CustomTextField activeField, CustomTextField otherField) {
+        User user = findUserByField(newValue);
+        if (user != null) {
+            updateUserFields(user, activeField, otherField);
+        } else {
+            clearUserFields(activeField, otherField);
+        }
+    }
+
+    private User findUserByField(String value) {
+        return users.stream()
+                .filter(u -> u.getName().equals(value) || String.valueOf(u.getUserId()).equals(value))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void updateUserFields(User user, CustomTextField activeField, CustomTextField otherField) {
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+        otherField.setText(String.valueOf(user.getUserId()));
+    }
+
+    private void clearUserFields(CustomTextField activeField, CustomTextField otherField) {
+        activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+        otherField.clear();
     }
 
     private void saveNewTransaction() {
-        // Get the values from the form
         String documentTitle = documentTitleTextFIeld.getText();
         String isbn = isbnTextField.getText();
         String userName = userNameTextField.getText();
@@ -136,22 +158,29 @@ public class AddTransactionController extends BaseViewController {
         LocalDate borrowDate = borrowDatePicker.getValue();
         LocalDate dueDate = dueDatePicker.getValue();
 
-        // Validate inputs
+        if (validateInputs(documentTitle, isbn, userName, userId, borrowDate, dueDate)) {
+            int documentId = DocumentDAO.getInstance().getDocumentsByTitle(documentTitle).get(0).getDocumentId();
+            int userIdInt = Integer.parseInt(userId);
+            boolean success = TransactionService.getInstance().borrowDocument(userIdInt, documentId, borrowDate, dueDate);
+
+            showTransactionResult(success);
+        }
+    }
+
+    private boolean validateInputs(String documentTitle, String isbn, String userName, String userId, LocalDate borrowDate, LocalDate dueDate) {
         if (documentTitle.isEmpty() || isbn.isEmpty() || userName.isEmpty() || userId.isEmpty() || borrowDate == null || dueDate == null) {
             showAlert("Error", "All fields are required!", Alert.AlertType.ERROR);
-            return;
+            return false;
         }
+        return true;
+    }
 
-        // Save the transaction to the database
-        int documentId = DocumentDAO.getInstance().getDocumentsByTitle(documentTitle).get(0).getDocumentId();
-        int userIdInt = Integer.parseInt(userId);
-        boolean success = TransactionService.getInstance().borrowDocument(userIdInt, documentId, borrowDate, dueDate);
-
+    private void showTransactionResult(boolean success) {
         if (success) {
             showAlert("Success", "Transaction has been created successfully!", Alert.AlertType.INFORMATION);
-            clearForm();  // Clear the form after successful save
+            clearForm();
         } else {
-            showAlert("Error", "The book is not availible!", Alert.AlertType.ERROR);
+            showAlert("Error", "The book is not available!", Alert.AlertType.ERROR);
         }
     }
 
@@ -162,13 +191,5 @@ public class AddTransactionController extends BaseViewController {
         userIdTextField.clear();
         borrowDatePicker.setValue(null);
         dueDatePicker.setValue(null);
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

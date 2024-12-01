@@ -1,11 +1,10 @@
 package com.library.controller;
 
-import java.util.ResourceBundle;
+import java.util.Optional;
 
-import com.library.App;
 import com.library.model.User;
 import com.library.services.UserDAO;
-import com.library.util.Localization;
+import com.library.util.SceneNavigator;
 import com.library.util.PasswordUtil; // Assuming PasswordUtil is a utility class for password hashing
 import com.library.util.UserSession;
 
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 
 public class LoginController {
 
@@ -55,7 +53,7 @@ public class LoginController {
         if (PasswordUtil.verifyPassword(password, user.getPasswordHash())) {
             // Successfully logged in, navigate to the main screen
             UserSession.setUser(user);
-            App.setRoot("/com/library/views/Main", null);
+            SceneNavigator.setRoot("/com/library/views/Main", Optional.empty());
         } else {
             showAlert(AlertType.ERROR, "Login Failed", "Incorrect password.");
         }
@@ -63,7 +61,7 @@ public class LoginController {
 
     // Handle registration action
     private void handleRegister() {
-        App.setRoot("/com/library/views/Register", null);
+        SceneNavigator.setRoot("/com/library/views/Register", Optional.empty());
     }
 
     // Helper method to show alerts

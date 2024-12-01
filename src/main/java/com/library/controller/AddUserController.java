@@ -24,15 +24,6 @@ public class AddUserController extends BaseViewController {
         cancelButton.setOnAction(event -> closeWindow());
     }
 
-    // Method to show an alert dialog
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     // Method to save the new book to the database
     private void saveNewUser() {
 

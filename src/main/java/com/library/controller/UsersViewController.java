@@ -1,13 +1,12 @@
 package com.library.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.library.App;
 import com.library.model.User;
 import com.library.services.UserDAO;
+import com.library.util.ErrorHandler;
 import com.library.view.UserTableView;
 
 import javafx.animation.PauseTransition;
@@ -15,8 +14,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -91,7 +92,7 @@ public class UsersViewController extends BaseViewController {
 
             @Override
             protected void failed() {
-                App.showErrorDialog(new Exception("Failed to load users"));
+                ErrorHandler.showErrorDialog(new Exception("Failed to load users"));
             }
         };
 
@@ -104,7 +105,7 @@ public class UsersViewController extends BaseViewController {
 
     private void handleAddNewUser() {
         if (mainController == null) {
-            App.showErrorDialog(new Exception("MainController not set"));
+            ErrorHandler.showErrorDialog(new Exception("MainController not set"));
             return;
         }
 

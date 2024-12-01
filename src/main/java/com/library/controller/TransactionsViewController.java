@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.library.App;
 import com.library.model.Transaction;
 import com.library.services.TransactionDAO;
+import com.library.util.ErrorHandler;
 import com.library.view.TransactionTableView;
 
 import javafx.animation.PauseTransition;
@@ -91,7 +91,7 @@ public class TransactionsViewController extends BaseViewController {
 
             @Override
             protected void failed() {
-                App.showErrorDialog(new Exception("Failed to load transactions"));
+                ErrorHandler.showErrorDialog(new Exception("Failed to load transactions"));
             }
         };
 
@@ -104,7 +104,7 @@ public class TransactionsViewController extends BaseViewController {
 
     private void handleAddNewTransaction() {
         if (mainController == null) {
-            App.showErrorDialog(new Exception("MainController not set"));
+            ErrorHandler.showErrorDialog(new Exception("MainController not set"));
             return;
         }
 

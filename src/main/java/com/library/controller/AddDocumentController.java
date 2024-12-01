@@ -121,14 +121,6 @@ public class AddDocumentController extends BaseViewController {
         selectImageButton.setOnAction(event -> handleSelectImage());
     }
 
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void clearForm() {
         titleTextField.clear();
         isbnTextField.clear();

@@ -1,9 +1,11 @@
 package com.library.controller;
 
 import java.io.IOException;
+import java.util.Optional;
 
-import com.library.App;
 import com.library.util.Localization;
+import com.library.util.PaneNavigator;
+import com.library.util.SceneNavigator;
 import com.library.util.UserSession;
 
 import atlantafx.base.controls.Tile;
@@ -34,6 +36,14 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        PaneNavigator.setContent(contentPane);
+        
+        initializeAccountTile();
+        initializeButtonActions();
+        handleDashboardButton();  // Default to Dashboard
+    }
+
+    private void initializeAccountTile() {
         accountTile.setTitle(UserSession.getUser().getName());
         accountTile.setDescription(UserSession.getUser().getRole());
 
@@ -44,7 +54,9 @@ public class MainController {
         img.setFitWidth(50);
         img.setFitHeight(50);
         accountTile.setGraphic(img);
+    }
 
+    private void initializeButtonActions() {
         dashboardButton.setOnAction(event -> handleDashboardButton());
         documentButton.setOnAction(event -> handleDocumentButton());
         userButton.setOnAction(event -> handleUserButton());
@@ -52,10 +64,8 @@ public class MainController {
 
         logoutButton.setOnAction(event -> {
             UserSession.clearSession();
-            App.setRoot("/com/library/views/Login", null);
+            SceneNavigator.setRoot("/com/library/views/Login", Optional.empty());
         });
-
-        handleDashboardButton();
     }
 
     private void selectSidebarButton(Button selectedButton) {
@@ -64,39 +74,39 @@ public class MainController {
         userButton.getStyleClass().remove("selected");
         documentButton.getStyleClass().remove("selected");
         transactionButton.getStyleClass().remove("selected");
-    
+
         // Add the 'selected' style class to the clicked button
         selectedButton.getStyleClass().add("selected");
     }
 
     private void handleDashboardButton() {
-        selectSidebarButton(dashboardButton);
-        currentTabLabel.setText(dashboardButton.getText());
+        handleTabSelection(dashboardButton);
         loadContent("/com/library/views/Dashboard.fxml", null);
     }
 
     private void handleDocumentButton() {
-        selectSidebarButton(documentButton);
-        currentTabLabel.setText(documentButton.getText());
+        handleTabSelection(documentButton);
         loadContent("/com/library/views/DocumentsView.fxml", null);
     }
 
     private void handleUserButton() {
-        selectSidebarButton(userButton);
-        currentTabLabel.setText(userButton.getText());
+        handleTabSelection(userButton);
         loadContent("/com/library/views/UsersView.fxml", null);
     }
 
     private void handleTransactionButton() {
-        selectSidebarButton(transactionButton);
-        currentTabLabel.setText(transactionButton.getText());
+        handleTabSelection(transactionButton);
         loadContent("/com/library/views/TransactionsView.fxml", null);
     }
 
-        // Helper method to load the content dynamically
+    private void handleTabSelection(Button button) {
+        selectSidebarButton(button);
+        currentTabLabel.setText(button.getText());
+    }
+
+    // Helper method to load the content dynamically
     private void loadContent(String fxmlFile, Object controller) {
         try {
-            
             // Start fade-out animation immediately
             if (!contentPane.getChildren().isEmpty()) {
                 var fadeOutAnimation = Animations.fadeOut(contentPane.getChildren().get(0), Duration.seconds(0.1));
@@ -112,9 +122,7 @@ public class MainController {
                 loadAndFadeInNewContent(fxmlFile, controller);
             }
         } catch (Exception e) {
-            // Log the exception and show an error message to the user
-            System.err.println("Error loading FXML file: " + fxmlFile);
-            e.printStackTrace();
+            logError("Error loading FXML file: " + fxmlFile, e);
         }
     }
 
@@ -140,19 +148,19 @@ public class MainController {
             loaderController.setMainController(this);
 
             // Fade in the new content
-            // Animations.fadeIn(loadedPane, Duration.seconds(0.25)).playFromStart();
+            Animations.fadeIn(loadedPane, Duration.seconds(0.25)).playFromStart();
         } catch (IOException e) {
-            // Log the exception and show an error message to the user
-            System.err.println("Error loading FXML file: " + fxmlFile);
-            e.printStackTrace();
+            logError("Error loading FXML file: " + fxmlFile, e);
         }
+    }
+
+    private void logError(String message, Exception e) {
+        System.err.println(message);
+        e.printStackTrace();
     }
 
     public void showDialog(String fxmlPath, Runnable onClose, Object controller) {
         loadContent(fxmlPath, controller);
         onClose.run();
     }
-
 }
-
-

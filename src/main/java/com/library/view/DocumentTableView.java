@@ -19,6 +19,7 @@ import com.library.services.PublisherDAO;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -37,7 +38,6 @@ public class DocumentTableView extends BaseTableView<Document> {
 
     public DocumentTableView(TableView<Document> tableView) {
         super(tableView);
-        // loadData();
 
         tableView.setRowFactory(tv -> {
             TableRow<Document> row = new TableRow<>();
@@ -92,8 +92,7 @@ public class DocumentTableView extends BaseTableView<Document> {
         authorsCache.clear();
         categoriesCache.clear();
         publishersCache.clear();
-        data.setAll(allDocuments);
-        tableView.setItems(data);
+        setData(FXCollections.observableArrayList(allDocuments));
     }
 
     @Override

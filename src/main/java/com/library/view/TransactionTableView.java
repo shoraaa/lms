@@ -15,6 +15,7 @@ import com.library.services.TransactionDAO;
 import com.library.services.TransactionService;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
@@ -35,7 +36,6 @@ public class TransactionTableView extends BaseTableView<Transaction> {
 
     public TransactionTableView(TableView<Transaction> tableView) {
         super(tableView);
-        loadData();
 
         tableView.setRowFactory(tv -> {
             TableRow<Transaction> row = new TableRow<>();
@@ -141,8 +141,7 @@ public class TransactionTableView extends BaseTableView<Transaction> {
         authorsCache.clear();
         categoriesCache.clear();
         publishersCache.clear();
-        data.setAll(allTransactions);
-        tableView.setItems(data);
+        setData(FXCollections.observableArrayList(allTransactions));
     }
 
     @Override

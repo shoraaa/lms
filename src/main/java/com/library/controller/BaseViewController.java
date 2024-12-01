@@ -15,7 +15,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
@@ -23,12 +23,12 @@ import javafx.util.Duration;
 public abstract class BaseViewController<T> extends BaseController {
 
     @FXML protected TableView<T> tableView;
-    @FXML protected Label totalLabel;
     @FXML protected Button addButton;
     @FXML protected Button filterButton;
     @FXML protected TextField searchTextField;
     @FXML protected Button deleteButton;
     @FXML protected ChoiceBox<String> searchChoiceBox;
+    @FXML protected Pagination tablePagination;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     
@@ -86,10 +86,6 @@ public abstract class BaseViewController<T> extends BaseController {
         }
     }
 
-    protected void updateTotalCount(int count) {
-        totalLabel.setText("Total: " + count);
-    }
-
     protected void loadItemsAsync() {
         Task<List<T>> loadTask = new Task<>() {
             @Override
@@ -101,7 +97,6 @@ public abstract class BaseViewController<T> extends BaseController {
             protected void succeeded() {
                 List<T> items = getValue();
                 tableView.setItems(FXCollections.observableList(items));
-                updateTotalCount(items.size());  // Update the total count
             }
 
             @Override

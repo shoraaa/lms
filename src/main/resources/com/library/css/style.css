@@ -19,24 +19,11 @@
     -fx-background-radius: 10px;
 }
 
-.red-colored-btn {
-    -fx-background-color: linear-gradient(to right, #BB0000, #FF0000);
-    -fx-background-radius: 10px;
-}
 
-.yellow-colored-btn {
-    -fx-background-color: linear-gradient(to right, #99FF00, #FFFF00);
-    -fx-background-radius: 10px;
-}
-
-.gray-colored-btn {
-    -fx-background-color: linear-gradient(to right, #9C9C9C, #CFCFCF);
-    -fx-background-radius: 10px;
-}
 
 .anchor-pane {
-    -fx-background-color: #fafafa;
-    -fx-border-color: #C1C1C1;
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -color-border-default;
     -fx-background-radius: 20px;
     -fx-border-radius: 20px;
 }
@@ -45,10 +32,9 @@
     -fx-background-color: transparent;
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
-    -fx-border-color: #C1C1C1;
+    -fx-border-color: -color-border-default;
     -fx-border-style: dashed;
 }
-
 
 /* General button style */
 .sidebar-button {
@@ -63,6 +49,19 @@
     -fx-background-radius: 20px;
 }
 
+/* Style for the selected button */
+.sidebar-button.selected {
+    -fx-background-color: -color-accent-4; /* Slight blue foreground color */   /* Font color blue */
+}
+
+.sidebar-button.selected .sidebar-icon {
+    -fx-icon-color: -color-bg-default; /* Inverted icon color */
+}
+
+.sidebar-button:hover {
+    -fx-background-color: -color-accent-3;
+}
+
 .sidebar-icon {
     -fx-icon-size: 30px;
 }
@@ -71,18 +70,11 @@
     -fx-icon-size: 80px;
 }
 
-/* Style for the selected button */
-.sidebar-button.selected {
-    -fx-background-color: #49b3ff; /* Slight blue foreground color */
-    -fx-text-fill: #0D47A1;        /* Font color blue */
-}
-
-.sidebar-button.selected .sidebar-icon {
-    -fx-icon-color: white; /* Inverted icon color */
-}
-
-.sidebar-button:hover {
-    -fx-background-color: #b4b4b4;
+.table-view {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
 }
 
 .table-view .column-header,

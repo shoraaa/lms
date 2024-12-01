@@ -73,7 +73,7 @@ public class AddTransactionController extends BaseController {
         });
 
         isbnTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            handleDocumentFieldChange(newValue, isbnTextField, documentTitleTextFIeld);
+            handleDocumentFieldChange(newValue, documentTitleTextFIeld, isbnTextField);
         });
     }
 
@@ -96,13 +96,17 @@ public class AddTransactionController extends BaseController {
     private void updateDocumentFields(Document document, CustomTextField activeField, CustomTextField otherField) {
         activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
         activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+        otherField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
         otherField.setText(document.getIsbn());
         updateDocumentImage(document);
     }
 
     private void clearDocumentFields(CustomTextField activeField, CustomTextField otherField) {
         activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
         otherField.clear();
     }
 
@@ -118,7 +122,7 @@ public class AddTransactionController extends BaseController {
         });
 
         userIdTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            handleUserFieldChange(newValue, userIdTextField, userNameTextField);
+            handleUserFieldChange(newValue, userNameTextField, userIdTextField);
         });
     }
 
@@ -141,12 +145,16 @@ public class AddTransactionController extends BaseController {
     private void updateUserFields(User user, CustomTextField activeField, CustomTextField otherField) {
         activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
         activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
+        otherField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_SUCCESS, true);
         otherField.setText(String.valueOf(user.getUserId()));
     }
 
     private void clearUserFields(CustomTextField activeField, CustomTextField otherField) {
         activeField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
-        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+        activeField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_SUCCESS, false);
+        otherField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
         otherField.clear();
     }
 
@@ -165,6 +173,8 @@ public class AddTransactionController extends BaseController {
 
             showTransactionResult(success);
         }
+
+        documentImageView.setImage(null);
     }
 
     private boolean validateInputs(String documentTitle, String isbn, String userName, String userId, LocalDate borrowDate, LocalDate dueDate) {

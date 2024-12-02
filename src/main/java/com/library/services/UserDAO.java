@@ -103,13 +103,13 @@ public class UserDAO extends BaseDAO<User> {
 
     // Method to update user details
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET name = ?, email = ?, phone_number = ? WHERE id = ?";
+        String sql = "UPDATE users SET name = ?, email = ?, phone_number = ? WHERE user_id = ?";
         return executeUpdate(sql, user.getName(), user.getEmail(), user.getPhoneNumber(), user.getUserId()) > 0;
     }
 
     // Method to delete a user by ID
     public boolean deleteUser(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "DELETE FROM users WHERE user_id = ?";
         return executeUpdate(sql, id) > 0;
     }
 

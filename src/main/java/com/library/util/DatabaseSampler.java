@@ -76,7 +76,9 @@ public class DatabaseSampler {
                 // Random user data
                 String password = "password" + random.nextInt(10000000); // Simple random password
                 String hashedPassword = PasswordUtil.hashPassword(password); // Hash the password
-                String name = "User" + random.nextInt(10000000); // Random name
+                String firstName = "User" + random.nextInt(1000); // Random first name
+                String surName = "Surname" + random.nextInt(1000); // Random surname
+                String name = firstName + "-" + surName;
                 String email = name.toLowerCase() + "@example.com"; // Random email
                 String phoneNumber = "+1-" + (random.nextInt(900000000) + 100000000); // Random phone number
                 LocalDate registrationDate = LocalDate.now().minusDays(random.nextInt(365)); // Random registration date

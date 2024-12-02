@@ -58,7 +58,7 @@ public class RegisterController {
 
     // Handle registration action
     private void handleRegister() {
-        String username = firstNameTextField.getText().trim() + " " + surNameTextField.getText().trim();
+        String username = firstNameTextField.getText().trim() + "-" + surNameTextField.getText().trim();
         String password = passwordTextField.getPassword();
         String repeatPassword = repeatPasswordTextField.getPassword();
         String phoneNumber = phoneNumberTextField.getText();

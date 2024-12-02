@@ -130,7 +130,7 @@
             <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="%clear" />
             <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="%fetch" />
             <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="%edit" />
-            <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" text="%cancel" />
+            <Button fx:id="cancelButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" text="%cancel" />
          </children>
       </HBox>
    </children>

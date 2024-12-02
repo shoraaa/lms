@@ -141,6 +141,36 @@ public class MainController {
         loadContent("/com/library/views/Setting.fxml", controller);
     }
 
+    public void reloadCurrentTab() {
+        Button selectedButton = null;
+    
+        // Find the currently selected button
+        for (Button button : new Button[] { dashboardButton, documentButton, userButton, transactionButton, chatButton, settingButton }) {
+            if (button.getStyleClass().contains("selected")) {
+                selectedButton = button;
+                break;
+            }
+        }
+    
+        if (selectedButton != null) {
+            // Trigger the corresponding handler based on the selected button
+            if (selectedButton == dashboardButton) {
+                handleDashboardButton();
+            } else if (selectedButton == documentButton) {
+                handleDocumentButton();
+            } else if (selectedButton == userButton) {
+                handleUserButton();
+            } else if (selectedButton == transactionButton) {
+                handleTransactionButton();
+            } else if (selectedButton == chatButton) {
+                handleChatButton();
+            } else if (selectedButton == settingButton) {
+                handleSettingButton();
+            }
+        }
+    }
+    
+
     private void handleTabSelection(Button button) {
         selectSidebarButton(button);
     }

@@ -55,7 +55,7 @@ public class AddDocumentController extends BaseController {
 
     @FXML private Button saveButton;
     @FXML private Button fetchTitleButton, fetchISBNButton;
-    @FXML private Button clearButton;
+    @FXML private Button clearButton, cancelButton;
     @FXML private Button selectImageButton;
 
     private ObservableList<Author> authorList;
@@ -121,6 +121,7 @@ public class AddDocumentController extends BaseController {
         fetchISBNButton.setOnAction(event -> fetchButtonAction("isbn"));
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     private void clearForm() {

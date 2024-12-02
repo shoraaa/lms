@@ -14,6 +14,7 @@ public class UsersViewController extends BaseViewController<User> {
     @Override
     protected void initializeItemTableView() {
         itemTableView = new UserTableView(tableView);
+        itemTableView.setParentController(this);
     }
 
     @Override

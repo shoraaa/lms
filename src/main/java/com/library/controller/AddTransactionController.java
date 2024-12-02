@@ -65,6 +65,7 @@ public class AddTransactionController extends BaseController {
         setUpDocumentFieldsListeners();
         setUpUserFieldsListeners();
         saveButton.setOnAction(event -> saveNewTransaction());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     private void setUpDocumentFieldsListeners() {

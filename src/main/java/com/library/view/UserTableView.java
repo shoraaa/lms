@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.library.controller.EditUserController;
 // import com.library.controller.EditUserController;
 import com.library.model.User;
 import com.library.services.UserDAO;
@@ -64,7 +65,7 @@ public class UserTableView extends BaseTableView<User> {
 
     @Override
     protected void editItem(User user) {
-        // App.openDialog("/com/library/views/EditUserWindow.fxml", new EditUserController(user), this::loadItemsAsync);
+        parentController.getMainController().showDialog("/com/library/views/EditUserWindow.fxml", this::loadItemsAsync, new EditUserController(user));
     }
 
     private TableColumn<User, Boolean> createSelectColumn() {

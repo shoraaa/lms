@@ -123,6 +123,7 @@
          <children>
             <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="%save" />
             <Button fx:id="clearButton" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="%clear" />
+            <Button fx:id="cancelButton" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="%cancel" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

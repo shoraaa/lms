@@ -55,7 +55,7 @@ public class EditDocumentController extends BaseController {
     @FXML private ImageView documentImageView;
     @FXML private TextField languageTextField;
     @FXML private TextArea descriptionTextArea;
-    @FXML private Button saveButton, fetchButton, clearButton, selectImageButton;
+    @FXML private Button saveButton, fetchButton, clearButton, selectImageButton, cancelButton;
     @FXML private TableView<Transaction> transactionTable;
 
     private ObservableList<Author> authorList = FXCollections.observableArrayList();
@@ -153,6 +153,7 @@ public class EditDocumentController extends BaseController {
         fetchButton.setOnAction(event -> fetchButtonAction());
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     private void clearForm() {

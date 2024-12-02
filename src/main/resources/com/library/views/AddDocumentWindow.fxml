@@ -40,15 +40,22 @@
                      <children>
                         <Tile description="%industryIdentifiers" title="ISBN" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="isbnTextField" prefWidth="158.0" promptText="%isbnOptional" styleClass="sidebar-button" />
-                        <Button fx:id="fetchISBNButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="%fetch" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <TextField fx:id="isbnTextField" prefWidth="158.0" promptText="%isbnOptional" />
+                              <Button fx:id="fetchISBNButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="%fetch" />
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </HBox>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
                         <Tile description="%documentPublisher" title="%publisher" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="publisherTextField" prefHeight="36.0" prefWidth="217.0" promptText="%publisherOptional" styleClass="sidebar-button" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="publisherTextField" prefHeight="36.0" prefWidth="217.0" promptText="%publisherOptional" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
@@ -62,7 +69,7 @@
                      <children>
                         <Tile description="%documentPublicationDate" title="%publicationDate" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <DatePicker fx:id="publishedDatePicker" promptText="%publicationDateOptional" HBox.hgrow="ALWAYS" />
+                        <DatePicker fx:id="publishedDatePicker" prefHeight="36.0" prefWidth="242.0" promptText="%publicationDateOptional" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">

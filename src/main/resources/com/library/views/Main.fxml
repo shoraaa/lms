@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -64,7 +63,6 @@
       <ScrollPane fx:id="contentPane" hbarPolicy="NEVER" layoutX="133.0" layoutY="106.0" prefHeight="200.0" prefWidth="200.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0" />
       <AnchorPane styleClass="sidebar" stylesheets="@../css/style.css">
          <children>
-            <TextField layoutX="716.0" layoutY="25.0" maxWidth="1200.0" prefHeight="49.0" prefWidth="600.0" promptText="%sidebar.searchPrompt" styleClass="anchor-pane" AnchorPane.leftAnchor="716.0" AnchorPane.topAnchor="25.0" />
             <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="22.0" layoutY="97.0" styleClass="sidebar-big-icon" />
             <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-menu" iconSize="80" layoutX="197.0" layoutY="72.0" styleClass="sidebar-icon" />
             <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="%sidebar.dashboard" />

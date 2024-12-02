@@ -25,7 +25,6 @@ public abstract class BaseViewController<T> extends BaseController {
 
     @FXML protected TableView<T> tableView;
     @FXML protected Button addButton;
-    @FXML protected Button filterButton;
     @FXML protected TextField searchTextField;
     @FXML protected Button deleteButton;
     @FXML protected ChoiceBox<String> searchChoiceBox;
@@ -70,7 +69,6 @@ public abstract class BaseViewController<T> extends BaseController {
     private void configureButtonActions() {
         addButton.setOnAction(event -> handleAddNewItem());
         deleteButton.setOnAction(event -> handleDeleteSelectedItems());
-        filterButton.setOnAction(event -> handleFilterItems());
     }
 
     private void configureSearchField() {
@@ -121,8 +119,4 @@ public abstract class BaseViewController<T> extends BaseController {
     }
 
     protected abstract List<String> getAllEntriesField(String field);
-
-    private void handleFilterItems() {
-        // Placeholder: Implement filter logic here if needed
-    }
 }

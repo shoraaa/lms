@@ -93,13 +93,13 @@ public class MainController {
         loadContent("/com/library/views/Dashboard.fxml", null);
     }
 
-    private void handleDocumentButton() {
+    public void handleDocumentButton() {
         handleTabSelection(documentButton);
         currentTabLabel.setText(Localization.getInstance().getString("sidebar.books"));
         loadContent("/com/library/views/DocumentsView.fxml", null);
     }
 
-    private void handleUserButton() {
+    public void handleUserButton() {
         handleTabSelection(userButton);
         currentTabLabel.setText(Localization.getInstance().getString("sidebar.users"));
         loadContent("/com/library/views/UsersView.fxml", null);

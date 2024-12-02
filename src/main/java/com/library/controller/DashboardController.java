@@ -5,13 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.material2.Material2AL;
-import org.kordamp.ikonli.material2.Material2MZ;
 
 import com.library.model.Document;
 import com.library.model.Transaction;
@@ -35,9 +32,8 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -51,10 +47,8 @@ public class DashboardController extends BaseController {
     @FXML private Label helloLabel;
     @FXML private Label dateTimeLabel;
 
-    @FXML private Card newBookCard;
-    @FXML private Card newUserCard;
-    @FXML private Card borrowedBookCard;
-    @FXML private Card returnedBookCard;
+    @FXML private Label totalBookLabel, totalUserLabel, borrowedBookLabel, returnedBookLabel;
+    @FXML private Button seeAllUsersButton, seeAllDocumentsButton;
     @FXML private TableView<User> usersList;
     @FXML private TableView<Document> documentsList;
     @FXML private TableView<Transaction> overDueTable;
@@ -72,6 +66,7 @@ public class DashboardController extends BaseController {
 
     public void initialize() {
         setupGreeting();
+        initializeButton();
         setupDateTime();
         setupDashboardCards();
         initializeTables();
@@ -83,6 +78,11 @@ public class DashboardController extends BaseController {
         helloLabel.setText(helloLabel.getText().replace("{0}", UserSession.getUser().getName()));
     }
 
+    private void initializeButton() {
+        seeAllUsersButton.setOnAction(event -> mainController.handleUserButton());
+        seeAllDocumentsButton.setOnAction(event -> mainController.handleDocumentButton());
+    }
+
     private void setupDateTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN, Localization.getInstance().getLocale());
         String formattedDateTime = LocalDateTime.now().format(formatter);
@@ -90,14 +90,11 @@ public class DashboardController extends BaseController {
     }
 
     private void setupDashboardCards() {
-        ResourceBundle bundle = Localization.getInstance().getResourceBundle();
-        setCardValue(newBookCard, bundle.getString("totalBooks"), DocumentDAO.getInstance().countAllDocuments(), Material2AL.BOOK);
-        setCardValue(newUserCard, bundle.getString("totalUsers"), UserDAO.getInstance().countAllUsers(), Material2MZ.PERSON);
-        
+        totalBookLabel.setText(String.valueOf(DocumentDAO.getInstance().countAllDocuments()));
+        totalUserLabel.setText(String.valueOf(UserDAO.getInstance().countAllUsers()));
         List<Transaction> transactions = TransactionDAO.getInstance().getAllTransactions();
-        setCardValue(borrowedBookCard, bundle.getString("borrowedBooks"), transactions.size(), Material2AL.BOOKMARK);
-        setCardValue(returnedBookCard, bundle.getString("returnedBooks"), 
-            (int) transactions.stream().filter(Transaction::isReturned).count(), Material2AL.CHECK_CIRCLE);
+        borrowedBookLabel.setText(String.valueOf(transactions.size()));
+        returnedBookLabel.setText(String.valueOf(transactions.stream().filter(Transaction::isReturned).count()));
     }
 
     private void initializeTables() {
@@ -215,7 +212,7 @@ public class DashboardController extends BaseController {
     }
 
     private ImageView createImageView(String imageUrl) {
-        ImageView imageView = new ImageView(new Image(imageUrl));
+        ImageView imageView = (imageUrl != null && !imageUrl.isEmpty()) ? new ImageView(new Image(imageUrl)) : new ImageView();
         imageView.setFitHeight(200);
         imageView.setFitWidth(160);
         return imageView;

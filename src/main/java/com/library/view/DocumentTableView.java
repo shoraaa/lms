@@ -8,22 +8,31 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
+
 import com.library.controller.EditDocumentController;
 import com.library.controller.ViewDocumentController;
 import com.library.model.Document;
 import com.library.model.Publisher;
+import com.library.model.User;
 import com.library.services.AuthorDAO;
 import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
 import com.library.services.PublisherDAO;
+import com.library.services.TransactionService;
 import com.library.util.Localization;
+import com.library.util.UserSession;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -31,6 +40,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -130,6 +140,73 @@ public class DocumentTableView extends BaseTableView<Document> {
         });
 
         return cell;
+    }
+
+    protected TableColumn<Document, Void> createActionColumn() {
+        boolean isAdmin = UserSession.isAdmin();
+        TableColumn<Document, Void> actionColumn = new TableColumn<>(Localization.getInstance().getString("actions"));
+        actionColumn.setPrefWidth(200);
+        
+        actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
+            private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
+            private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
+            private final FontIcon borrowIcon = new FontIcon(Material2AL.ACCESS_TIME);
+            private final Button editButton = new Button();
+            private final Button deleteButton = new Button();
+            private final Button viewButton = new Button();
+            private final Button borrowButton = new Button();
+            private final HBox pane = new HBox();
+    
+            {
+                pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                pane.setSpacing(10);
+    
+                // Configure buttons
+                editButton.setGraphic(editIcon);
+                deleteButton.setGraphic(deleteIcon);
+                viewButton.setGraphic(viewIcon);
+                borrowButton.setGraphic(borrowIcon);
+    
+                editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                viewButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                borrowButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+    
+                editButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
+                viewButton.setOnAction(event -> viewItem(getTableRow().getItem()));
+                borrowButton.setOnAction(event -> borrowItem(getTableRow().getItem()));
+            }
+
+            private void borrowItem(Document document) {
+                User user = UserSession.getUser();
+                TransactionService.getInstance().borrowDocument(user.getUserId(), document.getDocumentId(), null, null);
+                loadItemsAsync();
+            }
+    
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+    
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+    
+                pane.getChildren().clear();
+    
+                if (isAdmin) {
+                    pane.getChildren().addAll(viewButton, editButton, deleteButton);
+                } else {
+                    pane.getChildren().addAll(viewButton, borrowButton);
+                }
+    
+                setGraphic(pane);
+            }
+        });
+    
+        return actionColumn;
     }
 
     @Override

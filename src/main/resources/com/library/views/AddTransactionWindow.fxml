@@ -19,13 +19,13 @@
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
                   <Tile description="%documentTitle" title="%title" />
-                  <CustomTextField fx:id="documentTitleTextFIeld" />
+                  <CustomTextField fx:id="documentTitleTextFIeld" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
                   <Tile description="%industryIdentifiers" title="ISBN" />
-                  <MaskTextField fx:id="isbnTextField" />
+                  <MaskTextField fx:id="isbnTextField" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>
@@ -39,25 +39,25 @@
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
                   <Tile description="%userName" title="%user" />
-                  <CustomTextField fx:id="userNameTextField" />
+                  <CustomTextField fx:id="userNameTextField" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
                   <Tile description="%userId" title="ID" />
-                  <CustomTextField fx:id="userIdTextField" />
+                  <CustomTextField fx:id="userIdTextField" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
                   <Tile description="%borrowDateDesc" title="%borrowDate" />
-                  <DatePicker fx:id="borrowDatePicker" />
+                  <DatePicker fx:id="borrowDatePicker" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
                   <Tile description="%dueDateDesc" title="%dueDate" />
-                  <DatePicker fx:id="dueDatePicker" />
+                  <DatePicker fx:id="dueDatePicker" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">

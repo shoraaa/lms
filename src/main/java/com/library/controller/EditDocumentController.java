@@ -91,16 +91,7 @@ public class EditDocumentController extends BaseController {
         if (!UserSession.isAdmin()) {
             saveButton.setVisible(false);
         }
-
-        // transactionTableView = new TransactionTableView(transactionTable);
-        // transactionTableView.setDocumentId(document.getDocumentId());
-        // transactionTableView.removeColumn(Localization.getInstance().getString("document"));
-        // transactionTableView.removeColumn(Localization.getInstance().getString("dueDate"));
-        // transactionTableView.removeColumn(Localization.getInstance().getString("actions"));
-        // transactionTableView.removeColumn("");
-        // transactionTableView.loadItemsAsync();
         
-
         // Initialize auto-completion for fields
         initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
         initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));

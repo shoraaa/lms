@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.library.services.DocumentDAO;
 import com.library.services.UserDAO;
+import com.library.util.Localization;
 
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -48,6 +49,10 @@ public class Transaction {
         return borrowDate;
     }
 
+    public void setBorrowDate(LocalDate borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
     public LocalDate getReturnDate() {
         return returnDate;
     }
@@ -69,17 +74,21 @@ public class Transaction {
     }
 
     public String getStatus() {
+        Localization localization = Localization.getInstance();
+        if (borrowDate == null) {
+            return localization.getString("pending");
+        }
         if (returnDate != null) {
             if (returnDate.isAfter(LocalDate.now())) {
-                return "Overdue";
+                return localization.getString("overdue");
             } else if (returnDate.isAfter(dueDate)) {
-                return "Returned (late)";
+                return localization.getString("returnLate");
             }
-            return "Returned";
+            return localization.getString("returned");
         } else if (LocalDate.now().isAfter(dueDate)) {
-            return "Overdue";
+            return localization.getString("overdue");
         } else {
-            return "Borrowing";
+            return localization.getString("borrowing");
         }
     }
 

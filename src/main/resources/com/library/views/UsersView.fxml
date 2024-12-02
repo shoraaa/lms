@@ -30,12 +30,7 @@
             </HBox>
             <Button fx:id="addButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="100.0" scaleShape="false" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Add" textFill="WHITE">
                <graphic>
-                  <FontIcon iconLiteral="mdal-add" styleClass="sidebar-icon" />
-               </graphic>
-            </Button>
-            <Button fx:id="filterButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="100.0" scaleShape="false" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Filter" textFill="WHITE">
-               <graphic>
-                  <FontIcon iconLiteral="mdal-filter_alt" styleClass="sidebar-icon" />
+                  <FontIcon iconLiteral="mdmz-person_add" styleClass="sidebar-icon" />
                </graphic>
             </Button>
             <Button fx:id="deleteButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="48.0" prefWidth="100.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="Delete" textFill="WHITE">

@@ -43,8 +43,10 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     @Override
     protected Transaction mapToEntity(ResultSet rs) throws SQLException {
         Transaction transaction = new Transaction(rs.getInt("user_id"),
-                rs.getInt("document_id"), rs.getDate("borrow_date").toLocalDate(), rs.getDate("due_date").toLocalDate());
+                rs.getInt("document_id"), null, null);
         transaction.setTransactionId(rs.getInt("transaction_id"));
+        transaction.setBorrowDate(rs.getDate("borrow_date") != null ? rs.getDate("borrow_date").toLocalDate() : null);
+        transaction.setDueDate(rs.getDate("due_date") != null ? rs.getDate("due_date").toLocalDate() : null);
         transaction.setReturnDate(rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null);
         return transaction;
     }
@@ -52,8 +54,14 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     // Create a new transaction
     public Integer add(Transaction transaction) {
         String sql = "INSERT INTO transactions (user_id, document_id, borrow_date, due_date) VALUES (?, ?, ?, ?)";
-        return executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), Date.valueOf(transaction.getBorrowDate()), Date.valueOf(transaction.getDueDate()));
+    
+        // Safely convert dates or pass null if they are null
+        Date borrowDate = transaction.getBorrowDate() != null ? Date.valueOf(transaction.getBorrowDate()) : null;
+        Date dueDate = transaction.getDueDate() != null ? Date.valueOf(transaction.getDueDate()) : null;
+    
+        return executeUpdate(sql, transaction.getUserId(), transaction.getDocumentId(), borrowDate, dueDate);
     }
+    
 
     // Mark a transaction as returned
     public Integer markAsReturned(int transactionId) {
@@ -135,6 +143,8 @@ public class TransactionDAO extends BaseDAO<Transaction> {
                 return getTransactionsByUser(keyword);
             case "Document":
                 return getTransactionsByDocument(keyword);
+            case "Status":
+                return getAllEntries().stream().filter(transaction -> transaction.getStatus().contains(keyword)).collect(Collectors.toList());
             default:
                 return Collections.emptyList();
         }
@@ -225,4 +235,14 @@ public class TransactionDAO extends BaseDAO<Transaction> {
         return transactionCountPerDay;
     }
 
+    public Integer updateTransactionDates(int transactionId, LocalDate borrowDate, LocalDate dueDate) {
+        String sql = "UPDATE transactions SET borrow_date = ?, due_date = ? WHERE transaction_id = ?";
+        return executeUpdate(sql, Date.valueOf(borrowDate), Date.valueOf(dueDate), transactionId);
+    }
+    
+
+    public Transaction getTransactionById(int transactionId) {
+        String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
+        return executeQueryForSingleEntity(sql, transactionId);
+    }
 }

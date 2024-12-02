@@ -16,12 +16,29 @@
 }
 
 /* Anchor pane styles */
+.table-pane {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-border-width: 0;
+}
+
 .anchor-pane {
     -fx-background-color: -color-neutral-subtle;
     -fx-border-color: -color-border-default;
     -fx-background-radius: 20px;
     -fx-border-radius: 20px;
+    -fx-border-width: 0;
 }
+
+.text-field {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 2;        /* Visible border width */
+    -fx-padding: 5;             /* Adjust padding for better appearance */
+}
+
 
 /* Summary box styles */
 .summary {
@@ -30,6 +47,21 @@
     -fx-border-radius: 5px;
     -fx-border-color: -color-border-default;
     -fx-border-style: dashed;
+}
+
+.circle-button {
+    -fx-background-color: -color-accent-4; 
+    -fx-text-fill: #353535;           
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-pref-width: 64px;
+    -fx-pref-height: 64px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
+
+.circle-button:hover {
+    -fx-background-color: -color-accent-4;
 }
 
 /* Sidebar button styles */
@@ -43,6 +75,10 @@
     -fx-icon-size: 30px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
+}
+
+.sidebar-button .sidebar-icon {
+    -fx-icon-color: -color-fg-muted;
 }
 
 /* Selected sidebar button */
@@ -60,7 +96,7 @@
 
 /* Sidebar button hover state */
 .sidebar-button:hover {
-    -fx-background-color: -color-accent-3;
+    -fx-background-color: -color-fg-subtle;
 }
 
 /* Sidebar icon styles */
@@ -72,15 +108,21 @@
     -fx-icon-size: 80px;
 }
 
-.sidebar-medium-con {
+.sidebar-medium-icon {
     -fx-icon-size: 50px;
 }
 
+.sidebar-medium-icon {
+    -fx-icon-size: 50px;
+}
+
+
+
 /* Table view styles */
 .table-view {
-    -fx-background-color: -color-neutral-subtle;
+    -fx-background-color: transparent;
     -fx-border-color: -color-border-default;
-    -fx-border-width: 1px;
+    -fx-border-width: 0;
     -fx-border-radius: 5px;
 }
 

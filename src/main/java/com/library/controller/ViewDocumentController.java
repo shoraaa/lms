@@ -91,7 +91,7 @@ public class ViewDocumentController extends BaseController {
         languageTextField.setText(language != null ? language.getName() : "No language available");
         descriptionTextArea.setText(document.getDescription());
         selectedImagePath = document.getImageUrl();
-        documentImageView.setImage(new Image(selectedImagePath));
+        if (selectedImagePath != null) documentImageView.setImage(new Image(selectedImagePath));
     }
 
 

@@ -67,7 +67,7 @@ public class DatabaseInitializer {
         "transaction_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "user_id INTEGER NOT NULL, " +
         "document_id INTEGER NOT NULL, " +
-        "borrow_date DATE NOT NULL, " +
+        "borrow_date DATE, " +
         "due_date DATE, " +
         "return_date DATE, " +
         "FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE, " +

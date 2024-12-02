@@ -18,7 +18,7 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
 
     @Override
     protected void initializeSearchChoiceBox() {
-        searchChoiceBox.getItems().addAll("ID", "User", "Document");
+        searchChoiceBox.getItems().addAll("ID", "User", "Document", "Status");
         searchChoiceBox.setValue("User");
     }
 
@@ -58,6 +58,8 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
                 return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> transaction.getDocument().getTitle()).collect(Collectors.toList());
             case "ID":
                 return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> String.valueOf(transaction.getTransactionId())).collect(Collectors.toList());
+            case "Status":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> String.valueOf(transaction.getStatus())).collect(Collectors.toList());
             default:
                 return List.of();
         }

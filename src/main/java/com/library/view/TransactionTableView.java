@@ -1,9 +1,7 @@
 package com.library.view;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -15,6 +13,7 @@ import org.kordamp.ikonli.material2.Material2MZ;
 import com.library.model.Transaction;
 import com.library.services.TransactionDAO;
 import com.library.services.TransactionService;
+import com.library.util.ErrorHandler;
 import com.library.util.Localization;
 import com.library.util.UserSession;
 
@@ -80,16 +79,19 @@ public class TransactionTableView extends BaseTableView<Transaction> {
     protected TableColumn<Transaction, Void> createActionColumn() {
         boolean isAdmin = UserSession.isAdmin();
         TableColumn<Transaction, Void> actionColumn = new TableColumn<>(Localization.getInstance().getString("actions"));
+        actionColumn.setPrefWidth(200);
     
         actionColumn.setCellFactory(param -> new TableCell<>() {
             private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
             private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
             private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
             private final FontIcon returnIcon = new FontIcon(Material2AL.KEYBOARD_RETURN);
+            private final FontIcon acceptIcon = new FontIcon(Material2AL.DONE);
             private final Button editButton = new Button();
             private final Button deleteButton = new Button();
             private final Button viewButton = new Button();
             private final Button returnButton = new Button();
+            private final Button acceptButton = new Button();
             private final HBox pane = new HBox();
     
             {
@@ -101,16 +103,19 @@ public class TransactionTableView extends BaseTableView<Transaction> {
                 deleteButton.setGraphic(deleteIcon);
                 viewButton.setGraphic(viewIcon);
                 returnButton.setGraphic(returnIcon);
+                acceptButton.setGraphic(acceptIcon);
     
                 returnButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 viewButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                acceptButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
     
                 returnButton.setOnAction(event -> returnDocument(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
                 viewButton.setOnAction(event -> editItem(getTableRow().getItem()));
                 editButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                acceptButton.setOnAction(event -> acceptItem(getTableRow().getItem()));
             }
     
             @Override
@@ -122,17 +127,23 @@ public class TransactionTableView extends BaseTableView<Transaction> {
                     return;
                 }
     
+                Transaction transaction = getTableRow().getItem();
                 pane.getChildren().clear();
-    
-                if (isAdmin) {
-                    pane.getChildren().addAll(editButton, deleteButton);
-                } else {
-                    pane.getChildren().add(viewButton);
-                }
 
-                if (!getTableRow().getItem().isReturned()) {
+                if (isAdmin) {
+                    pane.getChildren().addAll(deleteButton);
+                }
+                
+                boolean isAdmin = UserSession.isAdmin();
+                int currentUserId = UserSession.getUser().getUserId();
+                if (isAdmin && transaction.getBorrowDate() == null) {
+                    pane.getChildren().add(acceptButton);
+                } else if (!transaction.isReturned() && (isAdmin || (currentUserId == transaction.getUserId()))) {
                     pane.getChildren().add(returnButton);
                 }
+
+
+                // Show return button only if the transaction's userId matches the current user and it's not returned
     
                 setGraphic(pane);
             }
@@ -160,6 +171,30 @@ public class TransactionTableView extends BaseTableView<Transaction> {
         } else {
             // Handle failure case, e.g., show an alert
             // showAlert("Error", "Failed to return the document. Please try again.");
+        }
+    }
+
+    private void acceptItem(Transaction transaction) {
+        // Ensure transaction is valid
+        if (transaction == null || transaction.isReturned()) {
+            return;
+        }
+    
+        // Update the transaction in the database
+        TransactionService transactionService = TransactionService.getInstance();
+        Integer transactionId = transactionService.acceptDocumentBorrow(transaction);
+        System.out.println(transactionId);
+    
+        if (transactionId != null) {
+            // Update the transaction object in memory
+            Transaction transaction2 = TransactionDAO.getInstance().getTransactionById(transactionId);
+            transaction.setBorrowDate(transaction2.getBorrowDate());
+            transaction.setDueDate(transaction2.getDueDate());
+            
+            loadItemsAsync();
+        } else {
+            // Handle failure case, e.g., show an alert
+            ErrorHandler.showErrorDialog(new Exception("Failed to accept the document. Please try again."));
         }
     }
 

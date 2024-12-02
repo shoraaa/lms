@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.library.util.DatabaseInitializer;
+import com.library.util.DatabaseSampler;
 import com.library.util.ErrorHandler;
 import com.library.util.SceneNavigator;
 
@@ -27,6 +28,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         // Initialize the database and set the application stylesheet
         DatabaseInitializer.initializeDatabase();
+        // DatabaseSampler.generateSampleTransactions(50);
 
         Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
 

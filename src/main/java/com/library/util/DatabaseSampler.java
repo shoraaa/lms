@@ -24,7 +24,7 @@ public class DatabaseSampler {
             return;
         }
 
-        String insertTransactionSQL = "INSERT INTO transactions (user_id, document_id, borrow_date, due_date, return_date, is_returned) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertTransactionSQL = "INSERT INTO transactions (user_id, document_id, borrow_date, due_date, return_date) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/com/library/database/library.db");
             PreparedStatement pstmt = connection.prepareStatement(insertTransactionSQL)) {
@@ -38,19 +38,23 @@ public class DatabaseSampler {
                 
                 // Random borrow date within the last 30 days
                 LocalDate borrowDate = LocalDate.now().minusDays(random.nextInt(28));
-                
                 // Due date 14 days after borrow date
                 LocalDate dueDate = borrowDate.plusDays(14);
 
-                LocalDate returnDate = borrowDate.plusDays(random.nextInt(28));
+                boolean isReturned = random.nextBoolean();
+                if (isReturned) {
+                    // Return date is within 28 days after borrow date
+                    pstmt.setDate(5, Date.valueOf(borrowDate.plusDays(random.nextInt(28))));
+                } else {
+                    pstmt.setNull(5, java.sql.Types.DATE);
+                }
                 
                 // Prepare the statement
                 pstmt.setInt(1, randomUser.getUserId());
                 pstmt.setInt(2, randomDocument.getDocumentId());
                 pstmt.setDate(3, Date.valueOf(borrowDate));
                 pstmt.setDate(4, Date.valueOf(dueDate));
-                pstmt.setDate(5, Date.valueOf(returnDate));
-                pstmt.setBoolean(6, false);  // Set is_returned as false initially
+                // pstmt.setDate(5, Date.valueOf(returnDate));
                 
                 pstmt.addBatch();  // Add to batch
             }

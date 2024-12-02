@@ -1,8 +1,10 @@
 package com.library.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import com.library.util.ErrorHandler;
 import com.library.util.Localization;
 import com.library.util.UserSession;
 import com.library.view.BaseTableView;
+import com.library.view.DocumentIssuedTableView;
 import com.library.view.DocumentTableView;
 import com.library.view.OverdueTransactionTableView;
 import com.library.view.UserTableView;
@@ -31,6 +34,10 @@ import atlantafx.base.theme.Styles;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -51,12 +58,15 @@ public class DashboardController extends BaseController {
     @FXML private TableView<User> usersList;
     @FXML private TableView<Document> documentsList;
     @FXML private TableView<Transaction> overDueTable;
+    @FXML private TableView<Transaction> bookIssuedTable;
+    @FXML private BarChart<String, Number> barChart;
 
     @FXML private HBox popularDocumentHBox;
 
     private DocumentTableView documentTableView;
     private UserTableView userTableView;
     private OverdueTransactionTableView overdueTransactionTableView;
+    private DocumentIssuedTableView documentIssuedTableView;
 
     private static final String DATE_TIME_PATTERN = "MMMM dd, yyyy | EEEE, h:mm a";
 
@@ -66,6 +76,7 @@ public class DashboardController extends BaseController {
         setupDashboardCards();
         initializeTables();
         loadPopularDocuments();
+        loadBarChart();
     }
 
     private void setupGreeting() {
@@ -93,6 +104,7 @@ public class DashboardController extends BaseController {
         setupDocumentTable();
         setupUserTable();
         setupOverdueTransactionTable();
+        setupDocumentIssuedTable();
     }
 
     protected <T> void loadItemsAsync(Supplier<List<T>> performInitialLoad, BaseTableView<T> itemTableView) {
@@ -150,6 +162,12 @@ public class DashboardController extends BaseController {
         overdueTransactionTableView = new OverdueTransactionTableView(overDueTable);
         overdueTransactionTableView.setParentController(this);
         loadItemsAsync(TransactionDAO.getInstance()::getOverdueTransactions, overdueTransactionTableView);
+    }
+
+    private void setupDocumentIssuedTable() {
+        documentIssuedTableView = new DocumentIssuedTableView(bookIssuedTable);
+        documentIssuedTableView.setParentController(this);
+        loadItemsAsync(TransactionDAO.getInstance()::getIssuingTransaction, documentIssuedTableView);
     }
 
     private void loadPopularDocuments() {
@@ -226,6 +244,41 @@ public class DashboardController extends BaseController {
         card.setBody(bodyText);
 
         
+    }
+
+    public XYChart.Series<String, Number> getBorrowStatisticsSeries() {
+        // Fetch transaction statistics
+        Map<LocalDate, Long> transactionsPerMonth = TransactionDAO.getInstance().getBorrowPerDayRecent(7);
+
+        // Create series for the bar chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Borrows Per Day (Last 7 Days)");
+
+        transactionsPerMonth.forEach((date, count) -> {
+            series.getData().add(new XYChart.Data<>(date.getDayOfWeek().toString(), count));
+        });
+
+        return series;
+    }
+
+    public XYChart.Series<String, Number> getReturnStatisticsSeries() {
+        // Fetch transaction statistics
+        Map<LocalDate, Long> transactionsPerMonth = TransactionDAO.getInstance().getReturnPerDayRecent(7);
+
+        // Create series for the bar chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Returns Per Day (Last 7 Days)");
+
+        transactionsPerMonth.forEach((date, count) -> {
+            series.getData().add(new XYChart.Data<>(date.getDayOfWeek().toString(), count));
+        });
+
+        return series;
+    }
+
+    private void loadBarChart() {
+        List<XYChart.Series<String, Number>> seriesList = List.of(getBorrowStatisticsSeries(), getReturnStatisticsSeries());
+        barChart.getData().addAll(seriesList);
     }
 
     private void handleAddNewDocument() {

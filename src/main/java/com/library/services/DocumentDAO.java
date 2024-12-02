@@ -225,4 +225,22 @@ public class DocumentDAO extends BaseDAO<Document> {
             }
         }
     }
+
+    public List<Document> getDocumentsByIds(List<Integer> documentIds) {
+        if (documentIds == null || documentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Check cache first if valid
+        if (cacheValid) {
+            return entriesCache.stream()
+                .filter(document -> documentIds.contains(document.getDocumentId()))
+                .collect(Collectors.toList());
+        }
+
+        // Fallback to database query if cache is invalid
+        String query = "SELECT * FROM documents WHERE document_id IN (" +
+            documentIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        return executeQueryForList(query);
+    }
 }

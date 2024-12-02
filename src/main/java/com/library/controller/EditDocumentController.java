@@ -57,7 +57,7 @@ public class EditDocumentController extends BaseController {
     @FXML private TextField languageTextField;
     @FXML private TextArea descriptionTextArea;
     @FXML private Button saveButton, fetchButton, clearButton, selectImageButton, cancelButton;
-    @FXML private TableView<Transaction> transactionTable;
+    // @FXML private TableView<Transaction> transactionTable;
 
     private ObservableList<Author> authorList = FXCollections.observableArrayList();
     private ObservableList<Category> categoryList = FXCollections.observableArrayList();
@@ -65,7 +65,7 @@ public class EditDocumentController extends BaseController {
     private Document document;
     private boolean isEditing = false;
 
-    private TransactionTableView transactionTableView;
+    // private TransactionTableView transactionTableView;
 
     public EditDocumentController(Document document) {
         authorList = FXCollections.observableArrayList();
@@ -92,13 +92,13 @@ public class EditDocumentController extends BaseController {
             saveButton.setVisible(false);
         }
 
-        transactionTableView = new TransactionTableView(transactionTable);
-        transactionTableView.setDocumentId(document.getDocumentId());
-        transactionTableView.removeColumn(Localization.getInstance().getString("document"));
-        transactionTableView.removeColumn(Localization.getInstance().getString("dueDate"));
-        transactionTableView.removeColumn(Localization.getInstance().getString("actions"));
-        transactionTableView.removeColumn("");
-        transactionTableView.loadItemsAsync();
+        // transactionTableView = new TransactionTableView(transactionTable);
+        // transactionTableView.setDocumentId(document.getDocumentId());
+        // transactionTableView.removeColumn(Localization.getInstance().getString("document"));
+        // transactionTableView.removeColumn(Localization.getInstance().getString("dueDate"));
+        // transactionTableView.removeColumn(Localization.getInstance().getString("actions"));
+        // transactionTableView.removeColumn("");
+        // transactionTableView.loadItemsAsync();
         
 
         // Initialize auto-completion for fields

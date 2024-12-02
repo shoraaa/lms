@@ -54,6 +54,10 @@
     -fx-icon-color: -color-bg-default; /* Inverted icon color */
 }
 
+.sidebar-button.selected .sidebar-medium-icon {
+    -fx-icon-color: -color-bg-default; /* Inverted icon color */
+}
+
 /* Sidebar button hover state */
 .sidebar-button:hover {
     -fx-background-color: -color-accent-3;

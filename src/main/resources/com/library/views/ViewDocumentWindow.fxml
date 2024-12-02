@@ -4,9 +4,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
@@ -66,7 +68,7 @@
                      <children>
                         <Tile description="Please enter the user's name:" title="Description" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextArea fx:id="descriptionTextArea" editable="false" prefWidth="400.0" promptText="Insert description" />
+                        <TextArea fx:id="descriptionTextArea" editable="false" prefHeight="200.0" prefWidth="400.0" promptText="Insert description" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT">
@@ -102,7 +104,6 @@
             <VBox alignment="CENTER" spacing="20.0" HBox.hgrow="ALWAYS">
                <children>
                   <ImageView fx:id="documentImageView" fitHeight="611.0" fitWidth="461.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button fx:id="selectImageButton" defaultButton="true" disable="true" mnemonicParsing="false" text="%selectImage" />
                </children>
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -111,11 +112,22 @@
          </children>
       </HBox>
       <Separator />
+      <VBox alignment="TOP_CENTER" prefHeight="913.0" spacing="20.0">
+         <children>
+            <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="%transactionsHistory" />
+            <TableView fx:id="transactionTable" prefHeight="991.0" prefWidth="535.0" VBox.vgrow="ALWAYS" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
       <HBox alignment="CENTER" prefHeight="158.0" spacing="20.0">
          <children>
-            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="28.0" prefWidth="100.0" text="%edit" />
-            <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="%clear" />
-            <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="%fetch" />
             <Button fx:id="cancelButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" text="%cancel" />
          </children>
       </HBox>

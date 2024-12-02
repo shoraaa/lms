@@ -98,7 +98,7 @@ public abstract class BaseTableView<T> {
     
                 editButton.setOnAction(event -> editItem(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
-                viewButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                viewButton.setOnAction(event -> viewItem(getTableRow().getItem()));
             }
     
             @Override
@@ -113,7 +113,7 @@ public abstract class BaseTableView<T> {
                 pane.getChildren().clear();
     
                 if (isAdmin) {
-                    pane.getChildren().addAll(editButton, deleteButton);
+                    pane.getChildren().addAll(viewButton, editButton, deleteButton);
                 } else {
                     pane.getChildren().add(viewButton);
                 }
@@ -132,6 +132,8 @@ public abstract class BaseTableView<T> {
 
     // Abstract method to handle editing an item (to be implemented in subclass)
     protected abstract void editItem(T item);
+
+    protected abstract void viewItem(T item);
 
     // Abstract method to handle deleting an item (to be implemented in subclass)
     protected abstract void deleteItem(T item);

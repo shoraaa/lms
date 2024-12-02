@@ -9,17 +9,16 @@ import java.util.stream.Collectors;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
-import com.library.model.Document;
 // import com.library.controller.EditTransactionController;
 import com.library.model.Transaction;
-import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
 import com.library.services.TransactionService;
 import com.library.util.Localization;
+import com.library.util.UserSession;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
@@ -30,10 +29,6 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 
 public class TransactionTableView extends BaseTableView<Transaction> {
-
-    private final Map<Integer, String> authorsCache = new HashMap<>();
-    private final Map<Integer, String> categoriesCache = new HashMap<>();
-    private final Map<Integer, String> publishersCache = new HashMap<>();
 
     private Integer documentId = null;
     private Integer userId = null;
@@ -82,40 +77,90 @@ public class TransactionTableView extends BaseTableView<Transaction> {
             .collect(Collectors.toList());
     }
 
-    @Override
     protected TableColumn<Transaction, Void> createActionColumn() {
-        TableColumn<Transaction, Void> actionColumn = new TableColumn<>("Actions");
+        boolean isAdmin = UserSession.isAdmin();
+        TableColumn<Transaction, Void> actionColumn = new TableColumn<>(Localization.getInstance().getString("actions"));
+    
         actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final FontIcon editIcon = new FontIcon(Material2AL.KEYBOARD_RETURN);
+            private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
             private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
+            private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
+            private final FontIcon returnIcon = new FontIcon(Material2AL.KEYBOARD_RETURN);
             private final Button editButton = new Button();
             private final Button deleteButton = new Button();
-            private final HBox pane = new HBox(editButton, deleteButton);
+            private final Button viewButton = new Button();
+            private final Button returnButton = new Button();
+            private final HBox pane = new HBox();
+    
             {
                 pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                
+                pane.setSpacing(10);
+    
+                // Configure buttons
                 editButton.setGraphic(editIcon);
                 deleteButton.setGraphic(deleteIcon);
-
+                viewButton.setGraphic(viewIcon);
+                returnButton.setGraphic(returnIcon);
+    
+                returnButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
-
-                editButton.setOnAction(event -> returnDocument(getTableRow().getItem()));
+                viewButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+    
+                returnButton.setOnAction(event -> returnDocument(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
+                viewButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                editButton.setOnAction(event -> editItem(getTableRow().getItem()));
             }
-
+    
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : pane);
+    
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+    
+                pane.getChildren().clear();
+    
+                if (isAdmin) {
+                    pane.getChildren().addAll(editButton, deleteButton);
+                } else {
+                    pane.getChildren().add(viewButton);
+                }
+
+                if (!getTableRow().getItem().isReturned()) {
+                    pane.getChildren().add(returnButton);
+                }
+    
+                setGraphic(pane);
             }
         });
+    
         return actionColumn;
     }
 
     private void returnDocument(Transaction transaction) {
-        TransactionService.getInstance().returnDocument(transaction);
-        loadItemsAsync();
+        // Ensure transaction is valid
+        if (transaction == null || transaction.isReturned()) {
+            return;
+        }
+    
+        // Update the transaction in the database
+        TransactionService transactionService = TransactionService.getInstance();
+        boolean success = transactionService.returnDocument(transaction) != null;
+    
+        if (success) {
+            // Update the transaction object in memory
+            transaction.setReturnDate(LocalDate.now());
+            
+            // Reload table data
+            loadItemsAsync();
+        } else {
+            // Handle failure case, e.g., show an alert
+            // showAlert("Error", "Failed to return the document. Please try again.");
+        }
     }
 
     @Override
@@ -126,6 +171,11 @@ public class TransactionTableView extends BaseTableView<Transaction> {
 
     @Override
     protected void editItem(Transaction transaction) {
+        // App.openDialog("/com/library/views/EditTransactionWindow.fxml", new EditTransactionController(transaction), this::loadData);
+    }
+
+    @Override
+    protected void viewItem(Transaction transaction) {
         // App.openDialog("/com/library/views/EditTransactionWindow.fxml", new EditTransactionController(transaction), this::loadData);
     }
 
@@ -163,6 +213,11 @@ public class TransactionTableView extends BaseTableView<Transaction> {
 
     @Override
     public List<Transaction> performInitialLoad() {
+        if (documentId != null) {
+            return TransactionDAO.getInstance().getTransactionsByDocumentId(documentId);
+        } else if (userId != null) {
+            return TransactionDAO.getInstance().getTransactionsByUserId(userId);
+        }
         return TransactionDAO.getInstance().getAllEntries();
     }
 }

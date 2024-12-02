@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.library.model.Document;
@@ -41,10 +43,9 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     @Override
     protected Transaction mapToEntity(ResultSet rs) throws SQLException {
         Transaction transaction = new Transaction(rs.getInt("user_id"),
-                rs.getInt("document_id"), rs.getDate("borrow_date").toLocalDate(), rs.getDate("borrow_date").toLocalDate());
+                rs.getInt("document_id"), rs.getDate("borrow_date").toLocalDate(), rs.getDate("due_date").toLocalDate());
         transaction.setTransactionId(rs.getInt("transaction_id"));
         transaction.setReturnDate(rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null);
-        transaction.setReturned(rs.getBoolean("is_returned"));
         return transaction;
     }
 
@@ -55,9 +56,9 @@ public class TransactionDAO extends BaseDAO<Transaction> {
     }
 
     // Mark a transaction as returned
-    public void markAsReturned(int transactionId) {
-        String sql = "UPDATE transactions SET return_date = ?, is_returned = ? WHERE transaction_id = ?";
-        executeUpdate(sql, Date.valueOf(LocalDate.now()), true, transactionId);
+    public Integer markAsReturned(int transactionId) {
+        String sql = "UPDATE transactions SET return_date = ? WHERE transaction_id = ?";
+        return executeUpdate(sql, Date.valueOf(LocalDate.now()), transactionId);
     }
 
     // Get all transactions for a specific user
@@ -111,6 +112,14 @@ public class TransactionDAO extends BaseDAO<Transaction> {
         });
     }
 
+    public List<Transaction> getTransactionsByUserId(int userId) {
+        return getEntitiesByField("user_id", String.valueOf(userId));
+    }
+
+    public List<Transaction> getTransactionsByDocumentId(int documentId) {
+        return getEntitiesByField("document_id", String.valueOf(documentId));
+    }
+
     public List<Transaction> getTransactionsByDocument(String documentName) {
         return getEntitiesByField("document_id", documentName, transaction -> {
             Document document = DocumentDAO.getInstance().getDocumentById(transaction.getDocumentId());
@@ -135,4 +144,85 @@ public class TransactionDAO extends BaseDAO<Transaction> {
         String sql = "SELECT * FROM transactions WHERE return_date > due_date";
         return executeQueryForList(sql);
     }
+
+    public List<Transaction> getIssuingTransaction() {
+        String sql = "SELECT * FROM transactions WHERE return_date IS NULL";
+        return executeQueryForList(sql);
+    }
+
+    public Map<Month, Long> getTransactionsPerMonth() {
+        // Retrieve all transactions from the database
+        List<Transaction> transactions = getAllEntries();
+
+        // Group by month and count transactions
+        return transactions.stream()
+            .collect(Collectors.groupingBy(
+                transaction -> transaction.getBorrowDate().getMonth(), // Group by month
+                Collectors.counting() // Count transactions
+            ));
+    }
+
+    public List<Transaction> getBorrowsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        String sql = "SELECT * FROM transactions WHERE (borrow_date BETWEEN ? AND ?)";
+        return executeQueryForList(sql, Date.valueOf(startDate), Date.valueOf(endDate));
+    }
+
+    public List<Transaction> getReturnsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        String sql = "SELECT * FROM transactions WHERE (return_date BETWEEN ? AND ?)";
+        return executeQueryForList(sql, Date.valueOf(startDate), Date.valueOf(endDate));
+    }
+
+
+    public Map<LocalDate, Long> getBorrowPerDayRecent(int days) {
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Get the date 28 days ago
+        LocalDate startDate = today.minusDays(days);
+
+        // Fetch transactions from the database (you might need to modify your DAO method to support this)
+        List<Transaction> transactions = TransactionDAO.getInstance().getBorrowsBetweenDates(startDate, today);
+
+        // Group transactions by the date
+        Map<LocalDate, Long> transactionCountPerDay = transactions.stream()
+                .filter(transaction -> !transaction.getBorrowDate().isBefore(startDate)) // Make sure it's within the last 28 days
+                .collect(Collectors.groupingBy(
+                        transaction -> transaction.getBorrowDate(), // Use either borrow or return date
+                        Collectors.counting()
+                ));
+
+        // Fill in the missing dates with 0 if no transactions exist for that date
+        for (LocalDate date = startDate; !date.isAfter(today); date = date.plusDays(1)) {
+            transactionCountPerDay.putIfAbsent(date, 0L);
+        }
+
+        return transactionCountPerDay;
+    }
+
+    public Map<LocalDate, Long> getReturnPerDayRecent(int days) {
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Get the date 28 days ago
+        LocalDate startDate = today.minusDays(days);
+
+        // Fetch transactions from the database (you might need to modify your DAO method to support this)
+        List<Transaction> transactions = TransactionDAO.getInstance().getReturnsBetweenDates(startDate, today);
+
+        // Group transactions by the date
+        Map<LocalDate, Long> transactionCountPerDay = transactions.stream()
+                .filter(transaction -> !transaction.getBorrowDate().isBefore(startDate)) // Make sure it's within the last 28 days
+                .collect(Collectors.groupingBy(
+                        transaction -> transaction.getReturnDate(), // Use either borrow or return date
+                        Collectors.counting()
+                ));
+
+        // Fill in the missing dates with 0 if no transactions exist for that date
+        for (LocalDate date = startDate; !date.isAfter(today); date = date.plusDays(1)) {
+            transactionCountPerDay.putIfAbsent(date, 0L);
+        }
+
+        return transactionCountPerDay;
+    }
+
 }

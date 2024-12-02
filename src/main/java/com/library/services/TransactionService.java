@@ -35,8 +35,8 @@ public class TransactionService {
         }
     }
 
-    public void returnDocument(Transaction transaction) {
-        transactionDAO.markAsReturned(transaction.getTransactionId());
+    public Integer returnDocument(Transaction transaction) {
         documentDAO.updateDocumentQuantity(transaction.getDocumentId(), documentDAO.getDocumentById(transaction.getDocumentId()).getCurrentQuantity() + 1);
+        return transactionDAO.markAsReturned(transaction.getTransactionId());
     }
 }

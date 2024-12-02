@@ -15,7 +15,6 @@ public class Transaction {
     private LocalDate borrowDate;
     private LocalDate returnDate;
     private LocalDate dueDate;
-    private boolean isReturned;
 
      private final SimpleBooleanProperty selected; // For checkbox
 
@@ -25,7 +24,6 @@ public class Transaction {
         this.borrowDate = borrowDate;
         this.dueDate = dueDate;
         this.returnDate = null;
-        this.isReturned = false;
 
         this.selected = new SimpleBooleanProperty(false);
     }
@@ -67,11 +65,7 @@ public class Transaction {
     }
 
     public boolean isReturned() {
-        return isReturned;
-    }
-
-    public void setReturned(boolean returned) {
-        isReturned = returned;
+        return returnDate != null;
     }
 
     public String getStatus() {

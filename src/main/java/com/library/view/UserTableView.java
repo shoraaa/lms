@@ -68,6 +68,11 @@ public class UserTableView extends BaseTableView<User> {
         parentController.getMainController().showDialog("/com/library/views/EditUserWindow.fxml", this::loadItemsAsync, new EditUserController(user));
     }
 
+    @Override
+    protected void viewItem(User user) {
+        // parentController.getMainController().showDialog("/com/library/views/EditUserWindow.fxml", this::loadItemsAsync, new EditUserController(user));
+    }
+
     private TableColumn<User, Boolean> createSelectColumn() {
         CheckBox selectAll = new CheckBox();
         TableColumn<User, Boolean> selectColumn = new TableColumn<>();

@@ -189,6 +189,7 @@ public class AddDocumentController extends BaseController {
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
+            clearForm();
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }

@@ -70,9 +70,8 @@ public class DatabaseInitializer {
         "borrow_date DATE NOT NULL, " +
         "due_date DATE, " +
         "return_date DATE, " +
-        "is_returned BOOLEAN DEFAULT 0, " +
-        "FOREIGN KEY(user_id) REFERENCES users(user_id), " +
-        "FOREIGN KEY(document_id) REFERENCES documents(document_id)" +
+        "FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE, " +
+        "FOREIGN KEY(document_id) REFERENCES documents(document_id) ON DELETE CASCADE" +
         ");";
 
     private static String CREATE_LANGUAGES_TABLE = "CREATE TABLE IF NOT EXISTS languages (" +

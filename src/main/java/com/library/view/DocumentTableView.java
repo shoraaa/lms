@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.library.controller.EditDocumentController;
+import com.library.controller.ViewDocumentController;
 import com.library.model.Document;
 import com.library.model.Publisher;
 import com.library.services.AuthorDAO;
@@ -165,6 +166,11 @@ public class DocumentTableView extends BaseTableView<Document> {
     @Override
     protected void editItem(Document document) {
         parentController.getMainController().showDialog("/com/library/views/EditDocumentWindow.fxml", this::loadItemsAsync, new EditDocumentController(document));
+    }
+
+    @Override
+    protected void viewItem(Document document) {
+        parentController.getMainController().showDialog("/com/library/views/ViewDocumentWindow.fxml", this::loadItemsAsync, new ViewDocumentController(document));
     }
 
     private TableColumn<Document, Boolean> createSelectColumn() {

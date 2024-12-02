@@ -78,7 +78,7 @@
             <Tile fx:id="accountTile" description="%sidebar.member" nodeOrientation="RIGHT_TO_LEFT" title="%sidebar.userName" />
             <Button fx:id="accountButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.users" HBox.hgrow="ALWAYS">
                <graphic>
-                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdsmz-person" styleClass="sidebar-medium-con" />
+                  <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdsmz-person" styleClass="sidebar-medium-icon" />
                </graphic>
             </Button>
          </children>

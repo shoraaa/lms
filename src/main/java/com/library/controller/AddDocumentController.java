@@ -50,7 +50,7 @@ public class AddDocumentController extends BaseController {
     @FXML private TextField categoryTextField;
 
     @FXML private ImageView documentImageView;
-    @FXML private TextField languageTextField;
+    @FXML private TextField languageTextField, quantityTextField;
     @FXML private TextArea descriptionTextArea;
 
     @FXML private Button saveButton;
@@ -155,6 +155,7 @@ public class AddDocumentController extends BaseController {
         String isbn = isbnTextField.getText();
         String publisherName = publisherTextField.getText();
         LocalDate publishedDate = publishedDatePicker.getValue();
+        int quantity = Integer.parseInt(quantityTextField.getText());
 
         // Validate inputs
         if (title.isEmpty()) {
@@ -177,8 +178,8 @@ public class AddDocumentController extends BaseController {
                 .isbn(isbn)
                 .publicationDate(publishedDate)
                 .dateAddedToLibrary(LocalDate.now())
-                .currentQuantity(1)
-                .totalQuantity(1)
+                .currentQuantity(quantity)
+                .totalQuantity(quantity)
                 .languageId(language.getId())
                 .description(descriptionTextArea.getText())
                 .imageUrl(selectedImagePath)

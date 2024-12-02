@@ -35,9 +35,11 @@ public class DocumentsViewController extends BaseViewController<Document> {
         itemTableView.setParentController(this);
         ((DocumentTableView) itemTableView).setGridPane(gridPane);
 
-        gridButton.setOnAction(event -> {
-            ((DocumentTableView) itemTableView).toggleView(gridScrollPane);
-        });
+        gridButton.setOnAction(event -> handleToggleGrid());
+    }
+
+    protected void handleToggleGrid() {
+        ((DocumentTableView) itemTableView).toggleView(gridScrollPane);
     }
 
     @Override

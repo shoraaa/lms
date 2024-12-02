@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import atlantafx.base.controls.CustomTextField?>
-<?import atlantafx.base.controls.MaskTextField?>
 <?import atlantafx.base.controls.Tile?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -25,7 +24,7 @@
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
                   <Tile description="%industryIdentifiers" title="ISBN" />
-                  <MaskTextField fx:id="isbnTextField" HBox.hgrow="ALWAYS" />
+                  <CustomTextField fx:id="isbnTextField" />
                </children>
             </HBox>
          </children>

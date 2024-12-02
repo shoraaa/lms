@@ -79,6 +79,7 @@ public class MainController {
         transactionButton.getStyleClass().remove("selected");
         chatButton.getStyleClass().remove("selected");
         settingButton.getStyleClass().remove("selected");
+        accountButton.getStyleClass().remove("selected");
     }
 
     private void handleChatButton() {
@@ -130,7 +131,7 @@ public class MainController {
     public void reloadCurrentTab() {
         Button selectedButton = null;
     
-        for (Button button : new Button[] { dashboardButton, documentButton, userButton, transactionButton, chatButton, settingButton }) {
+        for (Button button : new Button[] { dashboardButton, documentButton, userButton, transactionButton, chatButton, settingButton, accountButton }) {
             if (button.getStyleClass().contains("selected")) {
                 selectedButton = button;
                 break;
@@ -144,6 +145,7 @@ public class MainController {
             else if (selectedButton == transactionButton) handleTransactionButton();
             else if (selectedButton == chatButton) handleChatButton();
             else if (selectedButton == settingButton) handleSettingButton();
+            else if (selectedButton == accountButton) handleAccountButton();
         }
     }
 

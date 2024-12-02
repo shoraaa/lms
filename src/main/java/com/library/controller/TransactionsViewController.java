@@ -65,9 +65,4 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
         }
             
     }
-
-    // This method could be used to implement filter logic if needed
-    private void handleFilterTransactions() {
-        // Placeholder: Implement filter logic here
-    }
 }

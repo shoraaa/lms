@@ -15,8 +15,13 @@
             <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Add New User" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
+<<<<<<< HEAD
+                  <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="User Name" />
+                  <TextField fx:id="userNameTextField" prefHeight="25.0" prefWidth="313.0" promptText="Name">
+=======
                   <Tile description="%userNameDesc" prefHeight="42.0" prefWidth="310.0" title="%userName" />
                   <TextField fx:id="userNameTextField" promptText="Name">
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -25,8 +30,13 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
+<<<<<<< HEAD
+                  <Tile description="Please enter the user's e-mail:" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
+                  <TextField fx:id="userEmailTextField" prefHeight="25.0" prefWidth="311.0" promptText="E-mail">
+=======
                   <Tile description="%emailDesc" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
                   <TextField fx:id="userEmailTextField" promptText="E-mail">
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -35,8 +45,13 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
+<<<<<<< HEAD
+                  <Tile description="Please enter the user's phone number:" prefHeight="42.0" prefWidth="310.0" title="Phone" />
+                  <TextField fx:id="userPhoneNumberTextField" prefHeight="25.0" prefWidth="280.0" promptText="Phone Number">
+=======
                   <Tile description="%phoneNumberDesc" prefHeight="42.0" prefWidth="310.0" title="%phoneNumber" />
                   <TextField fx:id="userPhoneNumberTextField" promptText="Phone Number">
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>

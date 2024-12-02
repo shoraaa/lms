@@ -33,41 +33,41 @@
                      <children>
                         <Tile description="Please enter the user's name:" title="ISBN" />
                         <Region />
-                        <TextField fx:id="isbnTextField" editable="false" promptText="ISBN (optional)" />
+                        <TextField fx:id="isbnTextField" editable="false" prefHeight="0.0" promptText="ISBN (optional)" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Publisher" />
                         <Region />
-                        <TextField fx:id="publisherTextField" editable="false" prefHeight="36.0" prefWidth="217.0" promptText="Publisher (optional)" styleClass="sidebar-button" />
+                        <TextField fx:id="publisherTextField" editable="false" prefHeight="0.0" prefWidth="217.0" promptText="Publisher (optional)" styleClass="sidebar-button" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Language" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="languageTextField" editable="false" prefHeight="36.0" prefWidth="211.0" promptText="Language (optional)" styleClass="text-field" />
+                        <TextField fx:id="languageTextField" editable="false" prefHeight="0.0" prefWidth="211.0" promptText="Language (optional)" styleClass="text-field" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Publication Date" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <DatePicker fx:id="publishedDatePicker" disable="true" editable="false" promptText="Year of Publication (optional)" />
+                        <DatePicker fx:id="publishedDatePicker" disable="true" editable="false" prefHeight="0.0" promptText="Year of Publication (optional)" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Quantity" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Spinner fx:id="quantitySpinner" disable="true" prefHeight="36.0" prefWidth="212.0" />
+                        <Spinner fx:id="quantitySpinner" disable="true" prefHeight="0.0" prefWidth="212.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Description" />
-                        <TextArea fx:id="descriptionTextArea" editable="false" prefHeight="100.0" prefWidth="212.0" promptText="Insert description" />
+                        <TextArea fx:id="descriptionTextArea" editable="false" prefHeight="0.0" prefWidth="212.0" promptText="Insert description" />
                      </children>
                   </HBox>
                </children>
@@ -130,10 +130,10 @@
       <Separator prefWidth="200.0" />
       <HBox alignment="CENTER" prefHeight="158.0" spacing="20.0">
          <children>
-            <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="Clear" />
-            <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefWidth="100.0" text="Fetch" />
-            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="36.0" prefWidth="100.0" text="Edit" />
-            <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefWidth="100.0" text="Cancel" />
+            <Button fx:id="clearButton" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Clear" />
+            <Button fx:id="fetchButton" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Fetch" />
+            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Edit" />
+            <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#closeWindow" prefHeight="25.0" prefWidth="100.0" text="Cancel" />
          </children>
       </HBox>
    </children>

@@ -16,4 +16,8 @@ public class UserSession {
     public static void clearSession() {
         currentUser = null;
     }
+
+    public static boolean isAdmin() {
+        return currentUser != null && currentUser.getRole().toLowerCase().equals("admin");
+    }
 }

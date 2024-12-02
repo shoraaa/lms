@@ -50,9 +50,6 @@ public class MainController {
         accountTile.setTitle(UserSession.getUser().getName());
         accountTile.setDescription(UserSession.getUser().getRole());
 
-        boolean isAdmin = UserSession.getUser().getRole().equals("Admin");
-        userButton.setDisable(!isAdmin);
-
         // TODO: add user avatar
         // ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/library/assets/user.png")));
         // img.setFitWidth(50);

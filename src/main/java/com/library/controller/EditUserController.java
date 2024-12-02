@@ -10,6 +10,7 @@ import com.library.services.UserDAO;
 import com.library.util.Localization;
 import com.library.util.PasswordUtil; // Assuming PasswordUtil is a utility class for password hashing
 import com.library.util.SceneNavigator;
+import com.library.util.UserSession;
 
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.PasswordTextField;
@@ -53,7 +54,10 @@ public class EditUserController extends BaseController {
         editButton.setOnAction(event -> handleEditOrSave());
 
         addIconToPasswordField(passwordTextField);
-
+        
+        if (!UserSession.isAdmin()) {
+            editButton.setVisible(false);
+        }
 
     }
 

@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
 import com.library.controller.BaseController;
 import com.library.util.ErrorHandler;
 import com.library.util.Localization;
+import com.library.util.UserSession;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -69,35 +71,60 @@ public abstract class BaseTableView<T> {
     }
 
     protected TableColumn<T, Void> createActionColumn() {
+        boolean isAdmin = UserSession.isAdmin();
         TableColumn<T, Void> actionColumn = new TableColumn<>(Localization.getInstance().getString("actions"));
+    
         actionColumn.setCellFactory(param -> new TableCell<>() {
             private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
             private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
+            private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
             private final Button editButton = new Button();
             private final Button deleteButton = new Button();
-            private final HBox pane = new HBox(editButton, deleteButton);
-
+            private final Button viewButton = new Button();
+            private final HBox pane = new HBox();
+    
             {
                 pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                
+                pane.setSpacing(10);
+    
+                // Configure buttons
                 editButton.setGraphic(editIcon);
                 deleteButton.setGraphic(deleteIcon);
-
+                viewButton.setGraphic(viewIcon);
+    
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
-
+                viewButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+    
                 editButton.setOnAction(event -> editItem(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
+                viewButton.setOnAction(event -> editItem(getTableRow().getItem()));
             }
-
+    
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : pane);
+    
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+    
+                pane.getChildren().clear();
+    
+                if (isAdmin) {
+                    pane.getChildren().addAll(editButton, deleteButton);
+                } else {
+                    pane.getChildren().add(viewButton);
+                }
+    
+                setGraphic(pane);
             }
         });
+    
         return actionColumn;
     }
+    
     
 
     // Delete selected items (to be implemented in subclass)

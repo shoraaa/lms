@@ -25,6 +25,7 @@ import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
 import com.library.util.ErrorHandler;
 import com.library.util.Localization;
+import com.library.util.UserSession;
 import com.library.view.TransactionTableView;
 
 import javafx.collections.FXCollections;
@@ -86,6 +87,10 @@ public class EditDocumentController extends BaseController {
 
         // Populate form fields if editing an existing document
         populateFormFields();
+
+        if (!UserSession.isAdmin()) {
+            saveButton.setVisible(false);
+        }
 
         transactionTableView = new TransactionTableView(transactionTable);
         transactionTableView.setDocumentId(document.getDocumentId());
@@ -253,7 +258,7 @@ public class EditDocumentController extends BaseController {
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
-            clearForm();  // Clear the form after successful save
+            mainController.reloadCurrentTab();
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }

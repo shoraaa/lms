@@ -166,6 +166,9 @@ public class DashboardController extends BaseController {
         loadTask.setOnSucceeded(event -> {
             List<Document> popularDocuments = loadTask.getValue();
             for (Document document : popularDocuments) {
+                if (document == null) {
+                    continue;
+                }
                 popularDocumentHBox.getChildren().add(createDocumentCard(document));
             }
         });

@@ -1,8 +1,10 @@
 package com.library.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.library.model.Transaction;
+import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
 import com.library.util.ErrorHandler;
 import com.library.view.TransactionTableView;
@@ -16,7 +18,7 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
 
     @Override
     protected void initializeSearchChoiceBox() {
-        searchChoiceBox.getItems().addAll("ID", "User", "Document");
+        searchChoiceBox.getItems().addAll("ID", "User", "Document", "Status");
         searchChoiceBox.setValue("User");
     }
 
@@ -47,8 +49,20 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
         return TransactionDAO.getInstance().getAllTransactions();
     }
 
-    // This method could be used to implement filter logic if needed
-    private void handleFilterTransactions() {
-        // Placeholder: Implement filter logic here
+    @Override
+    protected List<String> getAllEntriesField(String field) {
+        switch (field) {
+            case "User":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> transaction.getUser().getName()).collect(Collectors.toList());
+            case "Document":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> transaction.getDocument().getTitle()).collect(Collectors.toList());
+            case "ID":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> String.valueOf(transaction.getTransactionId())).collect(Collectors.toList());
+            case "Status":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> String.valueOf(transaction.getStatus())).collect(Collectors.toList());
+            default:
+                return List.of();
+        }
+            
     }
 }

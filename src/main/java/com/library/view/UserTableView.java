@@ -1,21 +1,15 @@
 package com.library.view;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.library.App;
+import com.library.controller.EditUserController;
 // import com.library.controller.EditUserController;
 import com.library.model.User;
-import com.library.model.Publisher;
-import com.library.model.Transaction;
-import com.library.services.AuthorDAO;
-import com.library.services.CategoryDAO;
 import com.library.services.UserDAO;
-import com.library.services.PublisherDAO;
+import com.library.util.Localization;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,13 +23,8 @@ import javafx.scene.image.ImageView;
 
 public class UserTableView extends BaseTableView<User> {
 
-    private final Map<Integer, String> authorsCache = new HashMap<>();
-    private final Map<Integer, String> categoriesCache = new HashMap<>();
-    private final Map<Integer, String> publishersCache = new HashMap<>();
-
     public UserTableView(TableView<User> tableView) {
         super(tableView);
-        loadData();
 
         tableView.setRowFactory(tv -> {
             TableRow<User> row = new TableRow<>();
@@ -51,19 +40,20 @@ public class UserTableView extends BaseTableView<User> {
 
     @Override
     protected List<TableColumn<User, ?>> createColumns() {
-        List<java.util.function.Supplier<TableColumn<User, ?>>> columnTasks = List.of(
+        Localization localization = Localization.getInstance();
+        List<Supplier<TableColumn<User, ?>>> columnTasks = List.of(
             this::createSelectColumn,
             () -> createTextColumn("ID", user -> new SimpleStringProperty(String.valueOf(user.getUserId()))),
-            () -> createTextColumn("Name", user -> new SimpleStringProperty(user.getName())),
+            () -> createTextColumn(localization.getString("name"), user -> new SimpleStringProperty(user.getName())),
             () -> createTextColumn("E-mail", user -> new SimpleStringProperty(user.getEmail())),
-            () -> createTextColumn("Phone Number", user -> new SimpleStringProperty(user.getPhoneNumber())),
-            () -> createDateColumn("Registration Date", User::getRegistrationDate),
+            () -> createTextColumn(localization.getString("phoneNumber"), user -> new SimpleStringProperty(user.getPhoneNumber())),
+            () -> createDateColumn(localization.getString("registrationDate"), User::getRegistrationDate),
             this::createActionColumn
         );
 
         // Use parallel stream to execute tasks and collect results
         return columnTasks.parallelStream()
-            .map(java.util.function.Supplier::get)
+            .map(Supplier::get)
             .collect(Collectors.toList());
     }
 
@@ -74,19 +64,13 @@ public class UserTableView extends BaseTableView<User> {
     }
 
     @Override
-    public void loadData() {
-        List<User> allUsers = UserDAO.getInstance().getAllUsers();
-        // Clear caches before reloading data
-        authorsCache.clear();
-        categoriesCache.clear();
-        publishersCache.clear();
-        data.setAll(allUsers);
-        tableView.setItems(data);
+    protected void editItem(User user) {
+        parentController.getMainController().showDialog("/com/library/views/EditUserWindow.fxml", this::loadItemsAsync, new EditUserController(user));
     }
 
     @Override
-    protected void editItem(User user) {
-        // App.openDialog("/com/library/views/EditUserWindow.fxml", new EditUserController(user), this::loadData);
+    protected void viewItem(User user) {
+        // parentController.getMainController().showDialog("/com/library/views/EditUserWindow.fxml", this::loadItemsAsync, new EditUserController(user));
     }
 
     private TableColumn<User, Boolean> createSelectColumn() {
@@ -103,7 +87,7 @@ public class UserTableView extends BaseTableView<User> {
     }
 
     protected TableColumn<User, ImageView> createImageColumn() {
-        TableColumn<User, ImageView> imageColumn = new TableColumn<>("Image");
+        TableColumn<User, ImageView> imageColumn = new TableColumn<>(Localization.getInstance().getString("image"));
         imageColumn.setCellValueFactory(cellData -> {
             String imageUrl = cellData.getValue().getImageUrl();
             ImageView imageView = new ImageView(imageUrl != null ? new Image(imageUrl) : null);
@@ -130,6 +114,11 @@ public class UserTableView extends BaseTableView<User> {
         if (!selectedUsers.isEmpty()) {
             selectedUsers.forEach(this::deleteItem);
         }
-        loadData();  // Reload the data after deletion
+        loadItemsAsync();
+    }
+
+    @Override
+    public List<User> performInitialLoad() {
+        return UserDAO.getInstance().getAllEntries();
     }
 }

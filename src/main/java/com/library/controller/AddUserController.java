@@ -21,7 +21,7 @@ public class AddUserController extends BaseController {
     @FXML
     public void initialize() {
         saveButton.setOnAction(event -> saveNewUser());
-        cancelButton.setOnAction(event -> closeWindow());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     // Method to save the new book to the database
@@ -49,18 +49,11 @@ public class AddUserController extends BaseController {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }
 
-
     }
 
     public void clearForm() {
         userNameTextField.clear();
         userEmailTextField.clear();
         userPhoneNumberTextField.clear();
-    }
-
-    // Method to close the window
-    public void closeWindow() {
-        clearForm();
-        saveButton.getScene().getWindow().hide();
     }
 }

@@ -1,7 +1,3 @@
-/* Apply background color for the sidebar */
-
-/* Style for sidebar buttons */
-
 /* Text styles */
 .title-text {
     -fx-font-size: 16px;
@@ -19,42 +15,64 @@
     -fx-background-radius: 10px;
 }
 
-.red-colored-btn {
-    -fx-background-color: linear-gradient(to right, #BB0000, #FF0000);
-    -fx-background-radius: 10px;
-}
-
-.yellow-colored-btn {
-    -fx-background-color: linear-gradient(to right, #99FF00, #FFFF00);
-    -fx-background-radius: 10px;
-}
-
-.gray-colored-btn {
-    -fx-background-color: linear-gradient(to right, #9C9C9C, #CFCFCF);
-    -fx-background-radius: 10px;
+/* Anchor pane styles */
+.table-pane {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-border-width: 0;
 }
 
 .anchor-pane {
-    -fx-background-color: #fafafa;
-    -fx-border-color: #C1C1C1;
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -color-border-default;
     -fx-background-radius: 20px;
     -fx-border-radius: 20px;
+    -fx-border-width: 0;
 }
 
+.text-field {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 2;        /* Visible border width */
+    -fx-padding: 5;             /* Adjust padding for better appearance */
+}
+
+
+/* Summary box styles */
 .summary {
     -fx-background-color: transparent;
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
-    -fx-border-color: #C1C1C1;
+    -fx-border-color: -color-border-default;
     -fx-border-style: dashed;
 }
 
+.circle-button {
+    -fx-background-color: -color-accent-4; 
+    -fx-text-fill: #353535;           
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-pref-width: 64px;
+    -fx-pref-height: 64px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
 
-/* General button style */
+.circle-button .sidebar-icon {
+    -fx-icon-color: -color-bg-default;
+}
+
+.circle-button:hover {
+    -fx-background-color: -color-accent-4;
+}
+
+/* Sidebar button styles */
 .sidebar-button {
     -fx-background-color: transparent; /* Default transparent background */
-    -fx-text-fill: #353535;             /* Default text color */
-    -fx-padding: 10 20 10 20;         
+    -fx-text-fill: #353535;            /* Default text color */
+    -fx-padding: 10;
     -fx-alignment: center;
     -fx-pref-width: 64px;
     -fx-pref-height: 64px;
@@ -63,6 +81,29 @@
     -fx-background-radius: 20px;
 }
 
+.sidebar-button .sidebar-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+
+/* Selected sidebar button */
+.sidebar-button.selected {
+    -fx-background-color: -color-accent-4; /* Slight blue foreground color */
+}
+
+.sidebar-button.selected .sidebar-icon {
+    -fx-icon-color: -color-bg-default; /* Inverted icon color */
+}
+
+.sidebar-button.selected .sidebar-medium-icon {
+    -fx-icon-color: -color-bg-default; /* Inverted icon color */
+}
+
+/* Sidebar button hover state */
+.sidebar-button:hover {
+    -fx-background-color: -color-bg-subtle;
+}
+
+/* Sidebar icon styles */
 .sidebar-icon {
     -fx-icon-size: 30px;
 }
@@ -71,20 +112,25 @@
     -fx-icon-size: 80px;
 }
 
-/* Style for the selected button */
-.sidebar-button.selected {
-    -fx-background-color: #49b3ff; /* Slight blue foreground color */
-    -fx-text-fill: #0D47A1;        /* Font color blue */
+.sidebar-medium-icon {
+    -fx-icon-size: 50px;
 }
 
-.sidebar-button.selected .sidebar-icon {
-    -fx-icon-color: white; /* Inverted icon color */
+.sidebar-medium-icon {
+    -fx-icon-size: 50px;
 }
 
-.sidebar-button:hover {
-    -fx-background-color: #b4b4b4;
+
+
+/* Table view styles */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 0;
+    -fx-border-radius: 5px;
 }
 
+/* Table header and row styles */
 .table-view .column-header,
 .table-view .column-header-background,
 .table-view .table-row-cell {
@@ -95,4 +141,48 @@
 .table-view .column-header {
     -fx-alignment: CENTER; /* Options: CENTER, CENTER-LEFT, CENTER-RIGHT */
     -fx-padding: 5px; /* Optional padding */
+}
+
+.table-row-cell:hover {
+    -fx-background-color: -color-border-default;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -color-accent-4;
+    -fx-text-fill: #FFFFFF;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: not-allowed;
+}
+
+.text-field:focused {
+    -fx-border-color: -color-accent-4;
+    -fx-border-width: 2px;
+}
+
+.text-field {
+    -fx-background-radius: 5px;
+    -fx-border-color: -color-border-default;
+    -fx-padding: 20px;
+}
+
+.combo-box {
+    -fx-background-radius: 5px;
+    -fx-border-color: -color-border-default;
+    -fx-padding: 10px;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -color-accent-3;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: -color-accent-4;
 }

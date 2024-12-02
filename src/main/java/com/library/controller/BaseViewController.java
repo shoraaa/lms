@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.library.util.AutoCompletionTextField;
 import com.library.util.ErrorHandler;
 import com.library.view.BaseTableView;
 
@@ -15,7 +16,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
@@ -23,16 +24,16 @@ import javafx.util.Duration;
 public abstract class BaseViewController<T> extends BaseController {
 
     @FXML protected TableView<T> tableView;
-    @FXML protected Label totalLabel;
     @FXML protected Button addButton;
-    @FXML protected Button filterButton;
     @FXML protected TextField searchTextField;
     @FXML protected Button deleteButton;
     @FXML protected ChoiceBox<String> searchChoiceBox;
+    @FXML protected Pagination tablePagination;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     
     protected BaseTableView<T> itemTableView;
+    protected AutoCompletionTextField searchAutoCompletionTextField;
 
     // Abstract methods to be implemented by child controllers
     protected abstract List<T> performInitialLoad();
@@ -56,12 +57,18 @@ public abstract class BaseViewController<T> extends BaseController {
 
         // Add search field listener with debounce
         configureSearchField();
+
+        searchAutoCompletionTextField = new AutoCompletionTextField(searchTextField, getAllEntriesField(searchChoiceBox.getValue()));
+
+        searchChoiceBox.setOnAction(event -> {
+            performSearch(searchTextField.getText());
+            searchAutoCompletionTextField.setEntries(getAllEntriesField(searchChoiceBox.getValue()));
+        });
     }
 
     private void configureButtonActions() {
         addButton.setOnAction(event -> handleAddNewItem());
         deleteButton.setOnAction(event -> handleDeleteSelectedItems());
-        filterButton.setOnAction(event -> handleFilterItems());
     }
 
     private void configureSearchField() {
@@ -75,19 +82,18 @@ public abstract class BaseViewController<T> extends BaseController {
     }
 
     private void performSearch(String query) {
+        itemTableView.setData(FXCollections.observableList(List.of()));  // Clear the table
+        itemTableView.progressIndicator.setVisible(true);
+
         if (query.isEmpty()) {
             loadItemsAsync();  // Reload full list when the search text is empty
         } else {
             // Execute the search in a background thread
             executorService.submit(() -> {
                 List<T> result = performSearchQuery(query);
-                Platform.runLater(() -> tableView.setItems(FXCollections.observableList(result)));
+                Platform.runLater(() -> itemTableView.setData(FXCollections.observableList(result)));
             });
         }
-    }
-
-    protected void updateTotalCount(int count) {
-        totalLabel.setText("Total: " + count);
     }
 
     protected void loadItemsAsync() {
@@ -100,8 +106,7 @@ public abstract class BaseViewController<T> extends BaseController {
             @Override
             protected void succeeded() {
                 List<T> items = getValue();
-                tableView.setItems(FXCollections.observableList(items));
-                updateTotalCount(items.size());  // Update the total count
+                itemTableView.setData(FXCollections.observableList(items));
             }
 
             @Override
@@ -113,7 +118,5 @@ public abstract class BaseViewController<T> extends BaseController {
         new Thread(loadTask).start();  // Run in a background thread
     }
 
-    private void handleFilterItems() {
-        // Placeholder: Implement filter logic here if needed
-    }
+    protected abstract List<String> getAllEntriesField(String field);
 }

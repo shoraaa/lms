@@ -36,6 +36,11 @@ public class AutoCompletionTextField {
         setListener();
     }
 
+    public void setEntries(List<String> entries) {
+        this.entries.clear();
+        this.entries.addAll(entries);
+    }
+
     /**
      * Set up listeners to manage the text input and suggestions.
      */

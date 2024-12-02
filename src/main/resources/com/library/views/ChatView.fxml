@@ -15,7 +15,7 @@
    <children>
       <HBox alignment="CENTER" fillHeight="false" spacing="48.0" VBox.vgrow="NEVER">
          <children>
-            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="Chat Bot">
+            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="%chatBot">
                <HBox.margin>
                   <Insets />
                </HBox.margin>

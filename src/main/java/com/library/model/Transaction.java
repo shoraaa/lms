@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.library.services.DocumentDAO;
 import com.library.services.UserDAO;
+import com.library.util.Localization;
 
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -15,7 +16,6 @@ public class Transaction {
     private LocalDate borrowDate;
     private LocalDate returnDate;
     private LocalDate dueDate;
-    private boolean isReturned;
 
      private final SimpleBooleanProperty selected; // For checkbox
 
@@ -25,7 +25,6 @@ public class Transaction {
         this.borrowDate = borrowDate;
         this.dueDate = dueDate;
         this.returnDate = null;
-        this.isReturned = false;
 
         this.selected = new SimpleBooleanProperty(false);
     }
@@ -50,6 +49,10 @@ public class Transaction {
         return borrowDate;
     }
 
+    public void setBorrowDate(LocalDate borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
     public LocalDate getReturnDate() {
         return returnDate;
     }
@@ -67,21 +70,34 @@ public class Transaction {
     }
 
     public boolean isReturned() {
-        return isReturned;
-    }
-
-    public void setReturned(boolean returned) {
-        isReturned = returned;
+        return returnDate != null;
     }
 
     public String getStatus() {
-        if (isReturned) {
-            return "Returned";
-        } else if (LocalDate.now().isAfter(dueDate)) {
-            return "Overdue";
-        } else {
-            return "Borrowing";
+        Localization localization = Localization.getInstance();
+        if (borrowDate == null) {
+            return localization.getString("pending");
         }
+        if (returnDate != null) {
+            if (returnDate.isAfter(LocalDate.now())) {
+                return localization.getString("overdue");
+            } else if (returnDate.isAfter(dueDate)) {
+                return localization.getString("returnLate");
+            }
+            return localization.getString("returned");
+        } else if (LocalDate.now().isAfter(dueDate)) {
+            return localization.getString("overdue");
+        } else {
+            return localization.getString("borrowing");
+        }
+    }
+
+    public User getUser() {
+        return UserDAO.getInstance().getUserById(userId);
+    }
+
+    public Document getDocument() {
+        return DocumentDAO.getInstance().getDocumentById(documentId);
     }
 
     public String getUserName() {

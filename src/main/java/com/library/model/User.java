@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 public class User {
     private int userId;  // Auto-generated ID
-    private String name;
+    private String name; // firstName + "-" + surname
     private String email;
     private String phoneNumber;
     private LocalDate registrationDate;
@@ -46,7 +46,15 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return name.replace("-", " ");
+    }
+
+    public String getFirstName() {
+        return name.split("-")[0];
+    }
+
+    public String getSurName() {
+        return name.split("-")[1];
     }
 
     public void setName(String name) {

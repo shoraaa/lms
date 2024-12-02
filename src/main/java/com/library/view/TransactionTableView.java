@@ -1,18 +1,21 @@
 package com.library.view;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
 // import com.library.controller.EditTransactionController;
 import com.library.model.Transaction;
 import com.library.services.TransactionDAO;
 import com.library.services.TransactionService;
+import com.library.util.ErrorHandler;
+import com.library.util.Localization;
+import com.library.util.UserSession;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Button;
@@ -26,16 +29,11 @@ import javafx.scene.layout.HBox;
 
 public class TransactionTableView extends BaseTableView<Transaction> {
 
-    private final Map<Integer, String> authorsCache = new HashMap<>();
-    private final Map<Integer, String> categoriesCache = new HashMap<>();
-    private final Map<Integer, String> publishersCache = new HashMap<>();
-
     private Integer documentId = null;
     private Integer userId = null;
 
     public TransactionTableView(TableView<Transaction> tableView) {
         super(tableView);
-        loadData();
 
         tableView.setRowFactory(tv -> {
             TableRow<Transaction> row = new TableRow<>();
@@ -51,68 +49,153 @@ public class TransactionTableView extends BaseTableView<Transaction> {
 
     public void setDocumentId(int documentId) {
         this.documentId = documentId;
-        loadData();
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-        loadData();
     }
 
     @Override
     protected List<TableColumn<Transaction, ?>> createColumns() {
-        List<java.util.function.Supplier<TableColumn<Transaction, ?>>> columnTasks = List.of(
+        Localization localization = Localization.getInstance();
+        List<Supplier<TableColumn<Transaction, ?>>> columnTasks = List.of(
             this::createSelectColumn,
             () -> createTextColumn("ID", user -> new SimpleStringProperty(String.valueOf(user.getUserId()))),
-            () -> createTextColumn("User", transaction -> new SimpleStringProperty(transaction.getUserName())),
-            () -> createTextColumn("Document", transaction -> new SimpleStringProperty(transaction.getDocumentTitle())),
-            () -> createDateColumn("Borrow Date", transaction -> transaction.getBorrowDate()),
-            () -> createDateColumn("Due Date", transaction -> transaction.getDueDate()),
-            () -> createDateColumn("Return Date", transaction -> transaction.getReturnDate()),
-            () -> createTextColumn("Status", transaction -> new SimpleStringProperty(transaction.getStatus())),
+            () -> createTextColumn(localization.getString("user"), transaction -> new SimpleStringProperty(transaction.getUserName())),
+            () -> createTextColumn(localization.getString("document"), transaction -> new SimpleStringProperty(transaction.getDocumentTitle())),
+            () -> createDateColumn(localization.getString("borrowDate"), transaction -> transaction.getBorrowDate()),
+            () -> createDateColumn(localization.getString("dueDate"), transaction -> transaction.getDueDate()),
+            () -> createDateColumn(localization.getString("returnDate"), transaction -> transaction.getReturnDate()),
+            () -> createTextColumn(localization.getString("status"), transaction -> new SimpleStringProperty(transaction.getStatus())),
             this::createActionColumn
         );
 
         // Use parallel stream to execute tasks and collect results
         return columnTasks.parallelStream()
-            .map(java.util.function.Supplier::get)
+            .map(Supplier::get)
             .collect(Collectors.toList());
     }
 
-    @Override
     protected TableColumn<Transaction, Void> createActionColumn() {
-        TableColumn<Transaction, Void> actionColumn = new TableColumn<>("Actions");
+        boolean isAdmin = UserSession.isAdmin();
+        TableColumn<Transaction, Void> actionColumn = new TableColumn<>(Localization.getInstance().getString("actions"));
+        actionColumn.setPrefWidth(200);
+    
         actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final FontIcon editIcon = new FontIcon(Material2AL.KEYBOARD_RETURN);
+            private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
             private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
+            private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
+            private final FontIcon returnIcon = new FontIcon(Material2AL.KEYBOARD_RETURN);
+            private final FontIcon acceptIcon = new FontIcon(Material2AL.DONE);
             private final Button editButton = new Button();
             private final Button deleteButton = new Button();
-            private final HBox pane = new HBox(editButton, deleteButton);
+            private final Button viewButton = new Button();
+            private final Button returnButton = new Button();
+            private final Button acceptButton = new Button();
+            private final HBox pane = new HBox();
+    
             {
                 pane.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                
+                pane.setSpacing(10);
+    
+                // Configure buttons
                 editButton.setGraphic(editIcon);
                 deleteButton.setGraphic(deleteIcon);
-
+                viewButton.setGraphic(viewIcon);
+                returnButton.setGraphic(returnIcon);
+                acceptButton.setGraphic(acceptIcon);
+    
+                returnButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
                 deleteButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
-
-                editButton.setOnAction(event -> returnDocument(getTableRow().getItem()));
+                viewButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                acceptButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+    
+                returnButton.setOnAction(event -> returnDocument(getTableRow().getItem()));
                 deleteButton.setOnAction(event -> deleteItem(getTableRow().getItem()));
+                viewButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                editButton.setOnAction(event -> editItem(getTableRow().getItem()));
+                acceptButton.setOnAction(event -> acceptItem(getTableRow().getItem()));
             }
-
+    
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : pane);
+    
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+    
+                Transaction transaction = getTableRow().getItem();
+                pane.getChildren().clear();
+
+                if (isAdmin) {
+                    pane.getChildren().addAll(deleteButton);
+                }
+                
+                boolean isAdmin = UserSession.isAdmin();
+                int currentUserId = UserSession.getUser().getUserId();
+                if (isAdmin && transaction.getBorrowDate() == null) {
+                    pane.getChildren().add(acceptButton);
+                } else if (!transaction.isReturned() && (isAdmin || (currentUserId == transaction.getUserId()))) {
+                    pane.getChildren().add(returnButton);
+                }
+
+
+                // Show return button only if the transaction's userId matches the current user and it's not returned
+    
+                setGraphic(pane);
             }
         });
+    
         return actionColumn;
     }
 
     private void returnDocument(Transaction transaction) {
-        TransactionService.getInstance().returnDocument(transaction);
-        loadData();
+        // Ensure transaction is valid
+        if (transaction == null || transaction.isReturned()) {
+            return;
+        }
+    
+        // Update the transaction in the database
+        TransactionService transactionService = TransactionService.getInstance();
+        boolean success = transactionService.returnDocument(transaction) != null;
+    
+        if (success) {
+            // Update the transaction object in memory
+            transaction.setReturnDate(LocalDate.now());
+            
+            // Reload table data
+            loadItemsAsync();
+        } else {
+            // Handle failure case, e.g., show an alert
+            // showAlert("Error", "Failed to return the document. Please try again.");
+        }
+    }
+
+    private void acceptItem(Transaction transaction) {
+        // Ensure transaction is valid
+        if (transaction == null || transaction.isReturned()) {
+            return;
+        }
+    
+        // Update the transaction in the database
+        TransactionService transactionService = TransactionService.getInstance();
+        Integer transactionId = transactionService.acceptDocumentBorrow(transaction);
+        System.out.println(transactionId);
+    
+        if (transactionId != null) {
+            // Update the transaction object in memory
+            Transaction transaction2 = TransactionDAO.getInstance().getTransactionById(transactionId);
+            transaction.setBorrowDate(transaction2.getBorrowDate());
+            transaction.setDueDate(transaction2.getDueDate());
+            
+            loadItemsAsync();
+        } else {
+            // Handle failure case, e.g., show an alert
+            ErrorHandler.showErrorDialog(new Exception("Failed to accept the document. Please try again."));
+        }
     }
 
     @Override
@@ -122,35 +205,16 @@ public class TransactionTableView extends BaseTableView<Transaction> {
     }
 
     @Override
-    public void loadData() {
-        List<Transaction> allTransactions = TransactionDAO.getInstance().getAllTransactions();
-        if (documentId != null) {
-            // Clear caches before reloading data
-            allTransactions = allTransactions.stream()
-            .filter(transaction -> transaction.getDocumentId() == documentId)
-            .collect(Collectors.toList());
-        }
-
-        if (userId != null) {
-            // Clear caches before reloading data
-            allTransactions = allTransactions.stream()
-            .filter(transaction -> transaction.getUserId() == userId)
-            .collect(Collectors.toList());
-        }
-
-        authorsCache.clear();
-        categoriesCache.clear();
-        publishersCache.clear();
-        data.setAll(allTransactions);
-        tableView.setItems(data);
-    }
-
-    @Override
     protected void editItem(Transaction transaction) {
         // App.openDialog("/com/library/views/EditTransactionWindow.fxml", new EditTransactionController(transaction), this::loadData);
     }
 
-    private TableColumn<Transaction, Boolean> createSelectColumn() {
+    @Override
+    protected void viewItem(Transaction transaction) {
+        // App.openDialog("/com/library/views/EditTransactionWindow.fxml", new EditTransactionController(transaction), this::loadData);
+    }
+
+    protected TableColumn<Transaction, Boolean> createSelectColumn() {
         CheckBox selectAll = new CheckBox();
         TableColumn<Transaction, Boolean> selectColumn = new TableColumn<>();
         selectColumn.setGraphic(selectAll);
@@ -163,7 +227,7 @@ public class TransactionTableView extends BaseTableView<Transaction> {
         return selectColumn;
     }
 
-    private TableColumn<Transaction, String> createDateColumn(String title, java.util.function.Function<Transaction, LocalDate> dateGetter) {
+    protected TableColumn<Transaction, String> createDateColumn(String title, java.util.function.Function<Transaction, LocalDate> dateGetter) {
         return createTextColumn(title, doc -> {
             LocalDate date = dateGetter.apply(doc);
             return new SimpleStringProperty(date != null ? date.toString() : "N/A");
@@ -179,6 +243,16 @@ public class TransactionTableView extends BaseTableView<Transaction> {
         if (!selectedTransactions.isEmpty()) {
             selectedTransactions.forEach(this::deleteItem);
         }
-        loadData();  // Reload the data after deletion
+        loadItemsAsync();
+    }
+
+    @Override
+    public List<Transaction> performInitialLoad() {
+        if (documentId != null) {
+            return TransactionDAO.getInstance().getTransactionsByDocumentId(documentId);
+        } else if (userId != null) {
+            return TransactionDAO.getInstance().getTransactionsByUserId(userId);
+        }
+        return TransactionDAO.getInstance().getAllEntries();
     }
 }

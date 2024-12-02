@@ -2,6 +2,9 @@ package com.library.controller;
 
 import java.util.Optional;
 
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import com.library.model.User;
 import com.library.services.UserDAO;
 import com.library.util.SceneNavigator;
@@ -11,9 +14,11 @@ import com.library.util.UserSession;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.PasswordTextField;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 public class LoginController {
 
@@ -26,6 +31,17 @@ public class LoginController {
     @FXML public void initialize() {
         loginButton.setOnAction(event -> handleLogin());
         registerButton.setOnAction(event -> handleRegister());
+        addIconToPasswordField(passwordTextField);
+    }
+
+    private void addIconToPasswordField(PasswordTextField passwordField) {
+        FontIcon icon = new FontIcon(Feather.EYE_OFF);
+        icon.setCursor(Cursor.HAND);
+        icon.setOnMouseClicked(event -> {
+            icon.setIconCode(passwordField.getRevealPassword() ? Feather.EYE_OFF : Feather.EYE);
+            passwordField.setRevealPassword(!passwordField.getRevealPassword());
+        });
+        passwordField.setRight(icon);
     }
 
 
@@ -53,6 +69,10 @@ public class LoginController {
         if (PasswordUtil.verifyPassword(password, user.getPasswordHash())) {
             // Successfully logged in, navigate to the main screen
             UserSession.setUser(user);
+            // set window to maximized
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setMaximized(true);
+
             SceneNavigator.setRoot("/com/library/views/Main", Optional.empty());
         } else {
             showAlert(AlertType.ERROR, "Login Failed", "Incorrect password.");

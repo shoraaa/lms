@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import atlantafx.base.controls.CustomTextField?>
-<?import atlantafx.base.controls.MaskTextField?>
 <?import atlantafx.base.controls.Tile?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -18,14 +17,24 @@
             <ImageView fx:id="documentImageView" fitHeight="449.0" fitWidth="377.0" pickOnBounds="true" preserveRatio="true" />
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
+<<<<<<< HEAD
                   <Tile description="Document title." title="Title" />
                   <CustomTextField fx:id="documentTitleTextFIeld" prefHeight="25.0" prefWidth="242.0" />
+=======
+                  <Tile description="%documentTitle" title="%title" />
+                  <CustomTextField fx:id="documentTitleTextFIeld" HBox.hgrow="ALWAYS" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
+<<<<<<< HEAD
                   <Tile description="Document ISBN" title="ISBN" />
                   <MaskTextField fx:id="isbnTextField" prefHeight="25.0" prefWidth="239.0" />
+=======
+                  <Tile description="%industryIdentifiers" title="ISBN" />
+                  <CustomTextField fx:id="isbnTextField" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
          </children>
@@ -38,32 +47,52 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
+<<<<<<< HEAD
                   <Tile description="User Name:" title="User" />
                   <CustomTextField fx:id="userNameTextField" prefHeight="25.0" prefWidth="278.0" />
+=======
+                  <Tile description="%userName" title="%user" />
+                  <CustomTextField fx:id="userNameTextField" HBox.hgrow="ALWAYS" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="33.0" prefWidth="287.0" spacing="50.0">
                <children>
+<<<<<<< HEAD
                   <Tile description="User ID:" title="ID" />
                   <CustomTextField fx:id="userIdTextField" prefHeight="25.0" prefWidth="299.0" />
+=======
+                  <Tile description="%userId" title="ID" />
+                  <CustomTextField fx:id="userIdTextField" HBox.hgrow="ALWAYS" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
+<<<<<<< HEAD
                   <Tile description="The day member borrow the book" prefHeight="33.0" prefWidth="225.0" title="Borrow Date" />
                   <DatePicker fx:id="borrowDatePicker" />
+=======
+                  <Tile description="%borrowDateDesc" title="%borrowDate" />
+                  <DatePicker fx:id="borrowDatePicker" HBox.hgrow="ALWAYS" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Tile description="The day member need to return the book" title="Due Date" />
-                  <DatePicker fx:id="dueDatePicker" />
+                  <Tile description="%dueDateDesc" title="%dueDate" />
+                  <DatePicker fx:id="dueDatePicker" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
+<<<<<<< HEAD
                   <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefWidth="80.0" text="Save" />
                   <Button fx:id="cancelButton" defaultButton="true" mnemonicParsing="false" prefWidth="80.0" text="Cancel" />
+=======
+                  <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" text="%save" />
+                  <Button fx:id="cancelButton" defaultButton="true" mnemonicParsing="false" text="%cancel" />
+>>>>>>> 88411d415c7ec50fa3dd58b12f6b1fb5e1ef8c64
                </children>
             </HBox>
          </children>

@@ -24,6 +24,8 @@ import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
 import com.library.util.ErrorHandler;
+import com.library.util.Localization;
+import com.library.util.UserSession;
 import com.library.view.TransactionTableView;
 
 import javafx.collections.FXCollections;
@@ -54,8 +56,8 @@ public class EditDocumentController extends BaseController {
     @FXML private ImageView documentImageView;
     @FXML private TextField languageTextField;
     @FXML private TextArea descriptionTextArea;
-    @FXML private Button saveButton, fetchButton, clearButton, selectImageButton;
-    @FXML private TableView<Transaction> transactionTable;
+    @FXML private Button saveButton, fetchButton, clearButton, selectImageButton, cancelButton;
+    // @FXML private TableView<Transaction> transactionTable;
 
     private ObservableList<Author> authorList = FXCollections.observableArrayList();
     private ObservableList<Category> categoryList = FXCollections.observableArrayList();
@@ -63,7 +65,7 @@ public class EditDocumentController extends BaseController {
     private Document document;
     private boolean isEditing = false;
 
-    private TransactionTableView transactionTableView;
+    // private TransactionTableView transactionTableView;
 
     public EditDocumentController(Document document) {
         authorList = FXCollections.observableArrayList();
@@ -86,11 +88,10 @@ public class EditDocumentController extends BaseController {
         // Populate form fields if editing an existing document
         populateFormFields();
 
-        transactionTableView = new TransactionTableView(transactionTable);
-        transactionTableView.setDocumentId(document.getDocumentId());
-        transactionTableView.removeColumn("Document");
-        transactionTableView.removeColumn("Due Date");
-
+        if (!UserSession.isAdmin()) {
+            saveButton.setVisible(false);
+        }
+        
         // Initialize auto-completion for fields
         initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));
         initializeAutoCompletionTextField(categoryTextField, CategoryDAO.getInstance().getAllCategories().stream().map(Category::getName).collect(Collectors.toList()));
@@ -148,6 +149,7 @@ public class EditDocumentController extends BaseController {
         fetchButton.setOnAction(event -> fetchButtonAction());
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     private void clearForm() {
@@ -247,7 +249,7 @@ public class EditDocumentController extends BaseController {
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
-            clearForm();  // Clear the form after successful save
+            mainController.reloadCurrentTab();
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }

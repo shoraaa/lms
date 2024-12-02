@@ -50,12 +50,12 @@ public class AddDocumentController extends BaseController {
     @FXML private TextField categoryTextField;
 
     @FXML private ImageView documentImageView;
-    @FXML private TextField languageTextField;
+    @FXML private TextField languageTextField, quantityTextField;
     @FXML private TextArea descriptionTextArea;
 
     @FXML private Button saveButton;
     @FXML private Button fetchTitleButton, fetchISBNButton;
-    @FXML private Button clearButton;
+    @FXML private Button clearButton, cancelButton;
     @FXML private Button selectImageButton;
 
     private ObservableList<Author> authorList;
@@ -121,6 +121,7 @@ public class AddDocumentController extends BaseController {
         fetchISBNButton.setOnAction(event -> fetchButtonAction("isbn"));
         clearButton.setOnAction(event -> clearForm());
         selectImageButton.setOnAction(event -> handleSelectImage());
+        cancelButton.setOnAction(event -> mainController.reloadCurrentTab());
     }
 
     private void clearForm() {
@@ -154,6 +155,7 @@ public class AddDocumentController extends BaseController {
         String isbn = isbnTextField.getText();
         String publisherName = publisherTextField.getText();
         LocalDate publishedDate = publishedDatePicker.getValue();
+        int quantity = Integer.parseInt(quantityTextField.getText());
 
         // Validate inputs
         if (title.isEmpty()) {
@@ -176,8 +178,8 @@ public class AddDocumentController extends BaseController {
                 .isbn(isbn)
                 .publicationDate(publishedDate)
                 .dateAddedToLibrary(LocalDate.now())
-                .currentQuantity(1)
-                .totalQuantity(1)
+                .currentQuantity(quantity)
+                .totalQuantity(quantity)
                 .languageId(language.getId())
                 .description(descriptionTextArea.getText())
                 .imageUrl(selectedImagePath)
@@ -188,6 +190,7 @@ public class AddDocumentController extends BaseController {
 
         if (documentId > -1) {
             showAlert("Success", "Document has been added successfully!", Alert.AlertType.INFORMATION);
+            clearForm();
         } else {
             showAlert("Error", "There was an issue adding the book.", Alert.AlertType.ERROR);
         }

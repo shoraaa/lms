@@ -1,9 +1,10 @@
 package com.library.services;
 
-import com.library.model.Transaction;
-import com.library.model.Document;
-
 import java.time.LocalDate;
+
+import com.library.model.Document;
+import com.library.model.Transaction;
+import com.library.util.ErrorHandler;
 
 public class TransactionService {
     private final DocumentDAO documentDAO;
@@ -30,13 +31,20 @@ public class TransactionService {
             documentDAO.updateDocumentQuantity(documentId, document.getCurrentQuantity() - 1);
             return true;
         } else {
-            System.out.println("Document not available.");
+            ErrorHandler.showErrorDialog(new Exception("Document is not available"));
             return false;
         }
     }
 
-    public void returnDocument(Transaction transaction) {
-        transactionDAO.markAsReturned(transaction.getTransactionId());
+    public Integer returnDocument(Transaction transaction) {
         documentDAO.updateDocumentQuantity(transaction.getDocumentId(), documentDAO.getDocumentById(transaction.getDocumentId()).getCurrentQuantity() + 1);
+        return transactionDAO.markAsReturned(transaction.getTransactionId());
+    }
+
+    public Integer acceptDocumentBorrow(Transaction transaction) {
+        // update transaction borrow date
+        LocalDate borrowDate = LocalDate.now();
+        LocalDate dueDate = borrowDate.plusDays(14);
+        return transactionDAO.updateTransactionDates(transaction.getTransactionId(), borrowDate, dueDate);
     }
 }

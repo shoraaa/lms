@@ -10,15 +10,18 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
+import javafx.util.Duration;
+import atlantafx.base.util.Animations;
 
 public class PaneNavigator {
 
-    private static Pane content;
+    private static ScrollPane content;
 
-    // Set the current scene
-    public static void setContent(Pane newContent) {
+    // Set the current scene (as ScrollPane)
+    public static void setContent(ScrollPane newContent) {
         content = newContent;
     }
 
@@ -26,11 +29,14 @@ public class PaneNavigator {
     public static void setRoot(String fxml, Optional<Object> controller) {
         ProgressIndicator progressIndicator = new ProgressIndicator();
         StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setPrefSize(400, 400);
+        loadingPane.setPrefSize(content.getViewportBounds().getWidth(), content.getViewportBounds().getHeight());
 
         Platform.runLater(() -> {
-            content.getChildren().clear();
-            content.getChildren().add(loadingPane);
+            // Add a fade-out effect to the existing content (inside ScrollPane)
+            if (content.getContent() != null) {
+                Animations.fadeOut(content.getContent(), Duration.seconds(0.25)).play();
+            }
+            content.setContent(loadingPane);
         });
 
         // Load the new scene in the background using a Task
@@ -42,7 +48,7 @@ public class PaneNavigator {
         // Check if the FXML is already cached
         Parent cachedParent = FXMLCache.getFXML(fxml);
         if (cachedParent != null) {
-            return cachedParent; // Return cached FXML
+            return cachedParent;  // Return cached FXML
         }
 
         try {
@@ -71,15 +77,19 @@ public class PaneNavigator {
 
             @Override
             protected void succeeded() {
-                content.getChildren().clear();
-                content.getChildren().add(getValue());
+                Platform.runLater(() -> {
+                    Parent loadedContent = getValue();
+                    content.setContent(loadedContent);
+
+                    // Apply fade-in effect after content is loaded
+                    Animations.fadeIn(loadedContent, Duration.seconds(0.25)).play();
+                });
             }
 
             @Override
             protected void failed() {
                 ErrorHandler.showErrorDialog(getException());
             }
-
         };
 
         // Run the task in a background thread

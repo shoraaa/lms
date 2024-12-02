@@ -17,7 +17,7 @@
          </font>
       </Label>
       <CustomTextField fx:id="usernameTextField" prefHeight="52.0" prefWidth="325.0" promptText="%login.usernamePrompt" />
-      <PasswordTextField fx:id="passwordTextField" prefHeight="55.0" prefWidth="325.0" promptText="%login.passwordPrompt" revealPassword="true" />
+      <PasswordTextField fx:id="passwordTextField" prefHeight="55.0" prefWidth="325.0" promptText="%login.passwordPrompt" />
       <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="325.0" text="%login.loginButton" />
       <Separator prefWidth="200.0" />
       <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="325.0" text="%login.registerButton" />

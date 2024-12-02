@@ -11,26 +11,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="596.0" prefWidth="365.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.RegisterController">
+<VBox alignment="CENTER" prefHeight="649.0" prefWidth="365.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.RegisterController">
    <children>
-      <Label text="Register">
+      <Label text="%%register">
          <font>
             <Font name="System Bold" size="45.0" />
          </font>
       </Label>
       <HBox spacing="20.0">
          <children>
-            <CustomTextField fx:id="firstNameTextField" prefHeight="52.0" prefWidth="325.0" promptText="First Name" />
-            <CustomTextField fx:id="surNameTextField" prefHeight="52.0" prefWidth="325.0" promptText="Surname" />
+            <CustomTextField fx:id="firstNameTextField" prefHeight="52.0" prefWidth="325.0" promptText="%firstName" />
+            <CustomTextField fx:id="surNameTextField" prefHeight="52.0" prefWidth="325.0" promptText="%surName" />
          </children>
       </HBox>
-      <PasswordTextField fx:id="passwordTextField" prefHeight="57.0" prefWidth="325.0" promptText="Password" revealPassword="true" />
-      <CustomTextField fx:id="phoneNumberTextField" prefHeight="52.0" prefWidth="325.0" promptText="Phone Number" />
-      <CustomTextField fx:id="emailTextField" prefHeight="52.0" prefWidth="325.0" promptText="Email address" />
+      <PasswordTextField fx:id="passwordTextField" prefHeight="57.0" prefWidth="325.0" promptText="%password" />
+      <PasswordTextField fx:id="repeatPasswordTextField" prefHeight="57.0" prefWidth="325.0" promptText="%repeatPassword" />
+      <CustomTextField fx:id="phoneNumberTextField" prefHeight="52.0" prefWidth="325.0" promptText="%phoneNumber" />
+      <CustomTextField fx:id="emailTextField" prefHeight="52.0" prefWidth="325.0" promptText="%emailAddress" />
       <ChoiceBox fx:id="roleChoiceBox" prefHeight="55.0" prefWidth="325.0" />
-      <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="325.0" text="Sign Up" />
+      <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="325.0" text="%signUp" />
       <Separator prefWidth="200.0" />
-      <Button fx:id="backButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="325.0" text="Already have an account?" />
+      <Button fx:id="backButton" mnemonicParsing="false" prefHeight="59.0" prefWidth="325.0" text="%alreadyHaveAnAccount" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

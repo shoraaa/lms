@@ -130,4 +130,9 @@ public class TransactionDAO extends BaseDAO<Transaction> {
                 return Collections.emptyList();
         }
     }
+
+    public List<Transaction> getOverdueTransactions() {
+        String sql = "SELECT * FROM transactions WHERE return_date > due_date";
+        return executeQueryForList(sql);
+    }
 }

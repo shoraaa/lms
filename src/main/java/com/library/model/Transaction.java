@@ -75,7 +75,12 @@ public class Transaction {
     }
 
     public String getStatus() {
-        if (isReturned) {
+        if (returnDate != null) {
+            if (returnDate.isAfter(LocalDate.now())) {
+                return "Overdue";
+            } else if (returnDate.isAfter(dueDate)) {
+                return "Returned (late)";
+            }
             return "Returned";
         } else if (LocalDate.now().isAfter(dueDate)) {
             return "Overdue";

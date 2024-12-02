@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kordamp.ikonli.Ikon;
@@ -20,15 +21,19 @@ import com.library.services.UserDAO;
 import com.library.util.ErrorHandler;
 import com.library.util.Localization;
 import com.library.util.UserSession;
+import com.library.view.BaseTableView;
 import com.library.view.DocumentTableView;
+import com.library.view.OverdueTransactionTableView;
 import com.library.view.UserTableView;
 
 import atlantafx.base.controls.Card;
 import atlantafx.base.theme.Styles;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -45,11 +50,13 @@ public class DashboardController extends BaseController {
     @FXML private Card returnedBookCard;
     @FXML private TableView<User> usersList;
     @FXML private TableView<Document> documentsList;
+    @FXML private TableView<Transaction> overDueTable;
 
     @FXML private HBox popularDocumentHBox;
 
     private DocumentTableView documentTableView;
     private UserTableView userTableView;
+    private OverdueTransactionTableView overdueTransactionTableView;
 
     private static final String DATE_TIME_PATTERN = "MMMM dd, yyyy | EEEE, h:mm a";
 
@@ -85,6 +92,29 @@ public class DashboardController extends BaseController {
     private void initializeTables() {
         setupDocumentTable();
         setupUserTable();
+        setupOverdueTransactionTable();
+    }
+
+    protected <T> void loadItemsAsync(Supplier<List<T>> performInitialLoad, BaseTableView<T> itemTableView) {
+            Task<List<T>> loadTask = new Task<>() {
+                @Override
+                protected List<T> call() {
+                    return performInitialLoad.get();
+                }
+
+            @Override
+            protected void succeeded() {
+                List<T> items = getValue();
+                itemTableView.setData(FXCollections.observableList(items));
+            }
+
+            @Override
+            protected void failed() {
+                ErrorHandler.showErrorDialog(new Exception("Failed to load items"));
+            }
+        };
+
+        new Thread(loadTask).start();  // Run in a background thread
     }
 
     private void setupDocumentTable() {
@@ -92,25 +122,34 @@ public class DashboardController extends BaseController {
         documentTableView.setParentController(this);
 
         // Columns to remove
+        Localization localization = Localization.getInstance();
         String[] columnsToRemove = {
-            "Categories", "Publisher", "Publication Date", 
-            "Registration Date", "Image", "ISBN", ""
+            "categories", "publisher", "publicationDate", 
+            "registrationDate", "image", "isbn"
         };
         for (String column : columnsToRemove) {
-            documentTableView.removeColumn(column);
+            documentTableView.removeColumn(localization.getString(column));
         }
+        documentTableView.removeColumn(""); // check box column
 
-        documentTableView.loadData();
+        loadItemsAsync(DocumentDAO.getInstance()::getAllEntries, documentTableView);
     }
 
     private void setupUserTable() {
         userTableView = new UserTableView(usersList);
+        userTableView.setParentController(this);
 
         // Columns to remove
-        String[] columnsToRemove = { "Registration Date", "" };
-        for (String column : columnsToRemove) {
-            userTableView.removeColumn(column);
-        }
+        userTableView.removeColumn(Localization.getInstance().getString("registrationDate"));
+        userTableView.removeColumn("");
+
+        loadItemsAsync(UserDAO.getInstance()::getAllEntries, userTableView);
+    }
+
+    private void setupOverdueTransactionTable() {
+        overdueTransactionTableView = new OverdueTransactionTableView(overDueTable);
+        overdueTransactionTableView.setParentController(this);
+        loadItemsAsync(TransactionDAO.getInstance()::getOverdueTransactions, overdueTransactionTableView);
     }
 
     private void loadPopularDocuments() {
@@ -155,7 +194,7 @@ public class DashboardController extends BaseController {
     }
 
     private ImageView createImageView(String imageUrl) {
-        ImageView imageView = new ImageView(imageUrl);
+        ImageView imageView = new ImageView(new Image(imageUrl));
         imageView.setFitHeight(200);
         imageView.setFitWidth(160);
         return imageView;

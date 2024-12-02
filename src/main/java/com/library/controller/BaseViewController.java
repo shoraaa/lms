@@ -81,7 +81,7 @@ public abstract class BaseViewController<T> extends BaseController {
             // Execute the search in a background thread
             executorService.submit(() -> {
                 List<T> result = performSearchQuery(query);
-                Platform.runLater(() -> tableView.setItems(FXCollections.observableList(result)));
+                Platform.runLater(() -> itemTableView.setData(FXCollections.observableList(result)));
             });
         }
     }
@@ -96,7 +96,7 @@ public abstract class BaseViewController<T> extends BaseController {
             @Override
             protected void succeeded() {
                 List<T> items = getValue();
-                tableView.setItems(FXCollections.observableList(items));
+                itemTableView.setData(FXCollections.observableList(items));
             }
 
             @Override

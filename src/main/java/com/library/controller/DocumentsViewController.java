@@ -9,15 +9,28 @@ import com.library.view.DocumentTableView;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.GridPane;
 
 public class DocumentsViewController extends BaseViewController<Document> {
 
     @FXML private Button gridButton;
+    @FXML private GridPane gridPane;
+    @FXML private ScrollPane gridScrollPane;
 
     @Override
     protected void initializeItemTableView() {
+        tableView.setVisible(true);
+        gridPane.setVisible(false);
+        gridScrollPane.setVisible(false);
+        
         itemTableView = new DocumentTableView(tableView);
         itemTableView.setParentController(this);
+        ((DocumentTableView) itemTableView).setGridPane(gridPane);
+
+        gridButton.setOnAction(event -> {
+            ((DocumentTableView) itemTableView).toggleView(gridScrollPane);
+        });
     }
 
     @Override

@@ -9,13 +9,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddUserController">
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-            <Button defaultButton="true" mnemonicParsing="false" text="Select Image" />
+            <Button defaultButton="true" mnemonicParsing="false" text="%selectImage" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -26,7 +25,7 @@
             <Label styleClass="title-3" stylesheets="@../css/cupertino-light.css" text="Add New User" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="User Name" />
+                  <Tile description="%userNameDesc" prefHeight="42.0" prefWidth="310.0" title="%userName" />
                   <TextField fx:id="userNameTextField" promptText="Name">
                      <HBox.margin>
                         <Insets right="20.0" />
@@ -36,7 +35,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Tile description="Please enter the user's e-mail:" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
+                  <Tile description="%emailDesc" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
                   <TextField fx:id="userEmailTextField" promptText="E-mail">
                      <HBox.margin>
                         <Insets right="20.0" />
@@ -46,7 +45,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Tile description="Please enter the user's phone number:" prefHeight="42.0" prefWidth="310.0" title="Phone" />
+                  <Tile description="%phoneNumberDesc" prefHeight="42.0" prefWidth="310.0" title="%phoneNumber" />
                   <TextField fx:id="userPhoneNumberTextField" promptText="Phone Number">
                      <HBox.margin>
                         <Insets right="20.0" />
@@ -56,8 +55,8 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="48.0">
                <children>
-                  <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="Save" />
-                  <Button fx:id="cancelButton" cancelButton="true" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="Cancel" />
+                  <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="%save" />
+                  <Button fx:id="cancelButton" cancelButton="true" defaultButton="true" mnemonicParsing="false" prefWidth="100.0" text="%save" />
                </children>
             </HBox>
          </children>

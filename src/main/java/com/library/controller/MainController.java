@@ -3,21 +3,21 @@ package com.library.controller;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.library.util.DatabaseSampler;
 import com.library.util.Localization;
 import com.library.util.PaneNavigator;
 import com.library.util.SceneNavigator;
 import com.library.util.UserSession;
 
 import atlantafx.base.controls.Tile;
-import atlantafx.base.theme.CupertinoLight;
 import atlantafx.base.util.Animations;
-import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 // https://github.com/mkpaz/atlantafx/releases
@@ -58,6 +58,9 @@ public class MainController {
         // img.setFitWidth(50);
         // img.setFitHeight(50);
         // accountTile.setGraphic(img);
+
+        // DatabaseSampler.generateSampleUsers(50);
+        // DatabaseSampler.generateSampleTransactions(50);
     }
 
     private void initializeButtonActions() {
@@ -71,6 +74,8 @@ public class MainController {
 
         logoutButton.setOnAction(event -> {
             UserSession.clearSession();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setMaximized(false);
             SceneNavigator.setRoot("/com/library/views/Login", Optional.empty());
         });
     }
@@ -94,37 +99,50 @@ public class MainController {
 
     private void handleChatButton() {
         handleTabSelection(chatButton);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.chat"));
+
         loadContent("/com/library/views/ChatView.fxml", null);
     }
 
     private void handleDashboardButton() {
         handleTabSelection(dashboardButton);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.dashboard"));
+
         loadContent("/com/library/views/Dashboard.fxml", null);
     }
 
     private void handleDocumentButton() {
         handleTabSelection(documentButton);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.books"));
+
         loadContent("/com/library/views/DocumentsView.fxml", null);
     }
 
     private void handleUserButton() {
         handleTabSelection(userButton);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.users"));
+
         loadContent("/com/library/views/UsersView.fxml", null);
     }
 
     private void handleTransactionButton() {
         handleTabSelection(transactionButton);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.transactions"));
+
         loadContent("/com/library/views/TransactionsView.fxml", null);
     }
 
-    private void handleSettingButton() {
+    public void handleSettingButton() {
         handleTabSelection(settingButton);
-        loadContent("/com/library/views/Setting.fxml", null);
+        currentTabLabel.setText(Localization.getInstance().getString("sidebar.setting"));
+
+        SettingController controller = new SettingController();
+        controller.setMainController(this);
+        loadContent("/com/library/views/Setting.fxml", controller);
     }
 
     private void handleTabSelection(Button button) {
         selectSidebarButton(button);
-        currentTabLabel.setText(button.getText());
     }
 
     // Helper method to load the content dynamically
@@ -184,6 +202,6 @@ public class MainController {
 
     public void showDialog(String fxmlPath, Runnable onClose, Object controller) {
         loadContent(fxmlPath, controller);
-        onClose.run();
+        if (onClose != null) onClose.run();
     }
 }

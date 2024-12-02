@@ -4,10 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -19,14 +18,14 @@
    <children>
       <HBox alignment="CENTER" fillHeight="false" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="Documents List">
+            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="%documentsList">
                <HBox.margin>
                   <Insets right="400.0" />
                </HBox.margin>
             </Label>
             <HBox alignment="CENTER" prefWidth="532.0" spacing="10.0">
                <children>
-                  <TextField fx:id="searchTextField" prefHeight="48.0" prefWidth="400.0" promptText="Search" styleClass="anchor-pane" stylesheets="@../css/style.css" />
+                  <TextField fx:id="searchTextField" prefHeight="48.0" prefWidth="400.0" promptText="%searchPrompt" styleClass="anchor-pane" stylesheets="@../css/style.css" />
                   <ChoiceBox fx:id="searchChoiceBox" prefHeight="48.0" prefWidth="135.0" styleClass="anchor-pane" stylesheets="@../css/style.css" />
                </children>
                <HBox.margin>
@@ -63,20 +62,19 @@
                </VBox.margin>
                <children>
                   <TableView fx:id="tableView" minHeight="744.0" prefWidth="1660.0" />
-                  <GridPane fx:id="gridPane" alignment="CENTER" visible="false">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                  </GridPane>
+                  <ScrollPane fx:id="gridScrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+                     <content>
+                        <GridPane fx:id="gridPane" alignment="TOP_CENTER" prefHeight="743.0" prefWidth="1662.0" visible="false">
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                        </GridPane>
+                     </content>
+                  </ScrollPane>
                </children>
             </StackPane>
-            <Pagination fx:id="tablePagination" prefHeight="0.0" prefWidth="1700.0" />
          </children>
          <opaqueInsets>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

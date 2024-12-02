@@ -24,6 +24,7 @@ import com.library.services.LanguageDAO;
 import com.library.services.PublisherDAO;
 import com.library.util.AutoCompletionTextField;
 import com.library.util.ErrorHandler;
+import com.library.util.Localization;
 import com.library.view.TransactionTableView;
 
 import javafx.collections.FXCollections;
@@ -88,8 +89,12 @@ public class EditDocumentController extends BaseController {
 
         transactionTableView = new TransactionTableView(transactionTable);
         transactionTableView.setDocumentId(document.getDocumentId());
-        transactionTableView.removeColumn("Document");
-        transactionTableView.removeColumn("Due Date");
+        transactionTableView.removeColumn(Localization.getInstance().getString("document"));
+        transactionTableView.removeColumn(Localization.getInstance().getString("dueDate"));
+        transactionTableView.removeColumn(Localization.getInstance().getString("actions"));
+        transactionTableView.removeColumn("");
+        transactionTableView.loadItemsAsync();
+        
 
         // Initialize auto-completion for fields
         initializeAutoCompletionTextField(authorTextField, AuthorDAO.getInstance().getAllAuthors().stream().map(Author::getName).collect(Collectors.toList()));

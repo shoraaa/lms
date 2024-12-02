@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="679.0" prefWidth="886.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddTransactionController">
    <children>
       <VBox alignment="TOP_CENTER" spacing="20.0">
@@ -19,13 +18,13 @@
             <ImageView fx:id="documentImageView" fitHeight="449.0" fitWidth="377.0" pickOnBounds="true" preserveRatio="true" />
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
-                  <Tile description="Document title." title="Title" />
+                  <Tile description="%documentTitle" title="%title" />
                   <CustomTextField fx:id="documentTitleTextFIeld" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
-                  <Tile description="Document ISBN" title="ISBN" />
+                  <Tile description="%industryIdentifiers" title="ISBN" />
                   <MaskTextField fx:id="isbnTextField" />
                </children>
             </HBox>
@@ -39,32 +38,32 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
-                  <Tile description="User Name:" title="User" />
+                  <Tile description="%userName" title="%user" />
                   <CustomTextField fx:id="userNameTextField" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="50.0">
                <children>
-                  <Tile description="User ID:" title="ID" />
+                  <Tile description="%userId" title="ID" />
                   <CustomTextField fx:id="userIdTextField" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Tile description="The day member borrow the book" title="Borrow Date" />
+                  <Tile description="%borrowDateDesc" title="%borrowDate" />
                   <DatePicker fx:id="borrowDatePicker" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Tile description="The day member need to return the book" title="Due Date" />
+                  <Tile description="%dueDateDesc" title="%dueDate" />
                   <DatePicker fx:id="dueDatePicker" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
-                  <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" text="Save" />
-                  <Button fx:id="cancelButton" defaultButton="true" mnemonicParsing="false" text="Cancel" />
+                  <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" text="%save" />
+                  <Button fx:id="cancelButton" defaultButton="true" mnemonicParsing="false" text="%cancel" />
                </children>
             </HBox>
          </children>

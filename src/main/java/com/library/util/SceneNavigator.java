@@ -22,6 +22,10 @@ public class SceneNavigator {
         scene = newScene;
     }
 
+    public static Scene getScene() {
+        return scene;
+    }
+
     // Change the root of the current scene to a new FXML with an optional controller
     public static void setRoot(String fxml, Optional<Object> controller) {
         if (scene != null) {

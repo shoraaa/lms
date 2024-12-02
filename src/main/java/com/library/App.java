@@ -6,10 +6,8 @@ import java.util.Optional;
 import com.library.util.DatabaseInitializer;
 import com.library.util.ErrorHandler;
 import com.library.util.SceneNavigator;
-import com.library.util.ThemeNavigator;
 
 import atlantafx.base.theme.CupertinoDark;
-import atlantafx.base.theme.Theme;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.Parent;

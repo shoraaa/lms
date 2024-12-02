@@ -7,18 +7,18 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.SettingController">
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_LEFT" spacing="20.0">
          <children>
-            <Tile description="Select the system theme." title="Theme" />
+            <Tile description="%themeDesc" title="%theme" />
             <Region HBox.hgrow="ALWAYS" />
             <ChoiceBox fx:id="themeChoiceBox" prefHeight="46.0" prefWidth="278.0" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" spacing="20.0">
          <children>
-            <Tile description="Select the system language." title="Language" />
+            <Tile description="%languageDesc" title="%language" />
             <Region HBox.hgrow="ALWAYS" />
             <ChoiceBox fx:id="languageChoiceBox" prefHeight="43.0" prefWidth="276.0" />
          </children>

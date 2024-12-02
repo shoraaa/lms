@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.AddUserController">
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
@@ -27,7 +26,7 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="User Name" />
-                  <TextField fx:id="userNameTextField" promptText="Name">
+                  <TextField fx:id="userNameTextField" prefHeight="25.0" prefWidth="313.0" promptText="Name">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -37,7 +36,7 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Tile description="Please enter the user's e-mail:" prefHeight="42.0" prefWidth="310.0" title="E-mail" />
-                  <TextField fx:id="userEmailTextField" promptText="E-mail">
+                  <TextField fx:id="userEmailTextField" prefHeight="25.0" prefWidth="311.0" promptText="E-mail">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -47,7 +46,7 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Tile description="Please enter the user's phone number:" prefHeight="42.0" prefWidth="310.0" title="Phone" />
-                  <TextField fx:id="userPhoneNumberTextField" promptText="Phone Number">
+                  <TextField fx:id="userPhoneNumberTextField" prefHeight="25.0" prefWidth="280.0" promptText="Phone Number">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>

@@ -52,28 +52,28 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <Tile description="Please enter the user's name:" title="Publisher" />
+                        <Tile description="Please enter the Publisher:" title="Publisher" />
                         <Region />
                         <TextField fx:id="publisherTextField" prefHeight="30.0" prefWidth="217.0" promptText="Publisher (optional)" styleClass="sidebar-button" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <Tile description="Please enter the user's name:" title="Language" />
+                        <Tile description="Please enter the language:" title="Language" />
                         <Region />
                         <TextField fx:id="languageTextField" prefHeight="30.0" prefWidth="211.0" promptText="Language (optional)" styleClass="text-field" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <Tile description="Please enter the user's name:" title="Publication Date" />
+                        <Tile description="Please enter the Publication Date:" title="Publication Date" />
                         <Region />
                         <DatePicker fx:id="publishedDatePicker" prefHeight="30.0" promptText="Year of Publication (optional)" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <Tile description="Please enter the user's name:" title="Quantity" />
+                        <Tile description="Please enter the quantity:" title="Quantity" />
                         <Region />
                         <TextField fx:id="quantityTextField" prefHeight="30.0" prefWidth="211.0" promptText="Quantity" styleClass="text-field" />
                      </children>
@@ -88,7 +88,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="170.0" prefWidth="523.0">
                      <children>
-                        <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Author(s)" />
+                        <Tile description="Please enter the authors:" prefHeight="42.0" prefWidth="310.0" title="Author(s)" />
                         <Region />
                         <VBox prefHeight="100.0" prefWidth="211.0" spacing="10.0">
                            <children>
@@ -100,7 +100,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="148.0" prefWidth="535.0">
                      <children>
-                        <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Category(s)" />
+                        <Tile description="Please enter the categorys:" prefHeight="42.0" prefWidth="310.0" title="Category(s)" />
                         <Region />
                         <VBox prefHeight="100.0" prefWidth="211.0" spacing="10.0">
                            <children>
@@ -112,7 +112,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="154.0" prefWidth="535.0">
                      <children>
-                        <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Description" />
+                        <Tile description="Please enter the description:" prefHeight="42.0" prefWidth="310.0" title="Description" />
                         <Region />
                         <TextArea fx:id="descriptionTextArea" prefHeight="122.0" prefWidth="212.0" promptText="Insert description" wrapText="true" />
                      </children>

@@ -26,42 +26,42 @@
                      <children>
                         <Tile description="Document title." title="Title" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="titleTextField" editable="false" promptText="Name (required)" styleClass="text-field" />
+                        <TextField fx:id="titleTextField" editable="false" prefHeight="25.0" prefWidth="245.0" promptText="Name (required)" styleClass="text-field" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" title="ISBN" />
                         <Region />
-                        <TextField fx:id="isbnTextField" editable="false" prefHeight="0.0" promptText="ISBN (optional)" />
+                        <TextField fx:id="isbnTextField" editable="false" prefHeight="25.0" prefWidth="245.0" promptText="ISBN (optional)" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Publisher" />
                         <Region />
-                        <TextField fx:id="publisherTextField" editable="false" prefHeight="0.0" prefWidth="217.0" promptText="Publisher (optional)" styleClass="sidebar-button" />
+                        <TextField fx:id="publisherTextField" editable="false" prefHeight="25.0" prefWidth="385.0" promptText="Publisher (optional)" styleClass="sidebar-button" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Language" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="languageTextField" editable="false" prefHeight="0.0" prefWidth="211.0" promptText="Language (optional)" styleClass="text-field" />
+                        <TextField fx:id="languageTextField" editable="false" prefHeight="0.0" prefWidth="385.0" promptText="Language (optional)" styleClass="text-field" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Publication Date" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <DatePicker fx:id="publishedDatePicker" disable="true" editable="false" prefHeight="0.0" promptText="Year of Publication (optional)" />
+                        <DatePicker fx:id="publishedDatePicker" editable="false" prefHeight="25.0" prefWidth="285.0" promptText="Year of Publication (optional)" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
                         <Tile description="Please enter the user's name:" prefHeight="42.0" prefWidth="310.0" title="Quantity" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Spinner fx:id="quantitySpinner" disable="true" prefHeight="0.0" prefWidth="212.0" />
+                        <Spinner fx:id="quantitySpinner" prefHeight="25.0" prefWidth="279.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
@@ -114,7 +114,7 @@
                   <TableView fx:id="transactionTable" prefHeight="690.0" prefWidth="545.0" />
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="57.0" prefWidth="132.0" text="Delete Selected" />
+                        <Button mnemonicParsing="false" prefWidth="132.0" text="Delete Selected" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

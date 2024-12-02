@@ -159,6 +159,21 @@ public abstract class BaseDAO<T> {
         return executeQueryForList(sql, "%" + value + "%");
     }
 
+    public List<String> getFieldOfAll(String field) {
+        String sql = "SELECT " + field + " FROM " + getTableName();
+        List<String> result = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getString(field));
+            }
+        } catch (SQLException e) {
+            ErrorHandler.showErrorDialog(e);
+        }
+        return result;
+    }
+
 
     public abstract Integer add(T entity);
     protected abstract String getTableName();

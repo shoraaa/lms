@@ -1,9 +1,16 @@
 package com.library.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.library.model.Author;
+import com.library.model.Category;
 import com.library.model.Document;
+import com.library.model.Publisher;
+import com.library.services.AuthorDAO;
+import com.library.services.CategoryDAO;
 import com.library.services.DocumentDAO;
+import com.library.services.PublisherDAO;
 import com.library.util.ErrorHandler;
 import com.library.view.DocumentTableView;
 
@@ -23,7 +30,7 @@ public class DocumentsViewController extends BaseViewController<Document> {
         tableView.setVisible(true);
         gridPane.setVisible(false);
         gridScrollPane.setVisible(false);
-        
+
         itemTableView = new DocumentTableView(tableView);
         itemTableView.setParentController(this);
         ((DocumentTableView) itemTableView).setGridPane(gridPane);
@@ -63,5 +70,25 @@ public class DocumentsViewController extends BaseViewController<Document> {
     @Override
     protected List<Document> performInitialLoad() {
         return DocumentDAO.getInstance().getAllEntries();
+    }
+
+    @Override
+    protected List<String> getAllEntriesField(String field) {
+        switch (field) {
+            case "Author":
+                return AuthorDAO.getInstance().getAllEntries().stream().map(Author::getName).collect(Collectors.toList());
+            case "Category":
+                return CategoryDAO.getInstance().getAllEntries().stream().map(Category::getName).collect(Collectors.toList());
+            case "Publisher":
+                return PublisherDAO.getInstance().getAllEntries().stream().map(Publisher::getName).collect(Collectors.toList());
+            case "ID":
+                return DocumentDAO.getInstance().getAllEntries().stream().map(document -> String.valueOf(document.getDocumentId())).collect(Collectors.toList());
+            case "ISBN":
+                return DocumentDAO.getInstance().getAllEntries().stream().map(Document::getIsbn).collect(Collectors.toList());
+            case "Title":
+                return DocumentDAO.getInstance().getAllEntries().stream().map(Document::getTitle).collect(Collectors.toList());
+            default:
+                return DocumentDAO.getInstance().getFieldOfAll(field);
+        }
     }
 }

@@ -89,6 +89,14 @@ public class Transaction {
         }
     }
 
+    public User getUser() {
+        return UserDAO.getInstance().getUserById(userId);
+    }
+
+    public Document getDocument() {
+        return DocumentDAO.getInstance().getDocumentById(documentId);
+    }
+
     public String getUserName() {
         User user = UserDAO.getInstance().getUserById(userId);
         if (user == null) {

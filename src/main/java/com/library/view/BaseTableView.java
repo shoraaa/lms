@@ -27,7 +27,7 @@ public abstract class BaseTableView<T> {
     protected final ObservableList<T> data = FXCollections.observableArrayList();
 
     protected BaseController parentController;
-    private ProgressIndicator progressIndicator = new ProgressIndicator();
+    public ProgressIndicator progressIndicator = new ProgressIndicator();
 
     public BaseTableView(TableView<T> tableView) {
         this.tableView = tableView;
@@ -55,6 +55,7 @@ public abstract class BaseTableView<T> {
     public void setData(ObservableList<T> data) {
         this.data.setAll(data);
         tableView.setItems(this.data);
+        progressIndicator.setVisible(false);
     }
 
     public void removeColumn(String title) {
@@ -129,18 +130,11 @@ public abstract class BaseTableView<T> {
             protected void succeeded() {
                 List<T> items = getValue();
                 setData(FXCollections.observableList(items));
-                progressIndicator.setVisible(false);
             }
 
             @Override
             protected void failed() {
                 ErrorHandler.showErrorDialog(new Exception("Failed to load items"));
-                progressIndicator.setVisible(false);
-            }
-
-            @Override
-            protected void running() {
-                progressIndicator.setVisible(true);  // Show the progress indicator while loading
             }
         };
 

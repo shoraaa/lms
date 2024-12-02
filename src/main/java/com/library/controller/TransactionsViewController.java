@@ -1,8 +1,10 @@
 package com.library.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.library.model.Transaction;
+import com.library.services.DocumentDAO;
 import com.library.services.TransactionDAO;
 import com.library.util.ErrorHandler;
 import com.library.view.TransactionTableView;
@@ -45,6 +47,21 @@ public class TransactionsViewController extends BaseViewController<Transaction> 
     @Override
     protected List<Transaction> performInitialLoad() {
         return TransactionDAO.getInstance().getAllTransactions();
+    }
+
+    @Override
+    protected List<String> getAllEntriesField(String field) {
+        switch (field) {
+            case "User":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> transaction.getUser().getName()).collect(Collectors.toList());
+            case "Document":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> transaction.getDocument().getTitle()).collect(Collectors.toList());
+            case "ID":
+                return TransactionDAO.getInstance().getAllEntries().stream().map(transaction -> String.valueOf(transaction.getTransactionId())).collect(Collectors.toList());
+            default:
+                return List.of();
+        }
+            
     }
 
     // This method could be used to implement filter logic if needed

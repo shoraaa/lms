@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.library.util.AutoCompletionTextField;
 import com.library.util.ErrorHandler;
 import com.library.view.BaseTableView;
 
@@ -33,6 +34,7 @@ public abstract class BaseViewController<T> extends BaseController {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     
     protected BaseTableView<T> itemTableView;
+    protected AutoCompletionTextField searchAutoCompletionTextField;
 
     // Abstract methods to be implemented by child controllers
     protected abstract List<T> performInitialLoad();
@@ -56,6 +58,13 @@ public abstract class BaseViewController<T> extends BaseController {
 
         // Add search field listener with debounce
         configureSearchField();
+
+        searchAutoCompletionTextField = new AutoCompletionTextField(searchTextField, getAllEntriesField(searchChoiceBox.getValue()));
+
+        searchChoiceBox.setOnAction(event -> {
+            performSearch(searchTextField.getText());
+            searchAutoCompletionTextField.setEntries(getAllEntriesField(searchChoiceBox.getValue()));
+        });
     }
 
     private void configureButtonActions() {
@@ -75,6 +84,9 @@ public abstract class BaseViewController<T> extends BaseController {
     }
 
     private void performSearch(String query) {
+        itemTableView.setData(FXCollections.observableList(List.of()));  // Clear the table
+        itemTableView.progressIndicator.setVisible(true);
+
         if (query.isEmpty()) {
             loadItemsAsync();  // Reload full list when the search text is empty
         } else {
@@ -107,6 +119,8 @@ public abstract class BaseViewController<T> extends BaseController {
 
         new Thread(loadTask).start();  // Run in a background thread
     }
+
+    protected abstract List<String> getAllEntriesField(String field);
 
     private void handleFilterItems() {
         // Placeholder: Implement filter logic here if needed

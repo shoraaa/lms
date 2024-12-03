@@ -55,6 +55,7 @@ public class EditDocumentController extends BaseController {
     @FXML private TextField categoryTextField;
     @FXML private ImageView documentImageView;
     @FXML private TextField languageTextField;
+    @FXML private TextField currentQuantityTextField, totalQuantityTextField;
     @FXML private TextArea descriptionTextArea;
     @FXML private Button saveButton, fetchButton, clearButton, selectImageButton, cancelButton;
     // @FXML private TableView<Transaction> transactionTable;
@@ -104,6 +105,8 @@ public class EditDocumentController extends BaseController {
 
         titleTextField.setText(document.getTitle());
         isbnTextField.setText(document.getIsbn());
+        currentQuantityTextField.setText(String.valueOf(document.getCurrentQuantity()));
+        totalQuantityTextField.setText(String.valueOf(document.getTotalQuantity()));
         Publisher publisher = PublisherDAO.getInstance().getPublisherById(document.getPublisherId());
         publisherTextField.setText(publisher != null ? publisher.getName() : "No publisher available");
         publishedDatePicker.setValue(document.getPublicationDate());
@@ -237,8 +240,8 @@ public class EditDocumentController extends BaseController {
                 .isbn(isbn)
                 .publicationDate(publishedDate)
                 .dateAddedToLibrary(LocalDate.now())
-                .currentQuantity(1)
-                .totalQuantity(1)
+                .currentQuantity(Integer.parseInt(currentQuantityTextField.getText()))
+                .totalQuantity(Integer.parseInt(totalQuantityTextField.getText()))
                 .languageId(language.getId())
                 .description(descriptionTextArea.getText())
                 .imageUrl(selectedImagePath)

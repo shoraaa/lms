@@ -6,7 +6,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
@@ -57,9 +56,16 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="50.0">
                      <children>
-                        <Tile description="%documentQuantity" title="%quantity" />
+                        <Tile description="%documentCurrentQuantity" title="%currentQuantity" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Spinner fx:id="quantitySpinner" disable="true" prefWidth="400.0" />
+                        <TextField fx:id="currentQuantityTextField" editable="false" prefWidth="400.0" styleClass="text-field" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="50.0">
+                     <children>
+                        <Tile description="%documentTotalQuantity" title="%totalQuantity" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="totalQuantityTextField" editable="false" prefWidth="400.0" styleClass="text-field" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="50.0">

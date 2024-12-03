@@ -151,7 +151,7 @@ public class DocumentTableView extends BaseTableView<Document> {
             private final FontIcon editIcon = new FontIcon(Material2AL.EDIT);
             private final FontIcon deleteIcon = new FontIcon(Material2AL.DELETE);
             private final FontIcon viewIcon = new FontIcon(Material2MZ.VISIBILITY);
-            private final FontIcon borrowIcon = new FontIcon(Material2AL.ACCESS_TIME);
+            private final FontIcon borrowIcon = new FontIcon(Material2MZ.SHOPPING_BAG);
             private final Button editButton = new Button();
             private final Button deleteButton = new Button();
             private final Button viewButton = new Button();

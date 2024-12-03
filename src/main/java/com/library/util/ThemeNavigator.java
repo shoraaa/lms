@@ -1,8 +1,10 @@
 package com.library.util;
 
-import javafx.application.Application;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import javafx.application.Application;
 
 /**
  * ThemeNavigator manages the switching of application themes.
@@ -57,7 +59,9 @@ public class ThemeNavigator {
      * @return an array of available theme names
      */
     public String[] getAvailableThemes() {
-        return themeMap.keySet().toArray(new String[0]);
+        String[] themes = themeMap.keySet().toArray(new String[0]);
+        Arrays.sort(themes);
+        return themes;
     }
 
     /**

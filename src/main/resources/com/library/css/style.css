@@ -74,9 +74,8 @@
     -fx-text-fill: #353535;            /* Default text color */
     -fx-padding: 10;
     -fx-alignment: center;
-    -fx-pref-width: 64px;
-    -fx-pref-height: 64px;
-    -fx-icon-size: 30px;
+    -fx-pref-width: 50px;
+    -fx-pref-height: 50px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
 }
@@ -105,19 +104,15 @@
 
 /* Sidebar icon styles */
 .sidebar-icon {
-    -fx-icon-size: 30px;
+    -fx-icon-size: 25px;
 }
 
 .sidebar-big-icon {
-    -fx-icon-size: 80px;
+    -fx-icon-size: 60px;
 }
 
 .sidebar-medium-icon {
-    -fx-icon-size: 50px;
-}
-
-.sidebar-medium-icon {
-    -fx-icon-size: 50px;
+    -fx-icon-size: 40px;
 }
 
 

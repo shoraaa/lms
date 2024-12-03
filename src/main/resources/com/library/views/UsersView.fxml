@@ -14,9 +14,9 @@
    <children>
       <HBox alignment="CENTER" fillHeight="false" spacing="20.0">
          <children>
-            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="%usersList">
+            <Label alignment="CENTER" styleClass="title-2" stylesheets="@../css/cupertino-light.css" text="%usersList" HBox.hgrow="ALWAYS">
                <HBox.margin>
-                  <Insets right="400.0" />
+                  <Insets right="50.0" />
                </HBox.margin>
             </Label>
             <HBox alignment="CENTER" prefWidth="532.0" spacing="10.0">
@@ -40,12 +40,12 @@
             </Button>
          </children>
          <padding>
-            <Insets bottom="20.0" top="29.0" />
+            <Insets bottom="20.0" top="30.0" />
          </padding>
       </HBox>
-      <VBox fx:id="mainLayout" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" stylesheets="@../style.css" VBox.vgrow="ALWAYS">
+      <VBox fx:id="mainLayout" alignment="TOP_CENTER" spacing="20.0" stylesheets="@../style.css" VBox.vgrow="ALWAYS">
          <children>
-            <TableView fx:id="tableView" minHeight="744.0" prefWidth="1660.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tableView" prefHeight="743.0" prefWidth="1662.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="20.0" right="20.0" />
                </VBox.margin>

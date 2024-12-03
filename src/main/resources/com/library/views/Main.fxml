@@ -12,7 +12,7 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.library.controller.MainController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutY="95.0" spacing="40.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="128.0">
+      <VBox alignment="TOP_CENTER" layoutY="95.0" spacing="30.0" styleClass="sidebar" stylesheets="@../css/style.css" AnchorPane.topAnchor="80.0">
          <children>
             <Button fx:id="dashboardButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-button" stylesheets="@../css/style.css" text="%sidebar.dashboard">
                <VBox.margin>
@@ -49,7 +49,7 @@
             </Button>
             <Button fx:id="logoutButton" alignment="CENTER" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" styleClass="sidebar-button">
                <VBox.margin>
-                  <Insets top="120.0" />
+                  <Insets top="80.0" />
                </VBox.margin>
                <graphic>
                   <FontIcon iconLiteral="mdal-log_out" styleClass="sidebar-icon" />
@@ -57,13 +57,13 @@
             </Button>
          </children>
          <padding>
-            <Insets left="20.0" top="20.0" />
+            <Insets left="35.0" top="20.0" />
          </padding>
       </VBox>
       <ScrollPane fx:id="contentPane" hbarPolicy="NEVER" layoutX="133.0" layoutY="106.0" prefHeight="200.0" prefWidth="200.0" styleClass="anchor-pane" stylesheets="@../css/style.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0" />
       <AnchorPane styleClass="sidebar" stylesheets="@../css/style.css">
          <children>
-            <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="22.0" layoutY="97.0" styleClass="sidebar-big-icon" />
+            <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdal-local_library" iconSize="80" layoutX="33.0" layoutY="77.0" styleClass="sidebar-big-icon" />
             <FontIcon id="Material2AL.DASHBOARD" iconLiteral="mdmz-menu" iconSize="80" layoutX="197.0" layoutY="72.0" styleClass="sidebar-icon" />
             <Label fx:id="currentTabLabel" layoutX="269.0" layoutY="37.0" styleClass="title-1" stylesheets="@../css/cupertino-light.css" text="%sidebar.dashboard" />
          </children>

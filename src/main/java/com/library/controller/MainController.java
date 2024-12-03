@@ -3,6 +3,7 @@ package com.library.controller;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.library.util.DatabaseSampler;
 import com.library.util.Localization;
 import com.library.util.PaneNavigator;
 import com.library.util.SceneNavigator;
@@ -43,6 +44,8 @@ public class MainController {
         initializeAccountTile();
         initializeButtonActions();
         handleDashboardButton();  // Default to Dashboard
+
+        // DatabaseSampler.generateSampleTransactions(50);
     }
 
     private void initializeAccountTile() {

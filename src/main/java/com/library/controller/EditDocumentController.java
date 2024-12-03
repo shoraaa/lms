@@ -205,6 +205,8 @@ public class EditDocumentController extends BaseController {
             categoryTextField.setEditable(true);
             languageTextField.setEditable(true);
             descriptionTextArea.setEditable(true);
+            currentQuantityTextField.setEditable(true);
+            totalQuantityTextField.setEditable(true);
         } else {
             saveEditedDocument();
         }

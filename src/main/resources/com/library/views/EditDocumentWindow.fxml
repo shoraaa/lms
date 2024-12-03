@@ -82,7 +82,7 @@
                         <VBox prefWidth="400.0" spacing="10.0">
                            <children>
                               <TextField fx:id="authorTextField" editable="false" promptText="%author" />
-                              <ListView fx:id="authorListView" prefHeight="100.0" />
+                              <ListView fx:id="authorListView" minHeight="100.0" prefHeight="100.0" />
                            </children>
                         </VBox>
                      </children>
@@ -94,7 +94,7 @@
                         <VBox prefWidth="400.0" spacing="10.0">
                            <children>
                               <TextField fx:id="categoryTextField" editable="false" promptText="%category" />
-                              <ListView fx:id="categoryListView" prefHeight="100.0" />
+                              <ListView fx:id="categoryListView" minHeight="100.0" prefHeight="100.0" />
                            </children>
                         </VBox>
                      </children>

@@ -43,7 +43,7 @@
             <Insets bottom="20.0" top="30.0" />
          </padding>
       </HBox>
-      <VBox fx:id="mainLayout" alignment="TOP_CENTER" spacing="20.0" stylesheets="@../style.css" VBox.vgrow="ALWAYS">
+      <VBox fx:id="mainLayout" alignment="TOP_CENTER" spacing="20.0"  VBox.vgrow="ALWAYS">
          <children>
             <TableView fx:id="tableView" prefHeight="743.0" prefWidth="1662.0" VBox.vgrow="ALWAYS">
                <VBox.margin>

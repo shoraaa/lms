@@ -95,7 +95,4 @@ git push origin feature-branch
 This project is licensed under the MIT License.
 
 ## Instructions for using the app
-<video width="640" height="360" controls>
-  <source src="Instruction.mkv" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[Watch Video] (https://github.com/shoraaa/lms/blob/main/Instruction.mkv)

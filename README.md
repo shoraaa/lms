@@ -95,4 +95,4 @@ git push origin feature-branch
 This project is licensed under the MIT License.
 
 ## Instructions for using the app
-[Watch Video] (https://github.com/shoraaa/lms/blob/main/Instruction.mkv)
+[Watch Video] (https://youtu.be/MCVHk-hX-1w)
